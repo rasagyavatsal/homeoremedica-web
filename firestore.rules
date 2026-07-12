@@ -1,0 +1,26 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Cases collection - nested user items: /cases/{uid}/items/{caseId}
+    match /cases/{uid}/items/{caseId} {
+      // Read: allow signed-in users to read only their own cases
+      allow read: if request.auth != null && request.auth.uid == uid;
+
+      // Create: userId must match the path uid and the authenticated user
+      allow create: if request.auth != null
+                    && request.auth.uid == uid
+                    && request.resource.data.userId == uid;
+
+      // Update/Delete: only owner can modify; userId must remain unchanged and equal to uid
+      allow update, delete: if request.auth != null
+                            && request.auth.uid == uid
+                            && resource.data.userId == uid
+                            && request.resource.data.userId == uid;
+    }
+    
+    // Default rule - deny all other access
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

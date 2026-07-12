@@ -1,0 +1,70 @@
+# homeoremedica API Examples
+# Use with REST Client extension in VS Code or similar tools
+
+@baseUrl = http://localhost:3000/api
+@authToken = your-firebase-id-token-here
+
+### Get user session
+POST {{baseUrl}}/auth/session
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+### Get usage stats
+GET {{baseUrl}}/usage
+Authorization: Bearer {{authToken}}
+
+### Find remedies
+POST {{baseUrl}}/find
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "bookId": "all",
+  "symptoms": ["fever", "anxiety", "headache"]
+}
+
+### Find remedies - specific book
+POST {{baseUrl}}/find
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "bookId": "boericke",
+  "symptoms": ["thirst", "restlessness"]
+}
+
+### Get all cases
+GET {{baseUrl}}/cases
+Authorization: Bearer {{authToken}}
+
+### Create a new case
+POST {{baseUrl}}/cases
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "title": "Patient with fever and anxiety",
+  "note": "Acute onset, very restless",
+  "bookId": "boericke",
+  "symptoms": ["fever", "anxiety", "restlessness"],
+  "results": [
+    {
+      "remedyId": "acon-b",
+      "score": 30
+    }
+  ]
+}
+
+### Update a case
+PATCH {{baseUrl}}/cases/case-id-here
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "title": "Updated case title",
+  "note": "Additional notes after follow-up"
+}
+
+### Delete a case
+DELETE {{baseUrl}}/cases/case-id-here
+Authorization: Bearer {{authToken}}

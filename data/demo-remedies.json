@@ -1,0 +1,15 @@
+{
+  "boericke": {
+    "Aconitum napellus": ["Anxiety with restlessness", "Sudden fever after cold wind"],
+    "Belladonna": ["Throbbing headache", "Sudden fever with flushed face"]
+  },
+  "clarke": {
+    "Arnica montana": ["Sore bruised feeling", "Says there is nothing wrong"]
+  },
+  "kent": {
+    "Pulsatilla": ["Weeping when telling symptoms", "Better in open air"]
+  },
+  "allen": {
+    "Nux vomica": ["Irritable and oversensitive", "Digestive upset after excess"]
+  }
+}

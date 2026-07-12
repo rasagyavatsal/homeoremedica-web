@@ -1,0 +1,512 @@
+@import "tailwindcss";
+@config "../tailwind.config.ts";
+
+/*
+ * HomeoRemedica — "Pharmacopoeia" design language.
+ * Apothecary-ledger print aesthetic: warm paper, ink-green primary,
+ * rubric-red accents, hairline rules, hard letterpress shadows.
+ */
+
+@layer base {
+  :root {
+    color-scheme: light;
+
+    /* Paper */
+    --background: 42 33% 93%;
+    --foreground: 165 28% 12%;
+    --card: 45 41% 96%;
+    --card-foreground: 165 28% 12%;
+    --popover: 45 45% 97%;
+    --popover-foreground: 165 28% 12%;
+
+    --surface: 42 33% 93%;
+    --surface-bright: 45 50% 98%;
+    --surface-container-lowest: 45 41% 96%;
+    --surface-container-low: 43 30% 89%;
+    --surface-container-high: 42 26% 85%;
+    --on-surface: 165 28% 12%;
+    --on-surface-variant: 162 12% 34%;
+
+    /* Bottle green */
+    --primary: 161 58% 19%;
+    --primary-foreground: 45 55% 96%;
+    --primary-container: 159 36% 30%;
+    --primary-fixed: 155 30% 87%;
+    --primary-fixed-dim: 155 26% 77%;
+
+    /* Tan card-stock */
+    --secondary: 40 30% 84%;
+    --secondary-foreground: 35 38% 24%;
+    --secondary-container: 41 33% 89%;
+    --on-secondary-container: 35 38% 22%;
+
+    /* Rubric red */
+    --tertiary: 11 64% 38%;
+    --tertiary-foreground: 45 55% 96%;
+
+    --muted: 43 26% 88%;
+    --muted-foreground: 162 10% 38%;
+    --accent: 152 24% 84%;
+    --accent-foreground: 161 58% 17%;
+    --destructive: 4 64% 40%;
+    --destructive-foreground: 45 55% 96%;
+    --success: 146 48% 28%;
+    --success-foreground: 146 60% 14%;
+    --warning: 36 84% 44%;
+    --warning-foreground: 30 72% 18%;
+    --scrim: 165 30% 8%;
+    --border: 160 12% 38%;
+    --input: 160 12% 38%;
+    --ring: 161 58% 22%;
+    --outline-variant: 160 10% 56%;
+    --radius: 0.1875rem;
+
+    --font-display: "Didot", "Bodoni MT", "Bodoni 72", "Playfair Display", "URW Palladio L", Georgia, serif;
+    --font-body: "Seravek", "Gill Sans Nova", "Ubuntu", "Calibri", "DejaVu Sans", source-sans-pro, "Helvetica Neue", sans-serif;
+    --font-mono: ui-monospace, "SFMono-Regular", "Cascadia Code", "Source Code Pro", Menlo, Consolas, "DejaVu Sans Mono", monospace;
+
+    --motion-duration-page: 180ms;
+    --motion-duration-section: 160ms;
+    --motion-duration-item: 140ms;
+    --motion-duration-overlay: 160ms;
+    --motion-duration-reduced: 100ms;
+    --motion-ease-standard: cubic-bezier(0.3, 0.85, 0.15, 1);
+    --motion-distance-page: 8px;
+    --motion-distance-section: 6px;
+    --motion-distance-item: 4px;
+    --motion-distance-overlay: 8px;
+
+    /* Decorative effects */
+    --border-alpha: 0.35;
+    --rule-alpha: 0.8;
+    --selection-alpha: 0.22;
+    --scrollbar-alpha: 0.4;
+    --scrollbar-hover-alpha: 0.65;
+  }
+
+  .dark {
+    color-scheme: dark;
+
+    /* Night ledger */
+    --background: 168 20% 7%;
+    --foreground: 43 30% 87%;
+    --card: 167 17% 10%;
+    --card-foreground: 43 30% 87%;
+    --popover: 167 17% 10%;
+    --popover-foreground: 43 30% 87%;
+
+    --surface: 168 20% 7%;
+    --surface-bright: 166 14% 14%;
+    --surface-container-lowest: 167 17% 10%;
+    --surface-container-low: 166 14% 13%;
+    --surface-container-high: 164 12% 17%;
+    --on-surface: 43 30% 87%;
+    --on-surface-variant: 44 12% 60%;
+
+    --primary: 151 30% 62%;
+    --primary-foreground: 168 24% 8%;
+    --primary-container: 157 26% 23%;
+    --primary-fixed: 157 26% 23%;
+    --primary-fixed-dim: 157 22% 17%;
+
+    --secondary: 40 12% 18%;
+    --secondary-foreground: 42 26% 79%;
+    --secondary-container: 40 10% 15%;
+    --on-secondary-container: 42 26% 79%;
+
+    --tertiary: 14 66% 62%;
+    --tertiary-foreground: 168 24% 8%;
+
+    --muted: 165 12% 14%;
+    --muted-foreground: 44 12% 60%;
+    --accent: 156 16% 17%;
+    --accent-foreground: 151 30% 62%;
+    --destructive: 4 58% 56%;
+    --destructive-foreground: 168 24% 8%;
+    --success: 146 36% 56%;
+    --success-foreground: 142 45% 85%;
+    --warning: 38 80% 56%;
+    --warning-foreground: 45 85% 88%;
+    --scrim: 170 35% 3%;
+    --border: 44 10% 62%;
+    --input: 44 10% 62%;
+    --ring: 151 30% 62%;
+    --outline-variant: 44 8% 40%;
+
+    --border-alpha: 0.3;
+    --rule-alpha: 0.7;
+    --selection-alpha: 0.3;
+    --scrollbar-alpha: 0.4;
+    --scrollbar-hover-alpha: 0.65;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :root {
+      --motion-duration-page: 120ms;
+      --motion-duration-section: 120ms;
+      --motion-duration-item: 120ms;
+      --motion-duration-overlay: 120ms;
+      --motion-distance-page: 0px;
+      --motion-distance-section: 0px;
+      --motion-distance-item: 0px;
+      --motion-distance-overlay: 0px;
+    }
+  }
+}
+
+@layer base {
+  @keyframes motion-fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes motion-fade-out {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+
+  /* Dialogs stamp down onto the page (settle from slightly above scale). */
+  @keyframes motion-overlay-surface-in {
+    from {
+      opacity: 0;
+      transform: scale(1.03);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes motion-overlay-surface-out {
+    from {
+      opacity: 1;
+      transform: scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: scale(1.02);
+    }
+  }
+
+  /* Popovers slip out like a card pulled from a file. */
+  @keyframes motion-overlay-popover-in {
+    from {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes motion-overlay-popover-out {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+  }
+
+  @keyframes motion-overlay-sheet-in {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes motion-overlay-sheet-out {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+  }
+
+  * {
+    border-color: hsl(var(--border) / var(--border-alpha));
+    -webkit-overflow-scrolling: touch;
+  }
+
+  html {
+    scroll-behavior: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    overscroll-behavior-y: contain;
+  }
+
+  body {
+    @apply bg-background text-foreground font-body;
+    font-feature-settings: "onum" 1, "kern" 1;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display tracking-display text-foreground;
+    text-wrap: balance;
+  }
+
+  .display-lg {
+    @apply font-display text-4xl font-medium tracking-display leading-display-lg md:text-6xl;
+  }
+
+  .display-md {
+    @apply font-display text-3xl font-medium tracking-display leading-display-md md:text-5xl;
+  }
+
+  .display-sm {
+    @apply font-display text-2xl font-medium tracking-display leading-display-sm md:text-3xl;
+  }
+
+  @media (hover: none) and (pointer: coarse) {
+    button:active, a:active {
+      opacity: 0.92;
+    }
+
+    button, a {
+      -webkit-user-select: none;
+      user-select: none;
+    }
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: hsl(var(--surface));
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--foreground) / var(--scrollbar-alpha));
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(var(--foreground) / var(--scrollbar-hover-alpha));
+  }
+
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .motion-surface {
+    transition-property: background-color, border-color, color, opacity, transform;
+    transition-duration: var(--motion-duration-section);
+    transition-timing-function: var(--motion-ease-standard);
+  }
+
+  .motion-press {
+    transition-property: transform, background-color, border-color, color, opacity;
+    transition-duration: var(--motion-duration-item);
+    transition-timing-function: var(--motion-ease-standard);
+  }
+
+  .motion-press:active {
+    transform: translate(1px, 1px);
+  }
+
+  .motion-overlay-backdrop[data-state="open"] {
+    animation: motion-fade-in var(--motion-duration-overlay) var(--motion-ease-standard);
+  }
+
+  .motion-overlay-backdrop[data-state="closed"] {
+    animation: motion-fade-out var(--motion-duration-item) var(--motion-ease-standard);
+  }
+
+  .motion-overlay-surface[data-state="open"] {
+    animation: motion-overlay-surface-in var(--motion-duration-overlay) var(--motion-ease-standard);
+  }
+
+  .motion-overlay-surface[data-state="closed"] {
+    animation: motion-overlay-surface-out var(--motion-duration-item) var(--motion-ease-standard);
+  }
+
+  .motion-overlay-popover[data-state="open"] {
+    animation: motion-overlay-popover-in var(--motion-duration-overlay) var(--motion-ease-standard);
+  }
+
+  .motion-overlay-popover[data-state="closed"] {
+    animation: motion-overlay-popover-out var(--motion-duration-item) var(--motion-ease-standard);
+  }
+
+  .motion-overlay-sheet[data-state="open"] {
+    animation: motion-overlay-sheet-in var(--motion-duration-overlay) var(--motion-ease-standard);
+  }
+
+  .motion-overlay-sheet[data-state="closed"] {
+    animation: motion-overlay-sheet-out var(--motion-duration-item) var(--motion-ease-standard);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .motion-press:active {
+      transform: none;
+    }
+  }
+
+  /* Scrollbar utilities */
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  .scrollbar-thin {
+    scrollbar-width: thin;
+  }
+
+  ::selection {
+    background: hsl(var(--tertiary) / var(--selection-alpha));
+    color: hsl(var(--foreground));
+  }
+}
+
+@layer utilities {
+  /* Print rules */
+  .rule-double {
+    border-top: 3px double hsl(var(--foreground) / var(--rule-alpha));
+  }
+
+  .rule-double-b {
+    border-bottom: 3px double hsl(var(--foreground) / var(--rule-alpha));
+  }
+
+  .rule-heavy {
+    border-top: 2px solid hsl(var(--foreground) / var(--rule-alpha));
+  }
+
+  .rule-hairline {
+    border-top: 1px solid hsl(var(--border) / 0.45);
+  }
+
+  /* Dotted index leader between a label and its value */
+  .leader-dots {
+    flex: 1 1 auto;
+    min-width: 1.5rem;
+    margin: 0 0.5em;
+    border-bottom: 2px dotted hsl(var(--foreground) / 0.3);
+    transform: translateY(-0.32em);
+  }
+}
+
+.prose {
+  @apply text-foreground;
+}
+
+.prose h1 {
+  @apply font-display text-3xl sm:text-4xl md:text-5xl font-medium tracking-display mb-4 sm:mb-6 mt-6 sm:mt-8 text-foreground;
+}
+
+.prose h2 {
+  @apply font-display text-2xl sm:text-3xl md:text-4xl font-medium tracking-display mb-3 sm:mb-4 mt-6 sm:mt-8 pb-2 text-foreground;
+  border-bottom: 3px double hsl(var(--foreground) / 0.5);
+}
+
+.prose h3 {
+  @apply font-display text-lg sm:text-xl md:text-2xl font-medium mb-2 sm:mb-3 mt-4 sm:mt-6 text-foreground;
+}
+
+.prose p {
+  @apply mb-3 sm:mb-4 leading-relaxed text-sm sm:text-base text-on-surface-variant;
+}
+
+.prose ul, .prose ol {
+  @apply mb-3 sm:mb-4 ml-4 sm:ml-6 text-sm sm:text-base;
+}
+
+.prose li {
+  @apply mb-2;
+}
+
+.prose table {
+  @apply w-full border-collapse mb-4 sm:mb-6 mt-3 sm:mt-4 text-sm sm:text-base overflow-x-auto block;
+}
+
+.prose thead {
+  @apply bg-surface-container-low;
+}
+
+.prose th {
+  @apply border border-border/50 px-4 py-3 text-left font-semibold;
+}
+
+.prose td {
+  @apply border border-border/40 px-4 py-3;
+}
+
+.prose tbody tr:nth-child(even) {
+  @apply bg-surface-container-low/40;
+}
+
+.prose section {
+  @apply mb-8;
+}
+
+.prose sup {
+  @apply text-xs text-tertiary;
+}
+
+.prose strong {
+  @apply font-semibold text-foreground;
+}
+
+.prose code {
+  @apply bg-surface-container-low px-1.5 py-0.5 rounded-sm text-sm font-code;
+}
+
+.prose details {
+  @apply mb-3 border border-border/40 rounded-sm p-4;
+}
+
+.prose summary {
+  @apply font-semibold cursor-pointer hover:text-tertiary;
+}
+
+/*
+ * Print: practitioners print remedy pages. Strip chrome, flatten the
+ * decorative chrome, and let the ledger read as plain ink on paper.
+ */
+@media print {
+  header,
+  footer,
+  nav,
+  [data-print-hidden] {
+    display: none !important;
+  }
+  body {
+    background: white;
+  }
+}

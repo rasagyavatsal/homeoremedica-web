@@ -1,0 +1,11 @@
+runConfig:
+  minInstances: 0
+  maxInstances: 10
+  memoryMiB: 512
+  concurrency: 40
+
+env:
+  - variable: REMEDIES_DB_PATH
+    value: /tmp/remedies.db
+    availability:
+      - RUNTIME
