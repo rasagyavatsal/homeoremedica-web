@@ -5,7 +5,19 @@ runConfig:
   concurrency: 40
 
 env:
+  - variable: REMEDIES_BUCKET
+    value: homeoremedica-private-remedies
+    availability:
+      - RUNTIME
+  - variable: REMEDIES_OBJECT
+    value: production/remedies-2026-07-12.db
+    availability:
+      - RUNTIME
   - variable: REMEDIES_DB_PATH
     value: /tmp/remedies.db
+    availability:
+      - RUNTIME
+  - variable: REMEDIES_DB_SHA256
+    value: 462a93966bbce8c66838bd78844aab107a8ffe7bdfa2cfd95a88ed8ea0273d7e
     availability:
       - RUNTIME
