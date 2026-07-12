@@ -30,7 +30,14 @@ Deploying a new database means uploading an immutable versioned object, updating
 
 ## GitHub automatic rollouts
 
-The `homeoremedica-web` App Hosting backend is deployed and can also accept local-source deployments with `firebase deploy --only apphosting:homeoremedica-web`. To enable automatic rollouts, open Firebase Console → App Hosting → `homeoremedica-web` → Deployment, connect `rasagyavatsal/homeoremedica-web`, and select `main` as the live branch. This is a one-time GitHub OAuth action.
+Firebase development and production are isolated:
+
+- `homeoremedica-dev` is the repository default and `main` must deploy only to the `homeoremedica-web-dev` backend.
+- `homeoremedica` is production. Only the owner should have Firebase IAM access or initiate production releases.
+- Development builds use the generated synthetic remedies database. They cannot read the private production remedies bucket.
+- Production App Hosting values are retained in `deployment/apphosting.production.yaml`; do not replace `apphosting.yaml` or connect production to `main`.
+
+The development App Hosting backend still requires billing to be attached to `homeoremedica-dev`. After that, create `homeoremedica-web-dev`, connect this repository's `main` branch to it, and enable Email/Password Authentication. Production releases should remain owner-controlled and use a protected release branch or manual deployment.
 
 ## Validation
 

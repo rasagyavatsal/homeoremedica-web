@@ -5,50 +5,35 @@ runConfig:
   concurrency: 40
 
 env:
-  # Firebase web identifiers are public and must be available while Next.js builds.
+  # Development is the repository default. Production uses the owner-controlled
+  # configuration in deployment/apphosting.production.yaml.
   - variable: NEXT_PUBLIC_FIREBASE_API_KEY
-    value: AIzaSyBiZ183axlsBmu-pFONaZ1ZRcfjzbKPxAY
+    value: AIzaSyCuzBi4pwZMc3gp7s9LViPKonX_FXzPg5A
     availability:
       - BUILD
       - RUNTIME
   - variable: NEXT_PUBLIC_FIREBASE_PROJECT_ID
-    value: homeoremedica
+    value: homeoremedica-dev
     availability:
       - BUILD
       - RUNTIME
   - variable: NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
-    value: homeoremedica.firebaseapp.com
+    value: homeoremedica-dev.firebaseapp.com
     availability:
       - BUILD
       - RUNTIME
   - variable: NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
-    value: homeoremedica.firebasestorage.app
+    value: homeoremedica-dev.firebasestorage.app
     availability:
       - BUILD
       - RUNTIME
   - variable: NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
-    value: "619837289655"
+    value: "573614058108"
     availability:
       - BUILD
       - RUNTIME
   - variable: NEXT_PUBLIC_FIREBASE_APP_ID
-    value: 1:619837289655:web:c6858600cb9d5236710932
+    value: 1:573614058108:web:dc6b1702fc1d3e33d7f7f9
     availability:
       - BUILD
-      - RUNTIME
-  - variable: REMEDIES_BUCKET
-    value: homeoremedica-private-remedies
-    availability:
-      - RUNTIME
-  - variable: REMEDIES_OBJECT
-    value: production/remedies-2026-07-12.db
-    availability:
-      - RUNTIME
-  - variable: REMEDIES_DB_PATH
-    value: /tmp/remedies.db
-    availability:
-      - RUNTIME
-  - variable: REMEDIES_DB_SHA256
-    value: 462a93966bbce8c66838bd78844aab107a8ffe7bdfa2cfd95a88ed8ea0273d7e
-    availability:
       - RUNTIME

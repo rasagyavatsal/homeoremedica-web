@@ -1,7 +1,7 @@
 {
   "apphosting": [
     {
-      "backendId": "homeoremedica-web",
+      "backendId": "homeoremedica-web-dev",
       "rootDir": ".",
       "ignore": [
         "node_modules",

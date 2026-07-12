@@ -1,7 +1,7 @@
 {
   "projects": {
-    "default": "homeoremedica"
-  },
-  "targets": {},
-  "etags": {}
+    "default": "homeoremedica-dev",
+    "development": "homeoremedica-dev",
+    "production": "homeoremedica"
+  }
 }
