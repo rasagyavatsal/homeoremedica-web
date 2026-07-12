@@ -28,6 +28,10 @@ Grant the App Hosting runtime service account `roles/storage.objectViewer` on on
 
 Deploying a new database means uploading an immutable versioned object, updating `REMEDIES_OBJECT` and `REMEDIES_DB_SHA256`, and rolling out a new App Hosting revision. The previous object remains available for rollback.
 
+## GitHub automatic rollouts
+
+The `homeoremedica-web` App Hosting backend is deployed and can also accept local-source deployments with `firebase deploy --only apphosting:homeoremedica-web`. To enable automatic rollouts, open Firebase Console → App Hosting → `homeoremedica-web` → Deployment, connect `rasagyavatsal/homeoremedica-web`, and select `main` as the live branch. This is a one-time GitHub OAuth action.
+
 ## Validation
 
 ```sh
