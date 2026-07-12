@@ -5,6 +5,37 @@ runConfig:
   concurrency: 40
 
 env:
+  # Firebase web identifiers are public and must be available while Next.js builds.
+  - variable: NEXT_PUBLIC_FIREBASE_API_KEY
+    value: AIzaSyBiZ183axlsBmu-pFONaZ1ZRcfjzbKPxAY
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_FIREBASE_PROJECT_ID
+    value: homeoremedica
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
+    value: homeoremedica.firebaseapp.com
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
+    value: homeoremedica.firebasestorage.app
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
+    value: "619837289655"
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_FIREBASE_APP_ID
+    value: 1:619837289655:web:c6858600cb9d5236710932
+    availability:
+      - BUILD
+      - RUNTIME
   - variable: REMEDIES_BUCKET
     value: homeoremedica-private-remedies
     availability:
