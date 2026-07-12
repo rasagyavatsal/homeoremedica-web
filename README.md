@@ -37,7 +37,7 @@ Firebase development and production are isolated:
 - Development builds use the generated synthetic remedies database. They cannot read the private production remedies bucket.
 - Production App Hosting values are retained in `deployment/apphosting.production.yaml`; do not replace `apphosting.yaml` or connect production to `main`.
 
-The development App Hosting backend still requires billing to be attached to `homeoremedica-dev`. After that, create `homeoremedica-web-dev`, connect this repository's `main` branch to it, and enable Email/Password Authentication. Production releases should remain owner-controlled and use a protected release branch or manual deployment.
+The development App Hosting backend is live at `https://homeoremedica-web-dev--homeoremedica-dev.us-central1.hosted.app`, and Email/Password Authentication is enabled. To enable automatic development rollouts, connect this repository's `main` branch to `homeoremedica-web-dev` in the Firebase Console. Production releases should remain owner-controlled and use a protected release branch or manual deployment.
 
 ## Validation
 
