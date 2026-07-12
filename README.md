@@ -6,9 +6,9 @@ Standalone Next.js website and API. The browser and mobile application query the
 
 ```sh
 cp .env.example .env.local
-pnpm install
-pnpm generate-demo-db
-pnpm dev
+npm install
+npm run generate-demo-db
+npm run dev
 ```
 
 When `REMEDIES_DB_PATH`, `REMEDIES_BUCKET`, and `REMEDIES_OBJECT` are unset, the server uses the generated synthetic database at `server-data/demo-remedies.db`.
@@ -42,7 +42,7 @@ The development App Hosting backend is live at `https://homeoremedica-web-dev--h
 ## Validation
 
 ```sh
-pnpm validate
+npm run validate
 ```
 
 This repository has a clean history and contains no full remedy dataset.
