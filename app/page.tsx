@@ -1,10 +1,11 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight, Check, Search } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 import { Footer } from '@/components/footer';
 import { Header } from '@/components/header';
+import { RemedyPreview } from '@/components/remedy-preview';
 import { Button } from '@/components/ui/button';
 import { MotionItem, MotionRouteShell } from '@/components/ui/motion';
 import { SEARCH_BOOKS } from '@/lib/seo/book-data';
@@ -74,39 +75,7 @@ export default function HomePage() {
             </div>
 
             <div className="lg:col-span-5">
-              <div className="quiet-panel overflow-hidden p-3 md:p-4">
-                <div className="rounded-lg border border-border bg-surface-bright p-5 md:p-6">
-                  <div className="flex items-center gap-3 border-b border-border pb-4">
-                    <Search aria-hidden="true" className="h-4 w-4 text-primary" />
-                    <span className="text-base text-foreground">burning pain at night</span>
-                  </div>
-                  <div className="space-y-1 py-4">
-                    {['Burning pains, worse at night', 'Restlessness after midnight', 'Thirst for small quantities'].map((symptom) => (
-                      <div key={symptom} className="flex items-start gap-3 rounded-md px-3 py-3 text-sm text-on-surface-variant">
-                        <Check aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-                        <span>{symptom}</span>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="border-t border-border pt-4">
-                    <div className="mb-3 flex items-center justify-between">
-                      <span className="index-label">Closest remedies</span>
-                      <span className="index-label">Match</span>
-                    </div>
-                    {[
-                      ['Arsenicum album', '3/3'],
-                      ['Phosphorus', '2/3'],
-                      ['Sulphur', '2/3'],
-                    ].map(([remedy, match], index) => (
-                      <div key={remedy} className="flex items-center gap-4 border-t border-border py-3 first:border-t-0">
-                        <span className="index-label text-primary">{String(index + 1).padStart(2, '0')}</span>
-                        <span className="min-w-0 flex-1 text-sm font-medium">{remedy}</span>
-                        <span className="font-code text-xs text-on-surface-variant">{match}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
+              <RemedyPreview />
             </div>
           </MotionRouteShell>
         </section>
