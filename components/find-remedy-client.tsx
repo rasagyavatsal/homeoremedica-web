@@ -8,7 +8,6 @@ import { useRouter } from 'next/navigation';
 import {
   AlertCircle,
   ArrowRight,
-  ArrowUpRight,
   BookOpen,
   Check,
   FileText,
@@ -20,9 +19,7 @@ import {
 } from 'lucide-react';
 import type { Case } from '@homeoremedica/shared';
 
-import { Footer } from '@/components/footer';
 import { Header } from '@/components/header';
-import { FinderHero } from '@/components/finder-hero';
 import { UnifiedSymptomSearch } from '@/components/unified-symptom-search';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -45,14 +42,6 @@ import { Field, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { motionClassNames } from '@/lib/motion/system';
 import { overlayRecipes } from '@/lib/overlay/system';
-import {
-  FIND_REMEDY_EXAMPLE_QUERIES,
-  FIND_REMEDY_FAQ_ITEMS,
-  FIND_REMEDY_FEATURE_INTRO,
-  FIND_REMEDY_FEATURE_SECTIONS,
-  FIND_REMEDY_HERO_DESCRIPTION,
-  FIND_REMEDY_SOURCE_OVERVIEW,
-} from '@/lib/seo/find-remedy-content';
 import { cn, formatRemedyDisplayName } from '@/lib/utils';
 import { useAuth } from '@/lib/contexts/auth-context';
 import { useUserCases } from '@/lib/hooks/use-user-cases';
@@ -100,10 +89,10 @@ const SOURCE_COVER_IMAGES: Record<BookInfo['id'], { src: string; width: number; 
 };
 
 const SOURCE_COVER_FALLBACK_ACCENTS: Record<BookInfo['id'], string> = {
-  boericke: 'bg-gradient-to-b from-primary/20 via-surface-container-high to-surface-container-low',
-  clarke: 'bg-gradient-to-b from-tertiary/25 via-surface-container-high to-surface-container-low',
-  kent: 'bg-gradient-to-b from-secondary/50 via-surface-container-high to-surface-container-low',
-  allen: 'bg-gradient-to-b from-primary/12 via-surface-container-high to-surface-container-low',
+  boericke: 'bg-surface-container-low',
+  clarke: 'bg-surface-container-low',
+  kent: 'bg-surface-container-low',
+  allen: 'bg-surface-container-low',
 };
 
 function SourceCover({
@@ -121,7 +110,7 @@ function SourceCover({
     <span
       aria-hidden="true"
       className={cn(
-        'relative block overflow-hidden rounded-sm outline outline-1 -outline-offset-1 outline-foreground/20',
+        'relative block overflow-hidden rounded-sm border border-border',
         SOURCE_COVER_FALLBACK_ACCENTS[bookId],
         className,
       )}
@@ -141,100 +130,6 @@ function SourceCover({
   );
 }
 
-function HomeExampleQueries({
-  onTryQuery,
-}: Readonly<{
-  onTryQuery: (query: string) => void;
-}>) {
-  return (
-    <MotionSection className="mx-auto w-full max-w-3xl pt-2">
-      <div className="mx-auto flex max-w-3xl flex-wrap items-baseline justify-center gap-2">
-        {FIND_REMEDY_EXAMPLE_QUERIES.map((query) => (
-          <button
-            key={query}
-            type="button"
-            onClick={() => onTryQuery(query)}
-            className={`inline-flex min-h-9 items-center justify-center rounded-md border border-border/50 bg-surface-container-lowest px-3 py-1.5 font-code text-xs tracking-[0.04em] text-on-surface-variant transition-colors hover:border-tertiary/60 hover:text-tertiary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${motionClassNames.press}`}
-          >
-            {query}
-          </button>
-        ))}
-      </div>
-    </MotionSection>
-  );
-}
-
-function FinderFeatureSections() {
-  return (
-    <MotionSection
-      role="region"
-      aria-label="Find remedy features"
-      className="mx-auto w-full max-w-4xl space-y-10 border-t border-border/40 pt-8 md:pt-10"
-    >
-      <section className="space-y-4">
-        <div className="space-y-2">
-          <h2 className="font-display text-2xl font-medium leading-tight tracking-display text-foreground md:text-3xl">
-            {FIND_REMEDY_FEATURE_INTRO.heading}
-          </h2>
-        </div>
-        <p className="text-base leading-8 text-on-surface-variant md:text-lg md:leading-8">
-          {FIND_REMEDY_FEATURE_INTRO.body}
-        </p>
-      </section>
-
-      <div className="space-y-8">
-        {FIND_REMEDY_FEATURE_SECTIONS.map((feature) => (
-          <section key={feature.heading} className="border-t border-border/35 pt-7">
-            <h3 className="font-display text-xl font-medium leading-tight tracking-display text-foreground">
-              {feature.heading}
-            </h3>
-            <p className="mt-3 text-base leading-8 text-on-surface-variant">
-              {feature.body}
-            </p>
-          </section>
-        ))}
-      </div>
-
-      <section className="space-y-4 border-y border-border/40 py-7">
-        <h2 className="font-display text-2xl font-medium leading-tight tracking-display text-foreground md:text-3xl">
-          {FIND_REMEDY_SOURCE_OVERVIEW.heading}
-        </h2>
-        <p className="text-base leading-8 text-on-surface-variant">
-          {FIND_REMEDY_SOURCE_OVERVIEW.body}
-        </p>
-        <div className="flex flex-wrap gap-2">
-          {FIND_REMEDY_EXAMPLE_QUERIES.map((query) => (
-            <span
-              key={query}
-              className="inline-flex min-h-9 items-center rounded-md border border-border/50 bg-surface-container-lowest px-3 py-1.5 font-code text-xs tracking-[0.04em] text-on-surface-variant"
-            >
-              {query}
-            </span>
-          ))}
-        </div>
-      </section>
-
-      <section className="space-y-5">
-        <h2 className="font-display text-2xl font-medium leading-tight tracking-display text-foreground md:text-3xl">
-          Find remedy FAQ
-        </h2>
-        <div className="grid gap-x-8 gap-y-5 md:grid-cols-2">
-          {FIND_REMEDY_FAQ_ITEMS.map((item) => (
-            <article key={item.question} className="border-b border-border/30 pb-5">
-              <h3 className="font-display text-lg font-medium leading-tight tracking-display text-foreground">
-                {item.question}
-              </h3>
-              <p className="mt-2 text-sm leading-relaxed text-on-surface-variant">
-                {item.answer}
-              </p>
-            </article>
-          ))}
-        </div>
-      </section>
-    </MotionSection>
-  );
-}
-
 function DialogMasthead({
   icon,
   title,
@@ -247,9 +142,9 @@ function DialogMasthead({
   descriptionVisible?: boolean;
 }>) {
   return (
-    <DialogHeader className="border-b-2 border-foreground/70 px-4 py-4 sm:px-6">
+    <DialogHeader className="border-b border-border px-4 py-4 sm:px-6">
       <div className="flex items-start gap-3">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-sm border border-tertiary/35 bg-tertiary/[0.08] text-tertiary">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent text-accent-foreground">
           {icon}
         </div>
         <div className="space-y-1 text-left">
@@ -281,10 +176,10 @@ function SelectedSymptomsPanel({
   return (
     <MotionSection>
       <Card>
-        <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b-2 border-foreground/70">
+        <CardHeader className="flex flex-col items-start justify-between gap-4 border-b border-border sm:flex-row sm:items-center">
           <div className="space-y-1.5">
             <CardTitle className="text-lg md:text-xl">Selected symptoms</CardTitle>
-            <p className="font-code text-xs tracking-[0.04em] text-on-surface-variant">
+            <p className="index-label">
               {symptoms.length} {symptoms.length === 1 ? 'entry' : 'entries'} · {activeBookName}
             </p>
           </div>
@@ -304,12 +199,12 @@ function SelectedSymptomsPanel({
             {symptoms.map((symptom, index) => (
               <div
                 key={symptom.id}
-                className="flex items-center justify-between gap-4 border-b border-border/25 py-2.5"
+                className="flex items-center justify-between gap-4 border-b border-border py-3 last:border-b-0"
               >
                 <div className="flex min-w-0 gap-3">
                   <p
                     aria-hidden="true"
-                    className="select-none pt-0.5 font-code text-[10px] tracking-[0.1em] text-tertiary/80"
+                    className="index-label select-none pt-0.5 text-primary"
                   >
                     {String(index + 1).padStart(2, '0')}
                   </p>
@@ -352,10 +247,10 @@ function ResultsPanel({
   return (
     <MotionSection>
       <Card>
-        <CardHeader className="border-b-2 border-foreground/70 md:flex-row md:items-end md:justify-between">
+        <CardHeader className="border-b border-border md:flex-row md:items-end md:justify-between">
           <div className="space-y-1.5">
             <CardTitle className="text-xl md:text-2xl">Matching remedies</CardTitle>
-            <p className="font-code text-xs tracking-[0.04em] text-on-surface-variant">
+            <p className="index-label">
               {results.length} {results.length === 1 ? 'remedy' : 'remedies'} · {activeBookName}
             </p>
           </div>
@@ -381,12 +276,11 @@ function ResultsPanel({
 
               return (
                 <MotionItem key={result.remedy.id}>
-                  <div className="border-b border-border/30 px-1 py-4">
+                  <div className="border-b border-border px-1 py-5 last:border-b-0">
                     <div className="flex items-baseline gap-3">
-                      <h3 className="font-display text-lg font-medium tracking-display text-foreground transition-colors group-hover:text-tertiary">
+                      <h3 className="text-lg font-medium text-foreground transition-colors group-hover:text-primary">
                         {formatRemedyDisplayName(result.remedy.name)}
                       </h3>
-                      <span aria-hidden="true" className="leader-dots hidden xs:block" />
                     </div>
 
                     <div className="mt-2 flex flex-wrap items-center gap-2">
@@ -438,10 +332,10 @@ function CasesDialog({
           <div
             key={caseItem.id}
             className={cn(
-              `relative rounded-sm border border-l-[3px] px-4 py-4 transition-colors ${motionClassNames.surface}`,
+              `relative rounded-lg border px-4 py-4 transition-colors ${motionClassNames.surface}`,
               selectedCaseId === caseItem.id
-                ? 'border-border/40 border-l-primary bg-primary/[0.06]'
-                : 'border-border/40 border-l-foreground/30 bg-surface-bright hover:border-l-tertiary',
+                ? 'border-primary bg-accent'
+                : 'border-border bg-surface-bright hover:border-primary',
             )}
           >
             <button
@@ -451,7 +345,7 @@ function CasesDialog({
             >
               <div className="space-y-2">
                 <p className="font-display text-base font-medium tracking-display text-foreground">{caseItem.name}</p>
-                <div className="flex flex-wrap items-center gap-2 font-code text-[10px] tracking-[0.08em] text-on-surface-variant">
+                <div className="index-label flex flex-wrap items-center gap-2">
                   <span>{caseItem.timestamp.toLocaleDateString()}</span>
                   <span aria-hidden="true">·</span>
                   <span>{prettyBook(caseItem.bookId ?? 'all')}</span>
@@ -476,7 +370,7 @@ function CasesDialog({
             </Button>
 
             {selectedCaseId === caseItem.id ? (
-              <div className="absolute right-12 top-2 flex h-7 w-7 items-center justify-center rounded-sm bg-primary/10 text-primary">
+              <div className="absolute right-12 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-accent text-accent-foreground">
                 <Check className="h-4 w-4" />
               </div>
             ) : null}
@@ -562,7 +456,7 @@ function SaveCaseDialog({
             <Button type="button" variant="ghost" className="flex-1" onClick={onCancel}>
               Cancel
             </Button>
-            <Button type="submit" disabled={!caseName.trim() || isSaving} className="flex-[2] gap-2">
+            <Button type="submit" disabled={!caseName.trim() || isSaving} className="flex-grow-2 gap-2">
               {isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
               {isSaving ? 'Saving...' : 'Save case'}
             </Button>
@@ -605,23 +499,23 @@ function SourceDialog({
                 aria-label={`Select source: ${book.name}`}
                 aria-pressed={activeBookId === book.id}
                 className={cn(
-                  `w-full rounded-sm border p-2 text-left transition-[background-color,border-color] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${motionClassNames.surface} ${motionClassNames.press}`,
+                  `w-full rounded-lg border p-2 text-left ${motionClassNames.surface} ${motionClassNames.press}`,
                   activeBookId === book.id
-                    ? 'border-primary/55 bg-primary/10'
-                    : 'border-border/40 bg-surface-bright hover:border-tertiary/60',
+                    ? 'border-primary bg-accent'
+                    : 'border-border bg-surface-bright hover:border-primary',
                 )}
               >
                 <div className="space-y-1.5">
                   <SourceCover bookId={book.id} className="mx-auto w-20 sm:w-24">
                     {activeBookId === book.id ? (
-                      <div className="absolute right-1.5 top-1.5 flex h-5 w-5 items-center justify-center rounded-sm bg-primary text-primary-foreground">
+                      <div className="absolute right-1.5 top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-primary-foreground">
                         <Check className="h-3.5 w-3.5" />
                       </div>
                     ) : null}
                   </SourceCover>
 
                   <div className="space-y-1 px-0.5 pb-0.5">
-                    <p className="font-code text-xs font-medium tracking-[0.04em] leading-tight text-foreground">
+                    <p className="index-label leading-tight text-foreground">
                       {SOURCE_SHORT_LABELS[book.id]}
                     </p>
                     <p className="text-xs leading-snug text-on-surface-variant">
@@ -647,7 +541,6 @@ export default function FindRemedyClient() {
   const [isSaving, setIsSaving] = useState(false);
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [searchResetSignal, setSearchResetSignal] = useState(0);
-  const [seededQuery, setSeededQuery] = useState<{ value: string; token: number } | null>(null);
 
   const {
     selectedSymptoms,
@@ -668,8 +561,7 @@ export default function FindRemedyClient() {
   const bookOptions = getBookOptions();
   const activeBookInfo = getBookInfo(activeBook);
   const activeBookName = activeBookInfo?.name ?? prettyBook(activeBook);
-  const showHero = !isSearchActive && selectedSymptoms.length === 0 && results.length === 0;
-  const currentSearchHasContent = !showHero;
+  const currentSearchHasContent = isSearchActive || selectedSymptoms.length > 0 || results.length > 0;
 
   const displayCases = cases.filter(
     (caseItem) => typeof caseItem?.id === 'string' && caseItem.id.trim().length > 0,
@@ -772,25 +664,9 @@ export default function FindRemedyClient() {
     <div className="min-h-screen flex flex-col bg-background text-foreground">
       <Header />
 
-      <main className="flex-1 min-h-screen">
-        <MotionSafeShell
-          className={cn(
-            'mx-auto flex w-full max-w-6xl flex-col px-4 sm:px-6 lg:px-8',
-            showHero ? 'gap-6 py-8 lg:py-14' : 'gap-5 py-4 lg:py-6',
-          )}
-        >
-          {showHero ? (
-            <MotionSection>
-              <FinderHero
-                align="center"
-                title="Homeopathic remedy finder"
-                description={FIND_REMEDY_HERO_DESCRIPTION}
-                descriptionClassName="text-base md:text-base [text-wrap:balance]"
-                className="mx-auto max-w-3xl"
-              />
-            </MotionSection>
-          ) : null}
-
+      <main className="flex-1">
+        <h1 className="sr-only">Find a homoeopathic remedy</h1>
+        <MotionSafeShell className="page-shell min-h-viewport-below-header flex flex-col gap-5 py-5 lg:py-8">
           <MotionSection>
             <UnifiedSymptomSearch
               selectedSymptoms={selectedSymptoms}
@@ -798,7 +674,6 @@ export default function FindRemedyClient() {
               onOpenBooks={() => setBooksModalOpen(true)}
               onSearchActive={setIsSearchActive}
               resetSignal={searchResetSignal}
-              seededQuery={seededQuery}
               onSymptomSelect={(symptom: string) => {
                 const existing = selectedSymptoms.find((item) => item.name === symptom);
                 if (existing) {
@@ -816,10 +691,7 @@ export default function FindRemedyClient() {
           </MotionSection>
 
           <MotionSection
-            className={cn(
-              'flex flex-wrap items-center gap-3',
-              showHero && 'justify-center',
-            )}
+            className="flex flex-wrap items-center gap-3"
           >
             <Button
               type="button"
@@ -833,7 +705,7 @@ export default function FindRemedyClient() {
               {selectedSymptoms.length > 0 ? (
                 <span
                   aria-hidden="true"
-                  className="rounded-sm bg-primary-foreground/20 px-1.5 py-1 font-code text-[10px] leading-none tracking-[0.08em]"
+                  className="rounded-full bg-primary-foreground/20 px-2 py-1 font-code text-micro leading-none tracking-label"
                 >
                   {String(selectedSymptoms.length).padStart(2, '0')}
                 </span>
@@ -842,16 +714,6 @@ export default function FindRemedyClient() {
               )}
             </Button>
           </MotionSection>
-
-          {showHero ? (
-            <HomeExampleQueries
-              onTryQuery={(query) => {
-                setSeededQuery({ value: query, token: Date.now() });
-              }}
-            />
-          ) : null}
-
-          {showHero ? <FinderFeatureSections /> : null}
 
           <SelectedSymptomsPanel
             symptoms={selectedSymptoms}
@@ -868,8 +730,6 @@ export default function FindRemedyClient() {
           />
         </MotionSafeShell>
       </main>
-
-      <Footer />
 
       <CasesDialog
         open={casesModalOpen}

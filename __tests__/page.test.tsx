@@ -47,13 +47,9 @@ vi.mock('@/lib/hooks/use-user-cases', () => ({
   useUserCases: vi.fn(),
 }));
 
-// Mock Header and Footer components to avoid complexity
+// Mock Header to avoid unrelated navigation complexity
 vi.mock('@/components/header', () => ({
   Header: () => <header data-testid="header">Header</header>,
-}));
-
-vi.mock('@/components/footer', () => ({
-  Footer: () => <footer data-testid="footer">Footer</footer>,
 }));
 
 // Mock UnifiedSymptomSearch to avoid complexity
@@ -69,15 +65,14 @@ describe('FindRemedyClient Layout', () => {
 
     const root = container.firstElementChild as HTMLElement;
     const main = screen.getByRole('main');
-    const footer = screen.getByTestId('footer');
     const symptomSearch = screen.getByTestId('symptom-search');
 
     expect(root.className).toContain('flex');
     expect(root.className).toContain('flex-col');
-    expect(main.className).toContain('min-h-screen');
+    expect(main.className).toContain('flex-1');
     expect(main).toBeInTheDocument();
     expect(symptomSearch).toBeInTheDocument();
     expect(main).toContainElement(symptomSearch);
-    expect(main.nextElementSibling).toBe(footer);
+    expect(screen.queryByRole('contentinfo')).toBeNull();
   });
 });

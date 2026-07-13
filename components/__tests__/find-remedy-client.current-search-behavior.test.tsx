@@ -3,20 +3,9 @@ import { render, screen, fireEvent, waitFor, within } from '@testing-library/rea
 import type { AnchorHTMLAttributes, ReactNode } from 'react';
 
 import FindRemedyClient from '@/components/find-remedy-client';
-import {
-  FIND_REMEDY_FEATURE_INTRO,
-  FIND_REMEDY_FEATURE_SECTIONS,
-  FIND_REMEDY_SOURCE_OVERVIEW,
-} from '@/lib/seo/find-remedy-content';
 import { useCasesStore } from '@/lib/stores/cases-store';
 import { useSearchStore } from '@/lib/stores/search-store';
 import { getSearchInput } from './search-test-helper';
-
-const FINDER_FEATURE_COPY_SECTIONS = [
-  FIND_REMEDY_FEATURE_INTRO,
-  ...FIND_REMEDY_FEATURE_SECTIONS,
-  FIND_REMEDY_SOURCE_OVERVIEW,
-] as const;
 
 const FINDER_HERO_DESCRIPTION =
   'Search plain symptom keywords to find homeopathic remedy matches from classical materia medica sources, including Boericke, Clarke, Kent, and Allen. Choose one source book, select exact symptom entries, and compare ranked remedy matches in the same workflow, with saved cases available for organized study, repertory research, and follow-up reference.';
@@ -304,85 +293,12 @@ describe('FindRemedyClient current search behavior', () => {
     expect(within(saveDialog).queryByText(/Use a concise label you will recognise later/i)).toBeNull();
   });
 
-  it('shows remedy finder hero copy in the initial state', () => {
+  it('keeps landing and editorial copy out of the focused finder in every search state', async () => {
     render(<FindRemedyClient />);
 
-    expect(
-      screen.getByRole('heading', { name: 'Homeopathic remedy finder' }),
-    ).toBeInTheDocument();
-    expect(screen.getByText(FINDER_HERO_DESCRIPTION)).toBeInTheDocument();
-    expect(
-      screen.queryByText('A classical materia medica, indexed'),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByText(
-        'Search symptoms across Boericke, Clarke, Kent, and Allen to find remedy matches.',
-      ),
-    ).toBeNull();
-  });
-
-  it('shows finder feature sections in the initial state', () => {
-    render(<FindRemedyClient />);
-
-    const featureRegion = screen.getByRole('region', { name: 'Find remedy features' });
-
-    FINDER_FEATURE_COPY_SECTIONS.forEach((feature) => {
-      expect(
-        within(featureRegion).getByRole('heading', { name: feature.heading }),
-      ).toBeInTheDocument();
-    });
-
-    expect(
-      within(featureRegion).getByRole('heading', { name: 'Find remedy FAQ' }),
-    ).toBeInTheDocument();
-  });
-
-  it('renders each finder feature as a standalone blog-style section with detailed body copy', () => {
-    render(<FindRemedyClient />);
-
-    const featureRegion = screen.getByRole('region', { name: 'Find remedy features' });
-    FINDER_FEATURE_COPY_SECTIONS.forEach((feature) => {
-      const heading = within(featureRegion).getByRole('heading', { name: feature.heading });
-      const section = heading.closest('section');
-      expect(section).not.toBeNull();
-      expect(section).not.toBe(featureRegion);
-
-      const paragraph = within(section as HTMLElement).getByText(feature.body);
-      const wordCount = paragraph.textContent?.trim().split(/\s+/).filter(Boolean).length ?? 0;
-      expect(wordCount).toBeGreaterThanOrEqual(65);
-    });
-  });
-
-  it('hides finder feature sections immediately when typing starts', async () => {
-    render(<FindRemedyClient />);
-
-    expect(
-      screen.getByRole('region', { name: 'Find remedy features' }),
-    ).toBeInTheDocument();
-
-    const input = getSearchInput();
-    fireEvent.change(input, { target: { value: 'h' } });
-
-    await waitFor(() => {
-      expect(
-        screen.queryByRole('region', { name: 'Find remedy features' }),
-      ).toBeNull();
-    });
-  });
-
-  it('keeps remedy detail page copy out of finder features', () => {
-    render(<FindRemedyClient />);
-
-    const featureRegion = screen.getByRole('region', { name: 'Find remedy features' });
-
-    expect(within(featureRegion).queryByText(/individual remedy reference page/i)).toBeNull();
-    expect(within(featureRegion).queryByText(/More remedy references/i)).toBeNull();
-    expect(within(featureRegion).queryByText(/related remedies/i)).toBeNull();
-    expect(within(featureRegion).queryByText(/source indication lists/i)).toBeNull();
-  });
-
-  it('hides the hero heading and description immediately when typing starts', async () => {
-    render(<FindRemedyClient />);
+    expect(screen.queryByRole('heading', { name: 'Homeopathic remedy finder' })).toBeNull();
+    expect(screen.queryByText(FINDER_HERO_DESCRIPTION)).toBeNull();
+    expect(screen.queryByRole('region', { name: 'Find remedy features' })).toBeNull();
 
     const input = getSearchInput();
     fireEvent.change(input, { target: { value: 'h' } });
@@ -395,35 +311,6 @@ describe('FindRemedyClient current search behavior', () => {
     expect(
       screen.queryByText(FINDER_HERO_DESCRIPTION),
     ).toBeNull();
-  });
-
-  it('restores the hero only after the query is empty and there are no selected symptoms or results', async () => {
-    useSearchStore.setState({
-      selectedSymptoms: [{ id: 'symptom-1', name: 'Burning pain' }],
-      results: [],
-      searchQuery: '',
-    });
-
-    render(<FindRemedyClient />);
-
-    expect(
-      screen.queryByRole('heading', { name: 'Homeopathic remedy finder' }),
-    ).toBeNull();
-
-    const input = getSearchInput();
-    fireEvent.change(input, { target: { value: 'h' } });
-    fireEvent.change(input, { target: { value: '' } });
-
-    await waitFor(() => {
-      expect(
-        screen.queryByRole('heading', { name: 'Homeopathic remedy finder' }),
-      ).toBeNull();
-    });
-
-    fireEvent.click(screen.getByRole('button', { name: /Clear all/i }));
-    expect(
-      screen.getByRole('heading', { name: 'Homeopathic remedy finder' }),
-    ).toBeInTheDocument();
   });
 
   it('shows short labels, short descriptors, and responsive source grid without source search UI', async () => {
@@ -481,8 +368,8 @@ describe('FindRemedyClient current search behavior', () => {
       name: /Select source: Boericke's Materia Medica/i,
     });
     expect(selectedCard).toHaveAttribute('aria-pressed', 'true');
-    expect(selectedCard).toHaveClass('border-primary/55');
-    expect(selectedCard).toHaveClass('bg-primary/10');
+    expect(selectedCard).toHaveClass('border-primary');
+    expect(selectedCard).toHaveClass('bg-accent');
   });
 
   it('removes the top-level clear button and keeps clear all in selected symptoms panel without supporting copy', () => {

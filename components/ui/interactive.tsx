@@ -17,10 +17,10 @@ export function PillLink({ href, children, active = false, className, ...props }
       aria-current={active ? 'page' : undefined}
       className={cn(
         controlVariants({ size: 'pill', shape: 'sm', ring: 'strong' }),
-        `inline-flex items-center justify-center border font-code text-xs tracking-[0.04em] transition-colors focus-visible:ring-offset-background ${motionClassNames.press}`,
+        `inline-flex items-center justify-center border font-code text-xs tracking-label transition-colors ${motionClassNames.press}`,
         active
           ? 'border-primary bg-primary text-primary-foreground'
-          : 'border-border/50 bg-surface-container-lowest text-on-surface-variant hover:border-tertiary/60 hover:text-tertiary',
+          : 'border-border bg-surface-container-lowest text-on-surface-variant hover:border-primary hover:text-primary',
         className
       )}
       {...props}
@@ -30,7 +30,7 @@ export function PillLink({ href, children, active = false, className, ...props }
   );
 }
 
-export interface NavLinkProps extends LinkProps {
+export interface NavLinkProps extends LinkProps, Pick<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'target' | 'rel'> {
   readonly children: React.ReactNode;
   readonly active?: boolean;
   readonly className?: string;
@@ -45,8 +45,8 @@ export function NavLink({ href, children, active = false, className, ...props }:
         controlVariants({ size: 'header', shape: 'sm' }),
         `inline-flex items-center font-medium transition-colors ${motionClassNames.press}`,
         active
-          ? 'text-foreground underline decoration-tertiary decoration-2 underline-offset-8'
-          : 'text-on-surface-variant hover:text-foreground hover:underline hover:decoration-border hover:decoration-2 hover:underline-offset-8',
+          ? 'text-foreground underline decoration-primary decoration-2 underline-offset-8'
+          : 'text-on-surface-variant hover:text-foreground',
         className
       )}
       {...props}
@@ -70,7 +70,7 @@ export function InlineLink({ href, children, className, external, ...props }: Re
       rel={external ? 'noopener noreferrer' : undefined}
       className={cn(
         controlVariants({ size: 'inline-link', shape: 'sm', ring: 'strong' }),
-        `inline-flex items-center underline-offset-4 transition-colors hover:text-tertiary hover:underline ${motionClassNames.press}`,
+        `inline-flex items-center underline-offset-4 transition-colors hover:text-primary hover:underline ${motionClassNames.press}`,
         className
       )}
       {...props}

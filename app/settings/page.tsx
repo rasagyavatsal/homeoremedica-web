@@ -59,7 +59,7 @@ export default function SettingsPage() {
     }
 
     if (isGoogleUser()) {
-      router.push('/');
+      router.push('/find-remedy');
     }
   }, [loading, router, user]);
 
@@ -122,7 +122,7 @@ export default function SettingsPage() {
       <div className="min-h-screen bg-background">
         <Header />
         <main className="flex-1">
-          <MotionSafeShell className="mx-auto flex min-h-[60vh] max-w-4xl items-center justify-center px-4 py-8 sm:px-6 lg:px-8">
+          <MotionSafeShell className="page-shell flex min-h-loading items-center justify-center py-8">
             <Callout variant="default" icon={<Loader2 className="h-4 w-4 animate-spin" />}>
               Loading settings...
             </Callout>
@@ -144,18 +144,18 @@ export default function SettingsPage() {
       <Header />
 
       <main className="flex-1">
-        <div className="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
-          <MotionSafeShell className="mx-auto max-w-2xl space-y-8 md:space-y-10">
+        <div className="page-shell py-16 lg:py-24">
+          <MotionSafeShell className="reading-shell space-y-8 md:space-y-10">
             <MotionSection className="space-y-4">
+              <p className="index-label">Account</p>
               <h1 className="display-md text-foreground">Settings</h1>
-              <div aria-hidden="true" className="rule-double w-16" />
             </MotionSection>
 
             <MotionSection>
               <Card className={motionClassNames.surface}>
-              <CardHeader className="border-b-2 border-foreground/70">
+              <CardHeader className="border-b border-border">
                 <div className="flex items-start gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-sm border border-tertiary/35 bg-tertiary/[0.08] text-tertiary">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent text-accent-foreground">
                     <Key className="h-5 w-5" />
                   </div>
                   <div className="space-y-1">
@@ -213,7 +213,7 @@ export default function SettingsPage() {
                     </div>
                     <FieldHint>Min 12 characters with mixed case, numbers, and symbols.</FieldHint>
                     {newPassword && passwordValidation && (
-                      <div className="mt-2 space-y-1 rounded-sm border border-border/40 border-l-[3px] border-l-foreground/50 bg-surface-bright p-3">
+                      <div className="mt-2 space-y-1 rounded-md border border-border bg-surface-bright p-3">
                         {[
                           { key: 'length', label: 'At least 12 characters' },
                           { key: 'uppercase', label: 'Uppercase letter (A-Z)' },

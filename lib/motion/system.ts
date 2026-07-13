@@ -1,32 +1,30 @@
 import type { Transition, Variants } from 'framer-motion';
 
 /*
- * Print-crisp motion: short distances, fast decisive settles.
- * Surfaces stamp into place rather than drift in.
+ * Quiet motion is reserved for orientation and state change. Static sections
+ * do not animate merely because they rendered.
  */
 export const MOTION_DURATIONS = {
-  page: 0.18,
-  section: 0.16,
-  item: 0.14,
-  overlay: 0.16,
-  reduced: 0.1,
+  page: 0.42,
+  section: 0.34,
+  item: 0.24,
+  overlay: 0.28,
+  reduced: 0.08,
 } as const;
 
 export const MOTION_DISTANCES = {
-  page: 8,
-  section: 6,
+  page: 12,
+  section: 8,
   item: 4,
-  overlay: 8,
+  overlay: 10,
 } as const;
 
-export const MOTION_STAGGER = {
-  group: 0.03,
-} as const;
+export const MOTION_STAGGER = { group: 0.045 } as const;
 
 export const MOTION_EASING: readonly [number, number, number, number] = [
-  0.3,
-  0.85,
-  0.15,
+  0.22,
+  1,
+  0.36,
   1,
 ];
 
@@ -40,14 +38,10 @@ export const motionClassNames = {
 } as const;
 
 export function getMotionDuration(duration: number, reducedMotion: boolean): number {
-  if (!reducedMotion) {
-    return duration;
-  }
-
-  return Math.min(duration, MOTION_DURATIONS.reduced);
+  return reducedMotion ? Math.min(duration, MOTION_DURATIONS.reduced) : duration;
 }
 
-export function createFadeUpVariants({
+export function createQuietRevealVariants({
   reducedMotion,
   distance,
 }: {
@@ -58,11 +52,16 @@ export function createFadeUpVariants({
     hidden: {
       opacity: 0,
       y: reducedMotion ? 0 : distance,
+      filter: reducedMotion ? 'none' : 'blur(2px)',
     },
-    visible: {
-      opacity: 1,
-      y: 0,
-    },
+    visible: { opacity: 1, y: 0, filter: 'none' },
+  };
+}
+
+export function createQuietItemVariants({ reducedMotion }: { reducedMotion: boolean }): Variants {
+  return {
+    hidden: { opacity: 0, scale: reducedMotion ? 1 : 0.99 },
+    visible: { opacity: 1, scale: 1 },
   };
 }
 

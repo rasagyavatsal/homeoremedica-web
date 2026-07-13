@@ -16,7 +16,7 @@ export function Breadcrumbs({ items, className }: BreadcrumbsProps) {
     <nav
       aria-label="Breadcrumb"
       className={cn(
-        'flex flex-wrap items-center gap-x-1 gap-y-1 py-1 font-code text-xs tracking-[0.04em] text-on-surface-variant',
+        'flex flex-wrap items-center gap-x-1 gap-y-1 py-1 font-code text-xs tracking-label text-on-surface-variant',
         className,
       )}
     >
@@ -27,7 +27,7 @@ export function Breadcrumbs({ items, className }: BreadcrumbsProps) {
           {item.href ? (
             <InlineLink href={item.href} className="font-medium">{item.label}</InlineLink>
           ) : (
-            <span className="max-w-[180px] truncate px-1.5 font-medium text-foreground sm:max-w-none">
+            <span className="max-w-breadcrumb truncate px-1.5 font-medium text-foreground sm:max-w-none">
               {item.label}
             </span>
           )}

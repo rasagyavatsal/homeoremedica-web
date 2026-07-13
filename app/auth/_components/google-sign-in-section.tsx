@@ -22,7 +22,7 @@ export function GoogleSignInSection({ onError }: GoogleSignInSectionProps) {
 
     try {
       await signInWithGoogle();
-      router.push('/');
+      router.push('/find-remedy');
     } catch (err: any) {
       console.error('Google sign-in error:', err);
       onError(getGoogleSignInErrorMessage(err));

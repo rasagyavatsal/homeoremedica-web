@@ -6,7 +6,8 @@ import {
   MOTION_DISTANCES,
   MOTION_DURATIONS,
   createEnterTransition,
-  createFadeUpVariants,
+  createQuietItemVariants,
+  createQuietRevealVariants,
   createGroupVariants,
 } from '@/lib/motion/system';
 import { cn } from '@/lib/utils';
@@ -34,7 +35,7 @@ export function MotionRouteShell({
   ...props
 }: MotionContainerProps) {
   const reducedMotion = useReducedMotion() ?? false;
-  const variants = createFadeUpVariants({ reducedMotion, distance });
+  const variants = createQuietRevealVariants({ reducedMotion, distance });
 
   return (
     <motion.div
@@ -79,7 +80,7 @@ export function MotionOverlay({
   ...props
 }: MotionContainerProps) {
   const reducedMotion = useReducedMotion() ?? false;
-  const variants = createFadeUpVariants({ reducedMotion, distance });
+  const variants = createQuietRevealVariants({ reducedMotion, distance });
 
   return (
     <motion.div
@@ -102,26 +103,12 @@ export function MotionOverlay({
 export function MotionSection({
   className,
   children,
-  delay = 0,
-  distance = MOTION_DISTANCES.section,
+  delay: _delay = 0,
+  distance: _distance = MOTION_DISTANCES.section,
   ...props
 }: MotionContainerProps) {
-  const reducedMotion = useReducedMotion() ?? false;
-  const variants = createFadeUpVariants({ reducedMotion, distance });
-
   return (
-    <motion.div
-      initial="hidden"
-      animate="visible"
-      variants={variants}
-      transition={createEnterTransition({
-        reducedMotion,
-        duration: MOTION_DURATIONS.section,
-        delay,
-      })}
-      className={cn(className)}
-      {...props}
-    >
+    <motion.div className={cn(className)} {...props}>
       {children}
     </motion.div>
   );
@@ -157,7 +144,7 @@ export function MotionItem({
   ...props
 }: MotionContainerProps) {
   const reducedMotion = useReducedMotion() ?? false;
-  const variants = createFadeUpVariants({ reducedMotion, distance });
+  const variants = createQuietItemVariants({ reducedMotion });
 
   return (
     <motion.div
@@ -182,7 +169,7 @@ export function MotionReveal({
   ...props
 }: Omit<MotionContainerProps, 'delay'>) {
   const reducedMotion = useReducedMotion() ?? false;
-  const variants = createFadeUpVariants({ reducedMotion, distance });
+  const variants = createQuietRevealVariants({ reducedMotion, distance });
 
   if (reducedMotion) {
     return (

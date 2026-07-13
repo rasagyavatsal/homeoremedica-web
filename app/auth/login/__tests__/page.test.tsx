@@ -42,7 +42,7 @@ vi.mock('@/lib/contexts/auth-context', () => ({
 
 // Mock next/image
 vi.mock('next/image', () => ({
-  default: (props: any) => <img alt="" {...props} />,
+  default: () => <span data-testid="next-image" />,
 }));
 
 // Mock lucide-react
@@ -106,13 +106,13 @@ describe('LoginPage', () => {
     });
   });
 
-  it('redirects authenticated user to home page', async () => {
+  it('redirects authenticated user to the finder', async () => {
     mockAuthUser.current = { uid: 'u1', email: 'test@test.com', displayName: 'Test' };
 
     render(<LoginPage />);
 
     await waitFor(() => {
-      expect(mockReplace).toHaveBeenCalledWith('/');
+      expect(mockReplace).toHaveBeenCalledWith('/find-remedy');
     });
   });
 

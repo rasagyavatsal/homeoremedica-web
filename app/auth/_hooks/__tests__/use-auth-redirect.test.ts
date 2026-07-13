@@ -45,13 +45,13 @@ describe('useAuthRedirect', () => {
     expect(mockReplace).not.toHaveBeenCalled();
   });
 
-  it('redirects to home if user is authenticated and not loading', () => {
+  it('redirects to the finder if user is authenticated and not loading', () => {
     mockAuthUser.current = { uid: '123' };
     mockLoading.current = false;
     mockReplace.mockClear();
 
     renderHook(() => useAuthRedirect());
 
-    expect(mockReplace).toHaveBeenCalledWith('/');
+    expect(mockReplace).toHaveBeenCalledWith('/find-remedy');
   });
 });

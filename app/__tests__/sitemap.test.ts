@@ -15,4 +15,10 @@ describe('sitemap', () => {
     expect(urls.some((url) => url.includes('/remedies'))).toBe(false);
     expect(urls.some((url) => url.includes('/remedy/'))).toBe(false);
   });
+
+  it('includes the dedicated finder route', () => {
+    const urls = sitemap().map((entry) => entry.url);
+
+    expect(urls).toContain('https://homeoremedica.com/find-remedy');
+  });
 });

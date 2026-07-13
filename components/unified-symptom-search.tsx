@@ -206,17 +206,17 @@ export function UnifiedSymptomSearch({
   };
 
   return (
-    <div ref={containerRef} className="space-y-3">
-      <div className="flex flex-wrap items-center gap-2">
+    <div ref={containerRef} className="space-y-4">
+      <div className="flex flex-wrap items-center justify-end gap-2">
         <Button
           type="button"
           variant="outline"
           size="sm"
-          className="gap-2 px-3"
+          className="gap-2"
           onClick={onOpenBooks}
           aria-label={`Source ${activeBookLabel}`}
         >
-          <BookOpen className="h-4 w-4 text-tertiary" />
+          <BookOpen className="h-4 w-4 text-primary" />
           <span className="text-on-surface-variant">Source</span>
           <span className="font-semibold text-foreground">{activeBookLabel}</span>
         </Button>
@@ -225,7 +225,7 @@ export function UnifiedSymptomSearch({
           type="button"
           variant="ghost"
           size="sm"
-          className="gap-2 px-3"
+          className="gap-2"
           onClick={onOpenCases}
         >
           <FileText className="h-4 w-4" />
@@ -234,9 +234,9 @@ export function UnifiedSymptomSearch({
       </div>
 
       <div className="relative">
-        <div className={`rounded-sm border border-foreground/30 bg-card transition-colors focus-within:border-foreground/60 ${motionClassNames.surface}`}>
-          <div className="flex items-center gap-3 px-4 py-4 md:px-5">
-            <Search className="h-5 w-5 shrink-0 text-tertiary" />
+        <div className={`rounded-xl border border-border bg-card shadow-soft focus-within:border-primary ${motionClassNames.surface}`}>
+          <div className="flex items-center gap-3 px-4 py-4 md:px-6 md:py-5">
+            <Search className="h-5 w-5 shrink-0 text-primary" />
             <Input
               ref={inputRef}
               placeholder="Search symptom keywords…"
@@ -250,10 +250,11 @@ export function UnifiedSymptomSearch({
                   setIsDropdownDismissed(true);
                 }
               }}
-              className="h-11 flex-1 border-0 bg-transparent px-0 text-base placeholder:text-on-surface-variant/55 focus-visible:border-0 focus-visible:ring-0 focus-visible:ring-offset-0 md:text-lg"
+              aria-label="Search symptom keywords"
+              className="h-control-lg flex-1 border-0 bg-transparent px-0 text-base shadow-none placeholder:text-muted-foreground focus-visible:border-0 md:text-lg"
             />
             {isManualSearching ? (
-              <Loader2 className="h-5 w-5 shrink-0 animate-spin text-tertiary" />
+              <Loader2 className="h-5 w-5 shrink-0 animate-spin text-primary" />
             ) : null}
             {query ? (
               <Button
@@ -271,13 +272,13 @@ export function UnifiedSymptomSearch({
         </div>
 
         {showManualResults ? (
-          <div className="absolute left-0 right-0 top-full z-50 mt-3 overflow-hidden rounded-sm border border-foreground/30 bg-card">
-            <div className="sticky top-0 border-b-2 border-foreground/70 bg-card px-4 py-3">
+          <div className="absolute left-0 right-0 top-full z-50 mt-3 overflow-hidden rounded-xl border border-border bg-popover shadow-overlay">
+            <div className="sticky top-0 border-b border-border bg-popover px-4 py-3 md:px-6">
               <div className="flex items-center justify-between gap-3">
-                <p className="font-display text-sm font-medium tracking-display text-foreground">
+                <p className="text-sm font-medium text-foreground">
                   Matching indications
                 </p>
-                <span className="font-code text-[10px] tracking-[0.08em] text-on-surface-variant">
+                <span className="index-label">
                   {totalResults.toLocaleString()} {totalResults === 1 ? 'indication' : 'indications'}
                 </span>
               </div>
@@ -296,10 +297,10 @@ export function UnifiedSymptomSearch({
                       aria-pressed={isSelected}
                       onClick={() => handleSymptomClick(result.name)}
                       className={cn(
-                        `group flex w-full items-start justify-between gap-4 border-b border-border/25 px-4 py-3 text-left transition-colors ${motionClassNames.surface}`,
+                        `group flex w-full items-start justify-between gap-4 border-b border-border px-4 py-3 text-left transition-colors md:px-6 ${motionClassNames.surface}`,
                         isSelected
-                          ? 'border-l-[3px] border-l-primary bg-primary/[0.07]'
-                          : 'border-l-[3px] border-l-transparent hover:bg-foreground/[0.04]',
+                          ? 'bg-accent'
+                          : 'hover:bg-surface-container-low',
                       )}
                     >
                       <div className="min-w-0 space-y-1">
@@ -313,7 +314,7 @@ export function UnifiedSymptomSearch({
                             </Badge>
                           ) : null}
                         </div>
-                        <p className="font-code text-[10px] tracking-[0.08em] text-on-surface-variant">
+                        <p className="index-label">
                           {sourceBook}
                         </p>
                       </div>
@@ -327,7 +328,7 @@ export function UnifiedSymptomSearch({
                         ) : (
                           <Plus
                             aria-hidden="true"
-                            className="h-4 w-4 text-on-surface-variant/45 transition-colors group-hover:text-tertiary"
+                            className="h-4 w-4 text-on-surface-variant transition-colors group-hover:text-primary"
                           />
                         )}
                       </div>
@@ -338,19 +339,13 @@ export function UnifiedSymptomSearch({
 
               {isLoadingMore ? (
                 <div className="flex justify-center py-5">
-                  <Loader2 className="h-5 w-5 animate-spin text-tertiary" />
+                  <Loader2 className="h-5 w-5 animate-spin text-primary" />
                 </div>
               ) : null}
             </div>
           </div>
         ) : null}
       </div>
-
-      {query.trim().length === 0 ? (
-        <p className="px-1 font-code text-xs leading-relaxed text-on-surface-variant/80">
-          Keywords match best — “itching bed”, not “itching when in the bed”.
-        </p>
-      ) : null}
 
       {debouncedQuery.trim().length >= 2 && manualSearchResults.length === 0 && !isManualSearching ? (
         <Callout variant="default" className="text-sm">

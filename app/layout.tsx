@@ -4,22 +4,21 @@ import type { Metadata, Viewport } from 'next'
 import Script from 'next/script'
 import { themePolicy } from '@/lib/theme'
 import { themeConfig } from '@/lib/theme-config'
-import { FIND_REMEDY_HERO_DESCRIPTION } from '@/lib/seo/find-remedy-content'
 import { getSiteUrl } from '@/lib/seo/site-url'
 
 const SITE_NAME = 'HomeoRemedica'
-
-
+const SITE_DESCRIPTION = 'A calm, focused homoeopathic remedy finder for searching classical materia medica by symptom.'
 
 const SITE_URL = getSiteUrl()
+const SOCIAL_IMAGE_URL = new URL('/og.png', SITE_URL).toString()
 
 export const metadata: Metadata = {
   metadataBase: SITE_URL,
   title: {
-    default: 'HomeoRemedica - Homeopathic Remedy Finder',
+    default: 'HomeoRemedica — Homoeopathic Remedy Finder',
     template: `%s | ${SITE_NAME}`,
   },
-  description: FIND_REMEDY_HERO_DESCRIPTION,
+  description: SITE_DESCRIPTION,
   applicationName: SITE_NAME,
   robots: {
     index: true,
@@ -28,12 +27,12 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     siteName: SITE_NAME,
-    title: 'HomeoRemedica - Homeopathic Remedy Finder',
-    description: FIND_REMEDY_HERO_DESCRIPTION,
+    title: 'HomeoRemedica — Homoeopathic Remedy Finder',
+    description: SITE_DESCRIPTION,
     url: '/',
     images: [
       {
-        url: '/logo.png',
+        url: SOCIAL_IMAGE_URL,
         width: 1200,
         height: 630,
         alt: SITE_NAME,
@@ -42,18 +41,16 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'HomeoRemedica - Homeopathic Remedy Finder',
-    description: FIND_REMEDY_HERO_DESCRIPTION,
-    images: ['/logo.png'],
+    title: 'HomeoRemedica — Homoeopathic Remedy Finder',
+    description: SITE_DESCRIPTION,
+    images: [SOCIAL_IMAGE_URL],
   },
   verification: {
     google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || undefined,
   },
   icons: {
-    icon: [
-      { url: '/favicon.avif', type: 'image/avif' },
-      { url: '/favicon.png', type: 'image/png' }
-    ],
+    icon: [{ url: '/mark.png', type: 'image/png', sizes: '128x128' }],
+    apple: [{ url: '/mark.png', type: 'image/png', sizes: '128x128' }],
   },
 }
 
@@ -82,19 +79,14 @@ export default function RootLayout({
     '@type': 'WebSite',
     name: SITE_NAME,
     url: SITE_URL.origin,
-    potentialAction: {
-      '@type': 'SearchAction',
-      target: `${SITE_URL.origin}/?search_term_string={search_term_string}`,
-      'query-input': 'required name=search_term_string',
-    },
   }
 
   const organizationJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: SITE_NAME,
-    url: SITE_URL.origin,
-    logo: `${SITE_URL.origin}/favicon.png`,
+    url: `${SITE_URL.origin}/find-remedy`,
+    logo: `${SITE_URL.origin}/mark.png`,
   }
 
   const softwareAppJsonLd = {
@@ -109,7 +101,7 @@ export default function RootLayout({
       price: '0',
       priceCurrency: 'USD',
     },
-    description: FIND_REMEDY_HERO_DESCRIPTION,
+    description: SITE_DESCRIPTION,
   }
 
   return (

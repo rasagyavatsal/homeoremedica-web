@@ -19,17 +19,17 @@ export function ContactClient() {
 
   return (
     <main className="flex-1 min-h-screen">
-      <div className="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
-        <MotionSafeShell className="mx-auto max-w-2xl space-y-10 text-center md:space-y-12">
+      <div className="page-shell py-16 lg:py-24">
+        <MotionSafeShell className="reading-shell space-y-10 text-center md:space-y-12">
           <MotionSection className="space-y-4">
+            <p className="index-label">Support and feedback</p>
             <h1 className="display-md text-foreground">Contact</h1>
-            <div aria-hidden="true" className="rule-double mx-auto w-16" />
           </MotionSection>
 
-          <MotionSection className={`space-y-6 rounded-md border border-border/45 bg-card p-6 md:p-8 ${motionClassNames.surface}`}>
+          <MotionSection className={`quiet-panel space-y-6 p-6 md:p-10 ${motionClassNames.surface}`}>
             <a
               href="mailto:rasagyavatsal@outlook.com"
-              className={`block break-all font-display text-2xl font-medium tracking-display text-foreground underline decoration-tertiary/40 underline-offset-8 transition-colors hover:text-tertiary hover:decoration-tertiary md:text-4xl ${motionClassNames.press}`}
+              className={`block break-all font-display text-2xl font-medium tracking-display text-foreground underline decoration-primary underline-offset-8 transition-colors hover:text-primary md:text-4xl ${motionClassNames.press}`}
             >
               rasagyavatsal@outlook.com
             </a>

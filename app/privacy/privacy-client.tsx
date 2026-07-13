@@ -26,8 +26,8 @@ const sections = [
             <h4 className="font-semibold text-foreground">Account Information</h4>
             <p>Email address, name (optional), and authentication credentials.</p>
           </div>
-          <div className="border-l-2 border-primary pl-4">
-            <h4 className="font-semibold text-foreground">Health-Related Data</h4>
+        <div className="rounded-md bg-accent p-4">
+            <h4 className="font-semibold text-accent-foreground">Health-Related Data</h4>
             <p>
               To provide our services, we collect health-related symptoms and concerns that you voluntarily enter. 
               This includes the specific symptoms you select for remedy matching and any notes you save within your cases.
@@ -140,11 +140,11 @@ const sections = [
     title: 'Contact Us',
     content: (
       <div className="flex flex-col sm:flex-row gap-4">
-        <Link href="/contact" className="text-tertiary underline-offset-4 hover:underline inline-flex items-center gap-2">
+          <Link href="/contact" className="text-primary underline-offset-4 hover:underline inline-flex items-center gap-2">
           <Mail className="h-4 w-4" />
           Contact Page
         </Link>
-        <a href="mailto:rasagyavatsal@outlook.com" className="text-tertiary underline-offset-4 hover:underline inline-flex items-center gap-2">
+        <a href="mailto:rasagyavatsal@outlook.com" className="text-primary underline-offset-4 hover:underline inline-flex items-center gap-2">
           <Mail className="h-4 w-4" />
           Email Us
         </a>
@@ -156,12 +156,12 @@ const sections = [
 export function PrivacyClient() {
   return (
     <main className="flex-1 min-h-screen">
-      <div className="mx-auto max-w-5xl px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
-        <MotionSafeShell className="mx-auto max-w-3xl space-y-10 md:space-y-14">
+      <div className="page-shell py-16 lg:py-24">
+        <MotionSafeShell className="reading-shell space-y-10 md:space-y-14">
           <MotionSection className="space-y-4">
+            <p className="index-label">Your information</p>
             <h1 className="display-md text-foreground">Privacy Policy</h1>
-            <div aria-hidden="true" className="rule-double w-16" />
-            <div className="flex items-center gap-2 font-code text-xs tracking-[0.08em] text-on-surface-variant">
+            <div className="index-label flex items-center gap-2">
               <Calendar className="h-4 w-4" />
               <span>Last updated: {LAST_UPDATED}</span>
             </div>
@@ -190,7 +190,7 @@ export function PrivacyClient() {
                 id={section.id}
                 className={`scroll-mt-28 space-y-4 ${motionClassNames.surface}`}
               >
-                <h2 className="rule-heavy pt-3 font-display text-xl font-medium tracking-display text-foreground md:text-2xl">
+                <h2 className="border-t border-border pt-5 font-display text-xl font-medium tracking-display text-foreground md:text-2xl">
                   {section.title}
                 </h2>
                 <div className="space-y-4 text-sm leading-relaxed text-on-surface-variant md:text-base">

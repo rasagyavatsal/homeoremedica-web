@@ -67,7 +67,7 @@ export default function SignupPage() {
 
     try {
       await signUp(email, password, name);
-      router.push('/');
+      router.push('/find-remedy');
     } catch (err: any) {
       console.error('Signup error:', err);
       setError(getEmailSignUpErrorMessage(err));

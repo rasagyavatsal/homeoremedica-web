@@ -13,16 +13,16 @@ const buttonBaseVariants = cva(
         default:
           "border border-primary bg-primary text-primary-foreground hover:border-primary-container hover:bg-primary-container",
         destructive:
-          "border border-destructive bg-destructive text-destructive-foreground hover:bg-destructive/90",
+          "border border-destructive bg-destructive text-destructive-foreground hover:opacity-90",
         outline:
-          "border border-foreground/30 bg-surface-bright text-foreground hover:border-foreground/60 hover:bg-surface-container-lowest",
+          "border border-border bg-transparent text-foreground hover:border-primary hover:bg-accent",
         secondary:
-          "border border-foreground/10 bg-secondary text-secondary-foreground hover:bg-secondary/75",
+          "border border-border bg-secondary text-secondary-foreground hover:bg-secondary-container",
         ghost:
-          "text-on-surface-variant hover:bg-foreground/[0.06] hover:text-foreground",
-        link: "text-tertiary underline-offset-4 hover:underline",
+          "text-on-surface-variant hover:bg-accent hover:text-accent-foreground",
+        link: "text-primary underline-offset-4 hover:underline",
         tertiary:
-          "border border-tertiary/35 bg-tertiary/[0.08] text-tertiary hover:bg-tertiary/15",
+          "border border-border bg-accent text-accent-foreground hover:border-primary",
       },
     },
     defaultVariants: {
@@ -39,7 +39,7 @@ const buttonVariants = ({ variant, size, className }: ButtonVariantsProps & { cl
   return cn(
     controlVariants({
       size: size === "default" || !size ? "button" : size,
-      shape: size === "sm" || size === "header" ? "sm" : "default",
+      shape: size === "header" ? "sm" : "default",
       ring: "strong"
     }),
     buttonBaseVariants({ variant }),
