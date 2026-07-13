@@ -20,23 +20,34 @@ describe('RemedyPreview', () => {
     vi.useRealTimers();
   });
 
-  it('types a case before revealing its matched symptoms and remedies', async () => {
+  it('types beside its caret before revealing selected symptoms and matching remedies', async () => {
     render(<RemedyPreview />);
 
-    expect(screen.getByLabelText('Case being searched')).toHaveValue('');
+    const query = screen.getByLabelText('Case being searched');
+    expect(query).toHaveTextContent('');
+    expect(query.lastElementChild).toHaveClass('preview-cursor');
     expect(screen.queryByText('Arsenicum album')).not.toBeInTheDocument();
 
     await advanceDemo(2_000);
 
-    expect(screen.getByLabelText('Case being searched')).toHaveValue(
-      'burning pain, restless after midnight',
-    );
+    expect(query).toHaveTextContent('burning pain at night');
+    expect(screen.getByText('Selected symptoms')).toBeInTheDocument();
 
     await advanceDemo(4_000);
 
     expect(screen.getByText('Burning pains, worse at night')).toBeInTheDocument();
     expect(screen.getByText('Arsenicum album')).toBeInTheDocument();
-    expect(screen.getByText('3 of 3')).toBeInTheDocument();
+    expect(screen.getByText('Matches 3 of 3')).toBeInTheDocument();
+    expect(screen.getByText('Matching remedies')).toBeInTheDocument();
+    expect(screen.getAllByText('Boericke').length).toBeGreaterThan(0);
+  });
+
+  it('rotates through more than one symptom case', async () => {
+    render(<RemedyPreview />);
+
+    await advanceDemo(9_000);
+
+    expect(screen.getByLabelText('Case being searched')).toHaveTextContent(/^dry cough/);
   });
 
   it('can pause and replay the demonstration', async () => {
@@ -44,13 +55,13 @@ describe('RemedyPreview', () => {
 
     await advanceDemo(500);
     fireEvent.click(screen.getByRole('button', { name: 'Pause demonstration' }));
-    const pausedQuery = screen.getByLabelText('Case being searched').getAttribute('value');
+    const pausedQuery = screen.getByLabelText('Case being searched').textContent;
 
     await advanceDemo(3_000);
-    expect(screen.getByLabelText('Case being searched')).toHaveValue(pausedQuery);
+    expect(screen.getByLabelText('Case being searched')).toHaveTextContent(pausedQuery ?? '');
 
     fireEvent.click(screen.getByRole('button', { name: 'Replay demonstration' }));
-    expect(screen.getByLabelText('Case being searched')).toHaveValue('');
+    expect(screen.getByLabelText('Case being searched')).toHaveTextContent('');
     expect(screen.getByRole('button', { name: 'Pause demonstration' })).toBeInTheDocument();
   });
 });

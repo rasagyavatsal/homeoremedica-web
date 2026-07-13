@@ -442,8 +442,11 @@
   }
 
   .preview-cursor {
+    display: inline-block;
     width: var(--stroke-strong);
     height: var(--space-5);
+    margin-inline-start: var(--space-1);
+    vertical-align: text-bottom;
     background: hsl(var(--primary));
     animation: preview-cursor-pulse calc(var(--motion-duration-preview) * 2) steps(1, end) infinite;
   }
