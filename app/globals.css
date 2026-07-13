@@ -125,6 +125,10 @@
     --layout-loading: 60vh;
     --layout-preview-symptoms: 9rem;
     --layout-preview-remedies: 8.25rem;
+    --layout-preview-desktop: 70rem;
+    --layout-preview-mobile: 22rem;
+    --aspect-preview-desktop: 16 / 10;
+    --aspect-preview-mobile: 9 / 16;
 
     /* Shape, depth, and stroke tokens */
     --radius: 0.875rem;
@@ -439,6 +443,16 @@
 
   .preview-row {
     animation: preview-row-in var(--motion-duration-preview) var(--motion-ease-standard) both;
+  }
+
+  .preview-device {
+    width: 100%;
+    margin-inline: auto;
+    overflow: hidden;
+    border: var(--stroke-hairline) solid hsl(var(--border) / var(--border-alpha));
+    border-radius: var(--radius-xl);
+    background: hsl(var(--background));
+    box-shadow: var(--shadow-overlay);
   }
 
   .preview-cursor {

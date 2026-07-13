@@ -1,9 +1,10 @@
 'use client';
 
-import { BookOpen, FileText, Pause, Play, RotateCcw, Search } from 'lucide-react';
+import { BookOpen, Check, FileText, Pause, Play, Plus, RotateCcw, Search } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { Badge } from '@/components/ui/badge';
+import { BrandLockup } from '@/components/brand-lockup';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { motionClassNames } from '@/lib/motion/system';
@@ -52,8 +53,10 @@ const DEMOS = [
 
 const DEMO_TIMING = {
   character: 42,
-  firstSymptom: 360,
-  symptom: 260,
+  firstMatch: 180,
+  match: 100,
+  firstSelection: 420,
+  selection: 260,
   firstRemedy: 520,
   remedy: 360,
   hold: 3_600,
@@ -66,7 +69,8 @@ function nextDelay(visible: number, first: number, following: number) {
 export function RemedyPreview() {
   const [demoIndex, setDemoIndex] = useState(0);
   const [queryLength, setQueryLength] = useState(0);
-  const [visibleSymptoms, setVisibleSymptoms] = useState(0);
+  const [visibleMatches, setVisibleMatches] = useState(0);
+  const [selectedSymptoms, setSelectedSymptoms] = useState(0);
   const [visibleRemedies, setVisibleRemedies] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
   const demo = DEMOS[demoIndex];
@@ -74,7 +78,8 @@ export function RemedyPreview() {
   const replay = () => {
     setDemoIndex(0);
     setQueryLength(0);
-    setVisibleSymptoms(0);
+    setVisibleMatches(0);
+    setSelectedSymptoms(0);
     setVisibleRemedies(0);
     setIsPlaying(true);
   };
@@ -88,9 +93,12 @@ export function RemedyPreview() {
     if (queryLength < demo.query.length) {
       callback = () => setQueryLength((length) => length + 1);
       delay = DEMO_TIMING.character;
-    } else if (visibleSymptoms < demo.symptoms.length) {
-      callback = () => setVisibleSymptoms((count) => count + 1);
-      delay = nextDelay(visibleSymptoms, DEMO_TIMING.firstSymptom, DEMO_TIMING.symptom);
+    } else if (visibleMatches < demo.symptoms.length) {
+      callback = () => setVisibleMatches((count) => count + 1);
+      delay = nextDelay(visibleMatches, DEMO_TIMING.firstMatch, DEMO_TIMING.match);
+    } else if (selectedSymptoms < demo.symptoms.length) {
+      callback = () => setSelectedSymptoms((count) => count + 1);
+      delay = nextDelay(selectedSymptoms, DEMO_TIMING.firstSelection, DEMO_TIMING.selection);
     } else if (visibleRemedies < demo.remedies.length) {
       callback = () => setVisibleRemedies((count) => count + 1);
       delay = nextDelay(visibleRemedies, DEMO_TIMING.firstRemedy, DEMO_TIMING.remedy);
@@ -98,7 +106,8 @@ export function RemedyPreview() {
       callback = () => {
         setDemoIndex((index) => (index + 1) % DEMOS.length);
         setQueryLength(0);
-        setVisibleSymptoms(0);
+        setVisibleMatches(0);
+        setSelectedSymptoms(0);
         setVisibleRemedies(0);
       };
       delay = DEMO_TIMING.hold;
@@ -106,13 +115,20 @@ export function RemedyPreview() {
 
     const timer = window.setTimeout(callback, delay);
     return () => window.clearTimeout(timer);
-  }, [demo, isPlaying, queryLength, visibleRemedies, visibleSymptoms]);
+  }, [demo, isPlaying, queryLength, selectedSymptoms, visibleMatches, visibleRemedies]);
+
+  const dropdownOpen = queryLength === demo.query.length && visibleRemedies === 0;
 
   return (
-    <section aria-label="Remedy finder demonstration" className="quiet-panel overflow-hidden p-3 md:p-4">
-      <div className="space-y-3">
-        <div className="flex items-center justify-between gap-4 px-1">
-          <span className="index-label">Live finder preview</span>
+    <section
+      aria-label="Remedy finder demonstration"
+      className="preview-device aspect-preview-mobile max-w-preview-mobile md:aspect-preview-desktop md:max-w-preview-desktop"
+    >
+      <div className="flex items-center justify-between gap-4 border-b border-border bg-card px-3 py-2 md:px-5">
+        <span className="sm:hidden"><BrandLockup compact /></span>
+        <span className="hidden sm:inline-flex"><BrandLockup /></span>
+        <div className="flex items-center gap-3">
+          <span className="index-label hidden sm:inline">Live finder preview</span>
           <div className="flex items-center gap-1">
             <Button
               type="button"
@@ -130,6 +146,9 @@ export function RemedyPreview() {
             </Button>
           </div>
         </div>
+      </div>
+
+      <div className="preview-workspace space-y-3 p-3 md:p-5">
 
         <div className="flex flex-wrap items-center justify-end gap-2">
           <Badge variant="outline" className="gap-2 py-2">
@@ -143,29 +162,67 @@ export function RemedyPreview() {
           </Badge>
         </div>
 
-        <div className={`rounded-xl border border-border bg-card shadow-soft ${motionClassNames.surface}`}>
-          <div className="flex min-h-control-lg items-center gap-3 px-4 md:px-6">
-            <Search aria-hidden="true" className="h-5 w-5 shrink-0 text-primary" />
-            <output
-              aria-label="Case being searched"
-              className="min-w-0 flex-1 overflow-hidden whitespace-nowrap text-base text-foreground md:text-lg"
-            >
-              {demo.query.slice(0, queryLength)}
-              <span aria-hidden="true" className="preview-cursor" />
-            </output>
+        <div className="relative">
+          <div className={`rounded-xl border border-border bg-card shadow-soft ${motionClassNames.surface}`}>
+            <div className="flex min-h-control-lg items-center gap-3 px-4 md:px-6">
+              <Search aria-hidden="true" className="h-5 w-5 shrink-0 text-primary" />
+              <output
+                aria-label="Case being searched"
+                className="min-w-0 flex-1 overflow-hidden whitespace-nowrap text-base text-foreground md:text-lg"
+              >
+                {demo.query.slice(0, queryLength)}
+                <span aria-hidden="true" className="preview-cursor" />
+              </output>
+            </div>
           </div>
+
+          {dropdownOpen ? (
+            <div className="preview-dropdown absolute left-0 right-0 top-full z-20 mt-3 overflow-hidden rounded-xl border border-border bg-popover shadow-overlay">
+              <div className="flex items-center justify-between gap-3 border-b border-border px-4 py-3 md:px-6">
+                <p className="text-sm font-medium text-foreground">Matching indications</p>
+                <span className="index-label">{demo.symptoms.length} indications</span>
+              </div>
+              <div role="listbox" aria-label="Matching indications">
+                {demo.symptoms.slice(0, visibleMatches).map((symptom, index) => {
+                  const isSelected = index < selectedSymptoms;
+                  return (
+                    <div
+                      key={symptom}
+                      role="option"
+                      aria-selected={isSelected}
+                      className="preview-row flex items-center justify-between gap-4 border-b border-border px-4 py-3 last:border-b-0 md:px-6"
+                    >
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium leading-relaxed text-foreground">{symptom}</p>
+                        <p className="index-label mt-1">Boericke</p>
+                      </div>
+                      {isSelected ? (
+                        <span className="flex shrink-0 items-center gap-2 text-primary">
+                          <Badge>Selected</Badge>
+                          <Check aria-hidden="true" className="h-4 w-4" />
+                        </span>
+                      ) : (
+                        <Plus aria-hidden="true" className="h-4 w-4 shrink-0 text-on-surface-variant" />
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          ) : null}
         </div>
 
-        <Card>
+        <div className="preview-workspace-grid grid gap-3 md:grid-cols-2">
+        <Card className={visibleRemedies > 0 ? 'hidden md:block' : undefined}>
           <CardHeader className="flex-row items-end justify-between border-b border-border p-4 pb-3">
             <div className="space-y-1">
               <CardTitle className="text-base">Selected symptoms</CardTitle>
-              <p className="index-label">{visibleSymptoms} entries · Boericke</p>
+              <p className="index-label">{selectedSymptoms} entries · Boericke</p>
             </div>
-            <span className="index-label text-primary">{String(visibleSymptoms).padStart(2, '0')}</span>
+            <span className="index-label text-primary">{String(selectedSymptoms).padStart(2, '0')}</span>
           </CardHeader>
           <CardContent className="min-h-preview-symptoms px-4 pb-2 pt-1">
-            {demo.symptoms.slice(0, visibleSymptoms).map((symptom, index) => (
+            {demo.symptoms.slice(0, selectedSymptoms).map((symptom, index) => (
               <div key={symptom} className="preview-row flex gap-3 border-b border-border py-2.5 last:border-b-0">
                 <span aria-hidden="true" className="index-label pt-0.5 text-primary">
                   {String(index + 1).padStart(2, '0')}
@@ -174,15 +231,16 @@ export function RemedyPreview() {
               </div>
             ))}
           </CardContent>
+          <div className="border-t border-border px-4 py-3">
+            <Button type="button" size="sm" className="pointer-events-none gap-2" tabIndex={-1}>
+              <Search aria-hidden="true" className="h-4 w-4" />
+              Find remedies
+              <span className="rounded-full bg-primary-foreground/20 px-2 py-1 font-code text-micro leading-none tracking-label">
+                {String(selectedSymptoms).padStart(2, '0')}
+              </span>
+            </Button>
+          </div>
         </Card>
-
-        <Button type="button" size="sm" className="pointer-events-none gap-2" tabIndex={-1}>
-          <Search aria-hidden="true" className="h-4 w-4" />
-          Find remedies
-          <span className="rounded-full bg-primary-foreground/20 px-2 py-1 font-code text-micro leading-none tracking-label">
-            {String(visibleSymptoms).padStart(2, '0')}
-          </span>
-        </Button>
 
         <Card className="min-h-preview-remedies">
           <CardHeader className="border-b border-border p-4 pb-3">
@@ -202,6 +260,7 @@ export function RemedyPreview() {
             ))}
           </CardContent>
         </Card>
+        </div>
       </div>
     </section>
   );

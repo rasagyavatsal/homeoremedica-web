@@ -77,6 +77,12 @@ const config: Config = {
         reading: 'var(--layout-reading)', content: 'var(--layout-content)',
         wide: 'var(--layout-wide)', dialog: 'var(--layout-dialog)', popover: 'var(--layout-popover)',
         '6xl': 'var(--layout-content)', breadcrumb: 'var(--layout-breadcrumb)',
+        'preview-desktop': 'var(--layout-preview-desktop)',
+        'preview-mobile': 'var(--layout-preview-mobile)',
+      },
+      aspectRatio: {
+        'preview-desktop': 'var(--aspect-preview-desktop)',
+        'preview-mobile': 'var(--aspect-preview-mobile)',
       },
       minHeight: { touch: 'var(--size-touch)', control: 'var(--size-control)', 'control-lg': 'var(--size-control-lg)', loading: 'var(--layout-loading)' },
       height: { header: 'var(--size-header)', control: 'var(--size-control)', 'control-sm': 'var(--size-control-sm)', 'control-lg': 'var(--size-control-lg)' },

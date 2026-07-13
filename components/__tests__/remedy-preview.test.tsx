@@ -42,6 +42,17 @@ describe('RemedyPreview', () => {
     expect(screen.getAllByText('Boericke').length).toBeGreaterThan(0);
   });
 
+  it('opens a matching-indications dropdown before selecting symptoms', async () => {
+    render(<RemedyPreview />);
+
+    await advanceDemo(1_500);
+
+    const dropdown = screen.getByRole('listbox', { name: 'Matching indications' });
+    expect(dropdown).toBeInTheDocument();
+    expect(screen.getAllByRole('option')).toHaveLength(3);
+    expect(screen.getByText('3 indications')).toBeInTheDocument();
+  });
+
   it('rotates through more than one symptom case', async () => {
     render(<RemedyPreview />);
 

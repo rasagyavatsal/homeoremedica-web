@@ -33,5 +33,10 @@ describe('HomePage', () => {
     );
     expect(screen.getByRole('region', { name: 'Classical sources' })).toBeInTheDocument();
     expect(screen.queryByTestId('symptom-search')).not.toBeInTheDocument();
+
+    const hero = screen.getByRole('heading', { level: 1 }).parentElement;
+    expect(hero).toHaveClass('text-center');
+    expect(screen.getByRole('region', { name: 'Remedy finder demonstration' }))
+      .toHaveClass('preview-device');
   });
 });

@@ -51,17 +51,17 @@ export default function HomePage() {
 
       <main>
         <section className="dilution-field border-b border-border">
-          <MotionRouteShell className="page-shell min-h-viewport-below-header grid items-center gap-12 py-20 lg:grid-cols-12 lg:gap-16 lg:py-28">
-            <div className="lg:col-span-7">
+          <MotionRouteShell className="page-shell flex flex-col items-center py-20 lg:py-28">
+            <div className="mx-auto max-w-4xl text-center">
               <p className="index-label mb-6">Homoeopathic remedy research</p>
-              <h1 className="display-hero max-w-4xl font-medium">
+              <h1 className="display-hero font-medium">
                 A quieter way to find the remedy.
               </h1>
-              <p className="mt-8 max-w-2xl text-lg leading-relaxed text-on-surface-variant md:text-xl">
+              <p className="mx-auto mt-8 max-w-2xl text-lg leading-relaxed text-on-surface-variant md:text-xl">
                 Search symptoms across trusted classical sources, hold the important indications in view,
                 and compare the remedies that meet them.
               </p>
-              <div className="mt-10 flex flex-wrap items-center gap-3">
+              <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
                 <Button asChild size="lg" className="gap-3">
                   <Link href="/find-remedy">
                     Find a remedy
@@ -74,7 +74,7 @@ export default function HomePage() {
               </div>
             </div>
 
-            <div className="lg:col-span-5">
+            <div className="mt-16 w-full lg:mt-20">
               <RemedyPreview />
             </div>
           </MotionRouteShell>
