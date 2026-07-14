@@ -535,6 +535,20 @@
     overflow-y: auto;
   }
 
+  .search-overlay-results {
+    max-height: min(50dvh, var(--layout-picker));
+    overflow-y: auto;
+  }
+
+  .search-overlay-surface {
+    z-index: 51;
+  }
+
+  .search-overlay-backdrop {
+    width: 100vw;
+    height: calc(100dvh + var(--space-8));
+  }
+
   @media (min-width: 640px) {
     .overlay-responsive-position {
       top: 50%;

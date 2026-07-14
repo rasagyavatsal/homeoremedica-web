@@ -27,6 +27,7 @@ export const overlayVariants = cva(
 export const overlayRecipes = {
   picker: {
     viewport: "overlay-picker-viewport scrollbar-thin",
+    searchViewport: "search-overlay-results scrollbar-thin",
   },
   dialog: {
     centeredCompact: "overlay-compact-width max-w-dialog p-0",

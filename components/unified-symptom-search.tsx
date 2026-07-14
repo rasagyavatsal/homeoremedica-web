@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { Loader2, Search, BookOpen, Check, Plus, X, FileText } from 'lucide-react';
 
@@ -11,7 +11,7 @@ import { Input } from '@/components/ui/input';
 import { useSearchStore } from '@/lib/stores/search-store';
 import { apiClient } from '@/lib/api/client';
 import { motionClassNames } from '@/lib/motion/system';
-import { overlayRecipes } from '@/lib/overlay/system';
+import { overlayBackdrop, overlayRecipes } from '@/lib/overlay/system';
 import { cn } from '@/lib/utils';
 
 interface UnifiedSymptomSearchProps {
@@ -38,6 +38,21 @@ function prettyBook(bookId: string) {
   return bookId.charAt(0).toUpperCase() + bookId.slice(1);
 }
 
+function SearchCloseButton({ onClick }: Readonly<{ onClick: () => void }>) {
+  return (
+    <Button
+      type="button"
+      variant="outline"
+      size="icon"
+      className="rounded-full bg-popover shadow-overlay"
+      onClick={onClick}
+      aria-label="Close search"
+    >
+      <X className="h-4 w-4" />
+    </Button>
+  );
+}
+
 export function UnifiedSymptomSearch({
   onSymptomSelect,
   selectedSymptoms = [],
@@ -59,8 +74,16 @@ export function UnifiedSymptomSearch({
   const [manualSearchResults, setManualSearchResults] = useState<SymptomResult[]>([]);
   const [totalResults, setTotalResults] = useState(0);
   const [offset, setOffset] = useState(0);
+  const [isSearchOverlayOpen, setIsSearchOverlayOpen] = useState(false);
 
   const activeBookLabel = prettyBook(activeBook);
+
+  const dismissSearch = useCallback(() => {
+    setIsSearchOverlayOpen(false);
+    setShowManualResults(false);
+    setIsDropdownDismissed(true);
+    inputRef.current?.blur();
+  }, []);
 
   useEffect(() => {
     onSearchActive?.(query.trim().length > 0);
@@ -75,12 +98,14 @@ export function UnifiedSymptomSearch({
     setManualSearchResults([]);
     setTotalResults(0);
     setOffset(0);
+    setIsSearchOverlayOpen(false);
   }, [resetSignal]);
 
   useEffect(() => {
     if (!seededQuery) return;
     setQuery(seededQuery.value);
     setIsDropdownDismissed(false);
+    setIsSearchOverlayOpen(true);
     inputRef.current?.focus();
   }, [seededQuery]);
 
@@ -169,15 +194,14 @@ export function UnifiedSymptomSearch({
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (!showManualResults || event.key !== 'Escape') return;
+      if (!isSearchOverlayOpen || event.key !== 'Escape') return;
 
-      setShowManualResults(false);
-      setIsDropdownDismissed(true);
+      dismissSearch();
     };
 
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [showManualResults]);
+  }, [dismissSearch, isSearchOverlayOpen]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
@@ -185,6 +209,7 @@ export function UnifiedSymptomSearch({
   };
 
   const openDropdownIfAvailable = () => {
+    setIsSearchOverlayOpen(true);
     setIsDropdownDismissed(false);
     if (debouncedQuery.trim().length >= 2 && manualSearchResults.length > 0) {
       setShowManualResults(true);
@@ -205,8 +230,22 @@ export function UnifiedSymptomSearch({
     onSymptomSelect(symptom);
   };
 
+  const showEmptyState =
+    debouncedQuery.trim().length >= 2 &&
+    manualSearchResults.length === 0 &&
+    !isManualSearching;
+
   return (
     <div ref={containerRef} className="space-y-4">
+      {isSearchOverlayOpen ? (
+        <div
+          aria-hidden="true"
+          data-slot="search-backdrop"
+          className={cn(overlayBackdrop(), 'search-overlay-backdrop')}
+          onPointerDown={dismissSearch}
+        />
+      ) : null}
+
       <div className="flex flex-wrap items-center justify-end gap-2">
         <Button
           type="button"
@@ -233,7 +272,7 @@ export function UnifiedSymptomSearch({
         </Button>
       </div>
 
-      <div className="relative">
+      <div className={cn('relative', isSearchOverlayOpen && 'search-overlay-surface')}>
         <div className={`rounded-xl border border-border bg-card shadow-soft focus-within:border-primary ${motionClassNames.surface}`}>
           <div className="flex items-center gap-3 px-4 py-2 md:px-5">
             <Search className="h-4 w-4 shrink-0 text-primary" />
@@ -246,8 +285,7 @@ export function UnifiedSymptomSearch({
               onClick={openDropdownIfAvailable}
               onKeyDown={(event) => {
                 if (event.key === 'Escape') {
-                  setShowManualResults(false);
-                  setIsDropdownDismissed(true);
+                  dismissSearch();
                 }
               }}
               aria-label="Search symptom keywords"
@@ -272,86 +310,95 @@ export function UnifiedSymptomSearch({
         </div>
 
         {showManualResults ? (
-          <div className="absolute left-0 right-0 top-full z-50 mt-3 overflow-hidden rounded-xl border border-border bg-popover shadow-overlay">
-            <div className="sticky top-0 border-b border-border bg-popover px-4 py-3 md:px-6">
-              <div className="flex items-center justify-between gap-3">
-                <p className="text-sm font-medium text-foreground">
-                  Matching indications
-                </p>
-                <span className="index-label">
-                  {totalResults.toLocaleString()} {totalResults === 1 ? 'indication' : 'indications'}
-                </span>
+          <div className="absolute left-0 right-0 top-full z-50 mt-3 flex flex-col items-center gap-3">
+            <div className="w-full overflow-hidden rounded-xl border border-border bg-popover shadow-overlay">
+              <div className="sticky top-0 border-b border-border bg-popover px-4 py-3 md:px-6">
+                <div className="flex items-center justify-between gap-3">
+                  <p className="text-sm font-medium text-foreground">
+                    Matching indications
+                  </p>
+                  <span className="index-label">
+                    {totalResults.toLocaleString()} {totalResults === 1 ? 'indication' : 'indications'}
+                  </span>
+                </div>
+              </div>
+
+              <div className={overlayRecipes.picker.searchViewport} onScroll={handleScroll}>
+                <div>
+                  {manualSearchResults.map((result, index) => {
+                    const isSelected = selectedSymptoms.some((symptom) => symptom.name === result.name);
+                    const sourceBook = prettyBook(result.books[0] ?? activeBook);
+
+                    return (
+                      <button
+                        key={`${result.name}-${index}`}
+                        type="button"
+                        aria-pressed={isSelected}
+                        onClick={() => handleSymptomClick(result.name)}
+                        className={cn(
+                          `group flex w-full items-start justify-between gap-4 border-b border-border px-4 py-3 text-left transition-colors md:px-6 ${motionClassNames.surface}`,
+                          isSelected
+                            ? 'bg-accent'
+                            : 'hover:bg-surface-container-low',
+                        )}
+                      >
+                        <div className="min-w-0 space-y-1">
+                          <div className="flex items-center gap-2">
+                            <span className="block text-sm font-medium leading-relaxed text-foreground">
+                              {result.name}
+                            </span>
+                            {result.matchType === 'mapping' && !isSelected ? (
+                              <Badge variant="outline">
+                                Synonym
+                              </Badge>
+                            ) : null}
+                          </div>
+                          <p className="index-label">
+                            {sourceBook}
+                          </p>
+                        </div>
+
+                        <div className="flex shrink-0 items-center gap-2 self-center">
+                          {isSelected ? (
+                            <>
+                              <Badge variant="default">Selected</Badge>
+                              <Check className="h-4 w-4 text-primary" />
+                            </>
+                          ) : (
+                            <Plus
+                              aria-hidden="true"
+                              className="h-4 w-4 text-on-surface-variant transition-colors group-hover:text-primary"
+                            />
+                          )}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {isLoadingMore ? (
+                  <div className="flex justify-center py-5">
+                    <Loader2 className="h-5 w-5 animate-spin text-primary" />
+                  </div>
+                ) : null}
               </div>
             </div>
 
-            <div className={overlayRecipes.picker.viewport} onScroll={handleScroll}>
-              <div>
-                {manualSearchResults.map((result, index) => {
-                  const isSelected = selectedSymptoms.some((symptom) => symptom.name === result.name);
-                  const sourceBook = prettyBook(result.books[0] ?? activeBook);
+            <SearchCloseButton onClick={dismissSearch} />
+          </div>
+        ) : null}
 
-                  return (
-                    <button
-                      key={`${result.name}-${index}`}
-                      type="button"
-                      aria-pressed={isSelected}
-                      onClick={() => handleSymptomClick(result.name)}
-                      className={cn(
-                        `group flex w-full items-start justify-between gap-4 border-b border-border px-4 py-3 text-left transition-colors md:px-6 ${motionClassNames.surface}`,
-                        isSelected
-                          ? 'bg-accent'
-                          : 'hover:bg-surface-container-low',
-                      )}
-                    >
-                      <div className="min-w-0 space-y-1">
-                        <div className="flex items-center gap-2">
-                          <span className="block text-sm font-medium leading-relaxed text-foreground">
-                            {result.name}
-                          </span>
-                          {result.matchType === 'mapping' && !isSelected ? (
-                            <Badge variant="outline">
-                              Synonym
-                            </Badge>
-                          ) : null}
-                        </div>
-                        <p className="index-label">
-                          {sourceBook}
-                        </p>
-                      </div>
-
-                      <div className="flex shrink-0 items-center gap-2 self-center">
-                        {isSelected ? (
-                          <>
-                            <Badge variant="default">Selected</Badge>
-                            <Check className="h-4 w-4 text-primary" />
-                          </>
-                        ) : (
-                          <Plus
-                            aria-hidden="true"
-                            className="h-4 w-4 text-on-surface-variant transition-colors group-hover:text-primary"
-                          />
-                        )}
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-
-              {isLoadingMore ? (
-                <div className="flex justify-center py-5">
-                  <Loader2 className="h-5 w-5 animate-spin text-primary" />
-                </div>
-              ) : null}
+        {showEmptyState && isSearchOverlayOpen ? (
+          <div className="mt-3 space-y-3">
+            <Callout variant="default" className="text-sm">
+              No symptoms found. Try a narrower phrase.
+            </Callout>
+            <div className="flex justify-center">
+              <SearchCloseButton onClick={dismissSearch} />
             </div>
           </div>
         ) : null}
       </div>
-
-      {debouncedQuery.trim().length >= 2 && manualSearchResults.length === 0 && !isManualSearching ? (
-        <Callout variant="default" className="text-sm">
-          No symptoms found. Try a narrower phrase.
-        </Callout>
-      ) : null}
     </div>
   );
 }
