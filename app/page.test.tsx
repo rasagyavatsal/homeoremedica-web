@@ -56,8 +56,10 @@ describe('HomePage', () => {
     const audience = screen.getByTestId('hero-audience');
 
     expect(heading).toHaveClass('display-lg');
-    expect(audience).toHaveTextContent('Doctors');
     expect(audience).toHaveClass('text-primary');
+    expect(audience.parentElement).toHaveClass('gap-2');
+    expect(audience).toHaveTextContent('Doctors');
+    expect(screen.queryByTestId('hero-audience-sizer')).not.toBeInTheDocument();
 
     act(() => vi.advanceTimersByTime(3_000));
     expect(heading).toHaveAccessibleName('Homoeopathic Remedy Finder for Practitioners');
