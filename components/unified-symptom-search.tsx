@@ -389,7 +389,10 @@ export function UnifiedSymptomSearch({
         ) : null}
 
         {showEmptyState && isSearchOverlayOpen ? (
-          <div className="mt-3 space-y-3">
+          <div
+            data-slot="search-empty-overlay"
+            className="absolute left-0 right-0 top-full z-50 mt-3 space-y-3"
+          >
             <Callout variant="default" className="text-sm">
               No symptoms found. Try a narrower phrase.
             </Callout>

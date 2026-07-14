@@ -271,6 +271,8 @@ describe('UnifiedSymptomSearch', () => {
     });
 
     const emptyMessage = screen.getByText(/No symptoms found/);
+    const emptyOverlay = document.querySelector('[data-slot="search-empty-overlay"]');
+    expect(emptyOverlay).toHaveClass('absolute', 'top-full');
     expect(emptyMessage.closest('.search-overlay-surface')).not.toBeNull();
     fireEvent.click(screen.getByRole('button', { name: 'Close search' }));
     expect(screen.queryByText(/No symptoms found/)).not.toBeInTheDocument();
