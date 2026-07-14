@@ -29,89 +29,117 @@ interface SearchState {
 
 export const useSearchStore = create<SearchState>()(
   persist(
-    (set, get) => ({
-      activeBook: 'boericke',
-      selectedSymptoms: [],
-      results: [],
-      searchQuery: '',
-      searchStatus: {
-        isSearching: false,
-        currentBook: undefined,
-        completedBooks: [],
-        progress: 0,
-        totalBooks: 4,
-      },
+    (set, get) => {
+      let searchVersion = 0;
+      const invalidatePendingSearch = () => {
+        searchVersion += 1;
+      };
+
+      return {
+        activeBook: 'boericke',
+        selectedSymptoms: [],
+        results: [],
+        searchQuery: '',
+        searchStatus: {
+          isSearching: false,
+          currentBook: undefined,
+          completedBooks: [],
+          progress: 0,
+          totalBooks: 4,
+        },
       
-      setActiveBook: (book) => set({ activeBook: book, selectedSymptoms: [], results: [] }),
-      
-      addSymptom: (symptom) => set((state) => ({
-        selectedSymptoms: [...state.selectedSymptoms.filter(s => s.id !== symptom.id), symptom],
-        results: []
-      })),
-      
-      removeSymptom: (symptomId) => set((state) => ({
-        selectedSymptoms: state.selectedSymptoms.filter(s => s.id !== symptomId),
-        results: []
-      })),
-      
-      clearSymptoms: () => set({ selectedSymptoms: [], results: [] }),
-      
-      clearResults: () => set({ results: [] }),
-      
-      setSearchQuery: (query) => set({ searchQuery: query }),
-      
-      /**
-       * Remedy Matching Algorithm: Set Intersection with Count-Based Ranking
-       * 
-       * Now uses server-side SQLite via API
-       */
-      findRemedies: async () => {
-        const state = get();
-        const { selectedSymptoms, activeBook } = state;
-        
-        if (selectedSymptoms.length === 0) {
+        setActiveBook: (book) => {
+          invalidatePendingSearch();
+          set({ activeBook: book, selectedSymptoms: [], results: [] });
+        },
+
+        addSymptom: (symptom) => {
+          invalidatePendingSearch();
+          set((state) => ({
+            selectedSymptoms: [...state.selectedSymptoms.filter(s => s.id !== symptom.id), symptom],
+            results: [],
+          }));
+        },
+
+        removeSymptom: (symptomId) => {
+          invalidatePendingSearch();
+          set((state) => ({
+            selectedSymptoms: state.selectedSymptoms.filter(s => s.id !== symptomId),
+            results: [],
+          }));
+        },
+
+        clearSymptoms: () => {
+          invalidatePendingSearch();
+          set({ selectedSymptoms: [], results: [] });
+        },
+
+        clearResults: () => {
+          invalidatePendingSearch();
           set({ results: [] });
-          return;
-        }
+        },
 
-        set({
-          searchStatus: {
-            isSearching: true,
-            currentBook: activeBook,
-            completedBooks: [],
-            progress: 10,
-            totalBooks: 1,
+        setSearchQuery: (query) => set({ searchQuery: query }),
+
+        /**
+         * Remedy Matching Algorithm: Set Intersection with Count-Based Ranking
+         *
+         * Now uses server-side SQLite via API
+         */
+        findRemedies: async () => {
+          const state = get();
+          const { selectedSymptoms, activeBook } = state;
+
+          if (selectedSymptoms.length === 0) {
+            set({ results: [] });
+            return;
           }
-        });
-        
-        try {
-          const results = await apiClient.searchRemedies(
-            selectedSymptoms.map(s => s.name),
-            activeBook
-          );
 
-          set((s) => ({
-            results,
+          const requestVersion = ++searchVersion;
+
+          set({
             searchStatus: {
-              ...s.searchStatus,
-              isSearching: false,
-              currentBook: undefined,
-              completedBooks: [activeBook],
-              progress: 100,
-            }
-          }));
-        } catch (error) {
-          console.error('Search error:', error);
-          set((s) => ({
-            searchStatus: {
-              ...s.searchStatus,
-              isSearching: false,
-              currentBook: undefined,
-            }
-          }));
-        }
-      }
-    }),
+              isSearching: true,
+              currentBook: activeBook,
+              completedBooks: [],
+              progress: 10,
+              totalBooks: 1,
+            },
+          });
+
+          try {
+            const results = await apiClient.searchRemedies(
+              selectedSymptoms.map(s => s.name),
+              activeBook,
+            );
+
+            if (requestVersion !== searchVersion) return;
+
+            set((s) => ({
+              results,
+              searchStatus: {
+                ...s.searchStatus,
+                isSearching: false,
+                currentBook: undefined,
+                completedBooks: [activeBook],
+                progress: 100,
+              },
+            }));
+          } catch (error) {
+            if (requestVersion !== searchVersion) return;
+
+            console.error('Search error:', error);
+            set((s) => ({
+              searchStatus: {
+                ...s.searchStatus,
+                isSearching: false,
+                currentBook: undefined,
+              },
+            }));
+          }
+        },
+      };
+    },
     {
       name: 'search-storage',
       version: 2,

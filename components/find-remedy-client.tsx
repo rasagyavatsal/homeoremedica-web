@@ -1,19 +1,17 @@
 "use client"
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
   AlertCircle,
-  ArrowRight,
   BookOpen,
   Check,
   FileText,
   Loader2,
   Save,
-  Search,
   Trash2,
   X,
 } from 'lucide-react';
@@ -565,6 +563,12 @@ export default function FindRemedyClient() {
   const activeBookName = activeBookInfo?.name ?? prettyBook(activeBook);
   const currentSearchHasContent = isSearchActive || selectedSymptoms.length > 0 || results.length > 0;
 
+  useEffect(() => {
+    if (selectedSymptoms.length > 0) {
+      void findRemedies();
+    }
+  }, [activeBook, findRemedies, selectedSymptoms]);
+
   const displayCases = cases.filter(
     (caseItem) => typeof caseItem?.id === 'string' && caseItem.id.trim().length > 0,
   );
@@ -584,18 +588,6 @@ export default function FindRemedyClient() {
     }
 
     return globalThis.confirm(message);
-  };
-
-  const handleFindRemedies = async () => {
-    if (selectedSymptoms.length === 0) {
-      return;
-    }
-
-    try {
-      await findRemedies();
-    } catch (error) {
-      console.error('Search error:', error);
-    }
   };
 
   const handleSaveCase = () => {
@@ -694,29 +686,6 @@ export default function FindRemedyClient() {
                   });
                 }}
               />
-            </MotionSection>
-
-            <MotionSection className="mt-5 flex flex-wrap items-center gap-3">
-              <Button
-                type="button"
-                onClick={handleFindRemedies}
-                disabled={selectedSymptoms.length === 0}
-                aria-label="Find remedies"
-                className="gap-2"
-              >
-                <Search className="h-4 w-4" />
-                Find remedies
-                {selectedSymptoms.length > 0 ? (
-                  <span
-                    aria-hidden="true"
-                    className="rounded-full bg-primary-foreground/20 px-2 py-1 font-code text-micro leading-none tracking-label"
-                  >
-                    {String(selectedSymptoms.length).padStart(2, '0')}
-                  </span>
-                ) : (
-                  <ArrowRight className="h-4 w-4" />
-                )}
-              </Button>
             </MotionSection>
           </section>
 

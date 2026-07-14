@@ -61,6 +61,8 @@ const baseSearchStatus = {
   totalBooks: 4,
 };
 
+const mockFindRemedies = vi.fn().mockResolvedValue(undefined);
+
 const oldCase = {
   id: 'case-old',
   name: 'Old case',
@@ -86,6 +88,7 @@ function resetStores() {
     results: [],
     searchQuery: '',
     searchStatus: baseSearchStatus,
+    findRemedies: mockFindRemedies,
   });
 
   useCasesStore.setState({
@@ -385,6 +388,21 @@ describe('FindRemedyClient current search behavior', () => {
     expect(screen.queryByRole('button', { name: /Clear symptoms/i })).toBeNull();
     expect(screen.getByRole('button', { name: /Clear all/i })).toBeInTheDocument();
     expect(screen.queryByText(/1 symptom selected for this search\./)).toBeNull();
+  });
+
+  it('matches remedies automatically when symptoms are selected without showing a submit button', async () => {
+    useSearchStore.setState({
+      selectedSymptoms: [{ id: 'symptom-1', name: 'Burning pain' }],
+      results: [],
+      searchQuery: '',
+    });
+
+    render(<FindRemedyClient />);
+
+    expect(screen.queryByRole('button', { name: 'Find remedies' })).toBeNull();
+    await waitFor(() => {
+      expect(mockFindRemedies).toHaveBeenCalledTimes(1);
+    });
   });
 
   it('renders matching remedies card without supporting copy', () => {
