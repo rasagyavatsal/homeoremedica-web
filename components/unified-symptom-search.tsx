@@ -235,8 +235,8 @@ export function UnifiedSymptomSearch({
 
       <div className="relative">
         <div className={`rounded-xl border border-border bg-card shadow-soft focus-within:border-primary ${motionClassNames.surface}`}>
-          <div className="flex items-center gap-3 px-4 py-4 md:px-6 md:py-5">
-            <Search className="h-5 w-5 shrink-0 text-primary" />
+          <div className="flex items-center gap-3 px-4 py-2 md:px-5">
+            <Search className="h-4 w-4 shrink-0 text-primary" />
             <Input
               ref={inputRef}
               placeholder="Search symptom keywords…"
@@ -251,7 +251,7 @@ export function UnifiedSymptomSearch({
                 }
               }}
               aria-label="Search symptom keywords"
-              className="h-control-lg flex-1 border-0 bg-transparent px-0 text-base shadow-none placeholder:text-muted-foreground focus-visible:border-0 md:text-lg"
+              className="h-control flex-1 border-0 bg-transparent px-0 text-base shadow-none placeholder:text-muted-foreground focus-visible:border-0"
             />
             {isManualSearching ? (
               <Loader2 className="h-5 w-5 shrink-0 animate-spin text-primary" />

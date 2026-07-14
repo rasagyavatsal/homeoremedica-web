@@ -60,6 +60,17 @@ describe('UnifiedSymptomSearch', () => {
     expect(getSearchInput()).toBeInTheDocument();
   });
 
+  it('renders a compact search control', () => {
+    render(
+      <UnifiedSymptomSearch onSymptomSelect={mockOnSymptomSelect} />
+    );
+
+    const input = getSearchInput();
+    expect(input).toHaveClass('h-control');
+    expect(input).not.toHaveClass('h-control-lg');
+    expect(input.parentElement).toHaveClass('py-2');
+  });
+
   it('renders books button with active book', () => {
     render(
       <UnifiedSymptomSearch onSymptomSelect={mockOnSymptomSelect} />

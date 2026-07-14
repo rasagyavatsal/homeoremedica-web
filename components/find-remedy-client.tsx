@@ -161,12 +161,14 @@ function DialogMasthead({
 function SelectedSymptomsPanel({
   symptoms,
   activeBookName,
+  className,
   onSaveCase,
   onClear,
   onRemove,
 }: Readonly<{
   symptoms: Array<{ id: string; name: string }>;
   activeBookName: string;
+  className?: string;
   onSaveCase: () => void;
   onClear: () => void;
   onRemove: (id: string) => void;
@@ -174,7 +176,7 @@ function SelectedSymptomsPanel({
   if (symptoms.length === 0) return null;
 
   return (
-    <MotionSection>
+    <MotionSection className={className}>
       <Card>
         <CardHeader className="flex flex-col items-start justify-between gap-4 border-b border-border sm:flex-row sm:items-center">
           <div className="space-y-1.5">
@@ -237,15 +239,17 @@ function ResultsPanel({
   results,
   activeBookName,
   selectedCount,
+  className,
 }: Readonly<{
   results: SearchResult[];
   activeBookName: string;
   selectedCount: number;
+  className?: string;
 }>) {
   if (results.length === 0) return null;
 
   return (
-    <MotionSection>
+    <MotionSection className={className}>
       <Card>
         <CardHeader className="border-b border-border md:flex-row md:items-end md:justify-between">
           <div className="space-y-1.5">
@@ -664,68 +668,81 @@ export default function FindRemedyClient() {
 
       <main className="flex-1">
         <h1 className="sr-only">Find a homoeopathic remedy</h1>
-        <MotionSafeShell className="page-shell min-h-viewport-below-header flex flex-col gap-5 py-5 lg:py-8">
-          <MotionSection>
-            <UnifiedSymptomSearch
-              selectedSymptoms={selectedSymptoms}
-              onOpenCases={() => setCasesModalOpen(true)}
-              onOpenBooks={() => setBooksModalOpen(true)}
-              onSearchActive={setIsSearchActive}
-              resetSignal={searchResetSignal}
-              onSymptomSelect={(symptom: string) => {
-                const existing = selectedSymptoms.find((item) => item.name === symptom);
-                if (existing) {
-                  removeSymptom(existing.id);
-                  return;
-                }
-
-                addSymptom({
-                  id: `unified-${symptom.trim().replace(/\s+/g, '-')}`,
-                  name: symptom,
-                  books: [activeBook],
-                });
-              }}
-            />
-          </MotionSection>
-
-          <MotionSection
-            className="flex flex-wrap items-center gap-3"
+        <MotionSafeShell className="min-h-viewport-below-header flex flex-col gap-5 py-5 lg:py-8">
+          <section
+            aria-label="Symptom search"
+            className="mx-auto w-full max-w-3xl px-4 sm:px-6"
           >
-            <Button
-              type="button"
-              onClick={handleFindRemedies}
-              disabled={selectedSymptoms.length === 0}
-              aria-label="Find remedies"
-              className="gap-2"
-            >
-              <Search className="h-4 w-4" />
-              Find remedies
-              {selectedSymptoms.length > 0 ? (
-                <span
-                  aria-hidden="true"
-                  className="rounded-full bg-primary-foreground/20 px-2 py-1 font-code text-micro leading-none tracking-label"
-                >
-                  {String(selectedSymptoms.length).padStart(2, '0')}
-                </span>
-              ) : (
-                <ArrowRight className="h-4 w-4" />
-              )}
-            </Button>
-          </MotionSection>
+            <MotionSection>
+              <UnifiedSymptomSearch
+                selectedSymptoms={selectedSymptoms}
+                onOpenCases={() => setCasesModalOpen(true)}
+                onOpenBooks={() => setBooksModalOpen(true)}
+                onSearchActive={setIsSearchActive}
+                resetSignal={searchResetSignal}
+                onSymptomSelect={(symptom: string) => {
+                  const existing = selectedSymptoms.find((item) => item.name === symptom);
+                  if (existing) {
+                    removeSymptom(existing.id);
+                    return;
+                  }
 
-          <SelectedSymptomsPanel
-            symptoms={selectedSymptoms}
-            activeBookName={activeBookName}
-            onSaveCase={handleSaveCase}
-            onClear={clearSymptoms}
-            onRemove={removeSymptom}
-          />
+                  addSymptom({
+                    id: `unified-${symptom.trim().replace(/\s+/g, '-')}`,
+                    name: symptom,
+                    books: [activeBook],
+                  });
+                }}
+              />
+            </MotionSection>
 
-          <ResultsPanel
-            results={results as SearchResult[]}
-            activeBookName={activeBookName}
-            selectedCount={selectedSymptoms.length}
-          />
+            <MotionSection className="mt-5 flex flex-wrap items-center gap-3">
+              <Button
+                type="button"
+                onClick={handleFindRemedies}
+                disabled={selectedSymptoms.length === 0}
+                aria-label="Find remedies"
+                className="gap-2"
+              >
+                <Search className="h-4 w-4" />
+                Find remedies
+                {selectedSymptoms.length > 0 ? (
+                  <span
+                    aria-hidden="true"
+                    className="rounded-full bg-primary-foreground/20 px-2 py-1 font-code text-micro leading-none tracking-label"
+                  >
+                    {String(selectedSymptoms.length).padStart(2, '0')}
+                  </span>
+                ) : (
+                  <ArrowRight className="h-4 w-4" />
+                )}
+              </Button>
+            </MotionSection>
+          </section>
+
+          <section
+            aria-label="Selected symptoms and matching remedies"
+            className={cn(
+              'page-shell grid items-start gap-5',
+              results.length > 0 && 'lg:grid-cols-12',
+            )}
+          >
+            <SelectedSymptomsPanel
+              symptoms={selectedSymptoms}
+              activeBookName={activeBookName}
+              className={results.length > 0 ? 'lg:col-span-5' : undefined}
+              onSaveCase={handleSaveCase}
+              onClear={clearSymptoms}
+              onRemove={removeSymptom}
+            />
+
+            <ResultsPanel
+              results={results as SearchResult[]}
+              activeBookName={activeBookName}
+              selectedCount={selectedSymptoms.length}
+              className="lg:col-span-7"
+            />
+          </section>
         </MotionSafeShell>
       </main>
 

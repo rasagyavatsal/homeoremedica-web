@@ -428,4 +428,34 @@ describe('FindRemedyClient current search behavior', () => {
     const header = screen.getByText('Selected symptoms').closest('.flex');
     expect(header).toHaveClass('flex-col', 'sm:flex-row');
   });
+
+  it('keeps the search compact and places symptoms beside remedies within the page gutters on desktop', () => {
+    useSearchStore.setState({
+      selectedSymptoms: [{ id: 'symptom-1', name: 'Burning pain' }],
+      results: [{
+        remedy: { id: 'remedy-1', name: 'Sulphur', book: 'boericke' },
+        score: 1,
+        matchedSymptoms: ['Burning pain'],
+      }],
+      searchQuery: '',
+    });
+
+    render(<FindRemedyClient />);
+
+    const searchRegion = screen.getByRole('region', { name: 'Symptom search' });
+    expect(searchRegion).toHaveClass('max-w-3xl');
+    expect(searchRegion).not.toHaveClass('page-shell');
+
+    const workspace = screen.getByRole('region', {
+      name: 'Selected symptoms and matching remedies',
+    });
+    expect(workspace).toHaveClass(
+      'page-shell',
+      'lg:grid-cols-12',
+    );
+    const selectedPanel = screen.getByText('Selected symptoms').closest<HTMLElement>('.lg\\:col-span-5');
+    const resultsPanel = screen.getByText('Matching remedies').closest<HTMLElement>('.lg\\:col-span-7');
+    expect(workspace).toContainElement(selectedPanel);
+    expect(workspace).toContainElement(resultsPanel);
+  });
 });
