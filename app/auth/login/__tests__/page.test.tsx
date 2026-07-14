@@ -51,7 +51,6 @@ vi.mock('lucide-react', () => ({
   EyeOff: (props: any) => <span data-testid="eye-off-icon" {...props} />,
   Mail: (props: any) => <span data-testid="mail-icon" {...props} />,
   Lock: (props: any) => <span data-testid="lock-icon" {...props} />,
-  Chrome: (props: any) => <span data-testid="chrome-icon" {...props} />,
   Search: (props: any) => <span data-testid="search-icon" {...props} />,
   Database: (props: any) => <span data-testid="database-icon" {...props} />,
   BookOpen: (props: any) => <span data-testid="book-icon" {...props} />,
@@ -83,7 +82,7 @@ describe('LoginPage', () => {
   it('renders Google sign-in button', () => {
     render(<LoginPage />);
 
-    expect(screen.getByRole('button', { name: /Continue with Google/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Sign in with Google/i })).toBeInTheDocument();
   });
 
   it('shows error message on failed sign-in', async () => {

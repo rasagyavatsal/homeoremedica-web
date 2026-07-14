@@ -2,8 +2,7 @@ import Link from 'next/link';
 
 import { BrandLockup } from '@/components/brand-lockup';
 import { InlineLink } from '@/components/ui/interactive';
-
-const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.rasagyavatsal.homeoremedica';
+import { PLAY_STORE_URL } from '@/lib/constants/links';
 
 export function Footer() {
   const version = process.env.NEXT_PUBLIC_APP_VERSION;

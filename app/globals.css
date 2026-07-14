@@ -52,6 +52,10 @@
     --input: 150 8% 43%;
     --ring: 146 24% 28%;
     --outline-variant: 150 7% 70%;
+    --google-blue: #4285f4;
+    --google-green: #34a853;
+    --google-yellow: #fbbc05;
+    --google-red: #ea4335;
 
     /* Typography tokens */
     --font-display: "Avenir Next", "Segoe UI Variable Display", "Helvetica Neue", Arial, sans-serif;
@@ -509,7 +513,7 @@
     top: 50%;
     width: calc(100vw - var(--space-4));
     max-width: var(--layout-dialog);
-    transform: translate(-50%, -50%);
+    translate: -50% -50%;
   }
 
   .overlay-sheet-position {
@@ -521,10 +525,11 @@
     width: calc(100vw - var(--space-4));
     height: calc(100dvh - var(--space-4));
     max-height: calc(100dvh - var(--space-4));
-    transform: translateX(-50%);
+    translate: -50% 0;
   }
 
   .overlay-compact-width { width: calc(100vw - var(--space-6)); }
+  .max-h-viewport-dialog { max-height: calc(100dvh - var(--space-6)); }
   .overlay-picker-viewport {
     max-height: min(60vh, var(--layout-picker));
     overflow-y: auto;
@@ -537,7 +542,7 @@
       width: calc(100vw - var(--space-8));
       height: auto;
       max-height: calc(100dvh - var(--space-8));
-      transform: translate(-50%, -50%);
+      translate: -50% -50%;
     }
     .overlay-compact-width { width: calc(100vw - var(--space-8)); }
   }

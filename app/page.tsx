@@ -8,6 +8,7 @@ import { Header } from '@/components/header';
 import { RemedyPreview } from '@/components/remedy-preview';
 import { Button } from '@/components/ui/button';
 import { MotionItem, MotionRouteShell } from '@/components/ui/motion';
+import { PLAY_STORE_URL } from '@/lib/constants/links';
 import { SEARCH_BOOKS } from '@/lib/seo/book-data';
 
 const HOME_DESCRIPTION =
@@ -53,7 +54,6 @@ export default function HomePage() {
         <section className="dilution-field border-b border-border">
           <MotionRouteShell className="page-shell flex flex-col items-center py-20 lg:py-28">
             <div className="mx-auto max-w-4xl text-center">
-              <p className="index-label mb-6">Homoeopathic remedy research</p>
               <h1 className="display-hero font-medium">
                 A quieter way to find the remedy.
               </h1>
@@ -69,7 +69,9 @@ export default function HomePage() {
                   </Link>
                 </Button>
                 <Button asChild size="lg" variant="ghost">
-                  <a href="#how-it-works">See how it works</a>
+                  <a href={PLAY_STORE_URL} target="_blank" rel="noopener noreferrer">
+                    Android app
+                  </a>
                 </Button>
               </div>
             </div>
@@ -83,7 +85,6 @@ export default function HomePage() {
         <section id="how-it-works" className="page-shell py-24 lg:py-32">
           <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
             <div className="lg:col-span-5">
-              <p className="index-label mb-5">A considered workflow</p>
               <h2 className="display-md">Less interface. More attention.</h2>
               <p className="mt-6 max-w-lg text-base leading-relaxed text-on-surface-variant md:text-lg">
                 The finder keeps one source, one symptom set, and one ranked result in the same quiet workspace.
@@ -106,7 +107,6 @@ export default function HomePage() {
         <section aria-label="Classical sources" className="border-y border-border bg-surface-container-low">
           <div className="page-shell py-24 lg:py-32">
             <div className="mb-12 max-w-2xl">
-              <p className="index-label mb-5">Classical sources</p>
               <h2 className="display-md">Four books. One clear place to search.</h2>
             </div>
             <div className="grid gap-px overflow-hidden rounded-xl border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
@@ -137,7 +137,6 @@ export default function HomePage() {
         <section className="page-shell py-24 lg:py-32">
           <div className="quiet-panel dilution-field landing-cta-grid grid gap-10 overflow-hidden p-8 md:p-12 lg:items-end">
             <div>
-              <p className="index-label mb-5">Begin when ready</p>
               <h2 className="display-md max-w-3xl">Give the case your full attention.</h2>
               <p className="mt-5 max-w-2xl text-on-surface-variant">
                 Results are a reference for study and practitioner research, not medical diagnosis or treatment advice.

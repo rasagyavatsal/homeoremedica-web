@@ -147,7 +147,6 @@ export default function SettingsPage() {
         <div className="page-shell py-16 lg:py-24">
           <MotionSafeShell className="reading-shell space-y-8 md:space-y-10">
             <MotionSection className="space-y-4">
-              <p className="index-label">Account</p>
               <h1 className="display-md text-foreground">Settings</h1>
             </MotionSection>
 

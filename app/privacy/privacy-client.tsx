@@ -159,7 +159,6 @@ export function PrivacyClient() {
       <div className="page-shell py-16 lg:py-24">
         <MotionSafeShell className="reading-shell space-y-10 md:space-y-14">
           <MotionSection className="space-y-4">
-            <p className="index-label">Your information</p>
             <h1 className="display-md text-foreground">Privacy Policy</h1>
             <div className="index-label flex items-center gap-2">
               <Calendar className="h-4 w-4" />

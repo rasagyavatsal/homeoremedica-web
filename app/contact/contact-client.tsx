@@ -22,7 +22,6 @@ export function ContactClient() {
       <div className="page-shell py-16 lg:py-24">
         <MotionSafeShell className="reading-shell space-y-10 text-center md:space-y-12">
           <MotionSection className="space-y-4">
-            <p className="index-label">Support and feedback</p>
             <h1 className="display-md text-foreground">Contact</h1>
           </MotionSection>
 

@@ -18,10 +18,9 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { isGoogleUser, signOutUser } from '@/lib/auth/firebase-auth';
+import { PLAY_STORE_URL } from '@/lib/constants/links';
 import { useAuth } from '@/lib/contexts/auth-context';
 import { motionClassNames } from '@/lib/motion/system';
-
-const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.rasagyavatsal.homeoremedica';
 
 function MenuLink({ href, children, external = false }: Readonly<{
   href: string;

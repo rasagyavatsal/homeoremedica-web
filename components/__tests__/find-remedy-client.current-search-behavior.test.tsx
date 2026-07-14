@@ -338,8 +338,9 @@ describe('FindRemedyClient current search behavior', () => {
     if (!sourceGrid) {
       throw new Error('Expected source card to be inside a grid container');
     }
-    expect(sourceGrid).not.toHaveClass('grid-cols-2');
-    expect(sourceGrid).toHaveClass('grid-cols-cards');
+    expect(sourceGrid).toHaveClass('grid-cols-2');
+    expect(sourceGrid).toHaveClass('overflow-y-auto');
+    expect(sourceDialog).toHaveClass('max-h-viewport-dialog');
 
     const sourceCoverImages = Array.from(sourceDialog.querySelectorAll('img')).filter((image) =>
       image.getAttribute('src')?.startsWith('/source-covers/'),

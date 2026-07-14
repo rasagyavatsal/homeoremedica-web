@@ -57,6 +57,7 @@ describe('SettingsPage', () => {
     render(<SettingsPage />);
 
     expect(screen.getByRole('heading', { level: 1, name: 'Settings' })).toBeInTheDocument();
+    expect(screen.queryByText('Account')).not.toBeInTheDocument();
     expect(screen.queryByText('Manage your account security and preferences.')).not.toBeInTheDocument();
     expect(screen.queryByText('Update your password to keep the account current.')).not.toBeInTheDocument();
     expect(screen.getByText('Change password')).toBeInTheDocument();
@@ -225,4 +226,3 @@ describe('SettingsPage', () => {
     expect(errorMessage).toHaveTextContent('One symbol');
   });
 });
-

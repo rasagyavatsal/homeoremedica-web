@@ -482,50 +482,48 @@ function SourceDialog({
 }>) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className={overlayRecipes.dialog.centeredCompact}>
+      <DialogContent className={cn(overlayRecipes.dialog.centeredCompact, 'max-h-viewport-dialog')}>
         <DialogMasthead
           icon={<BookOpen className="h-5 w-5" />}
           title="Select source"
           description="Choose the source book used for remedy matching."
         />
 
-        <div className="p-4 sm:p-6">
-          <div className="grid grid-cols-cards gap-2.5 sm:gap-3">
-            {books.map((book) => (
-              <button
-                key={book.id}
-                type="button"
-                onClick={() => onSelectBook(book.id)}
-                aria-label={`Select source: ${book.name}`}
-                aria-pressed={activeBookId === book.id}
-                className={cn(
-                  `w-full rounded-lg border p-2 text-left ${motionClassNames.surface} ${motionClassNames.press}`,
-                  activeBookId === book.id
-                    ? 'border-primary bg-accent'
-                    : 'border-border bg-surface-bright hover:border-primary',
-                )}
-              >
-                <div className="space-y-1.5">
-                  <SourceCover bookId={book.id} className="mx-auto w-20 sm:w-24">
-                    {activeBookId === book.id ? (
-                      <div className="absolute right-1.5 top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-primary-foreground">
-                        <Check className="h-3.5 w-3.5" />
-                      </div>
-                    ) : null}
-                  </SourceCover>
+        <div className="grid min-h-0 grid-cols-2 gap-2.5 overflow-y-auto p-4 sm:gap-3 sm:p-6">
+          {books.map((book) => (
+            <button
+              key={book.id}
+              type="button"
+              onClick={() => onSelectBook(book.id)}
+              aria-label={`Select source: ${book.name}`}
+              aria-pressed={activeBookId === book.id}
+              className={cn(
+                `w-full rounded-lg border p-2 text-left ${motionClassNames.surface} ${motionClassNames.press}`,
+                activeBookId === book.id
+                  ? 'border-primary bg-accent'
+                  : 'border-border bg-surface-bright hover:border-primary',
+              )}
+            >
+              <div className="space-y-1.5">
+                <SourceCover bookId={book.id} className="mx-auto w-20 sm:w-24">
+                  {activeBookId === book.id ? (
+                    <div className="absolute right-1.5 top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-primary-foreground">
+                      <Check className="h-3.5 w-3.5" />
+                    </div>
+                  ) : null}
+                </SourceCover>
 
-                  <div className="space-y-1 px-0.5 pb-0.5">
-                    <p className="index-label leading-tight text-foreground">
-                      {SOURCE_SHORT_LABELS[book.id]}
-                    </p>
-                    <p className="text-xs leading-snug text-on-surface-variant">
-                      {book.name}
-                    </p>
-                  </div>
+                <div className="space-y-1 px-0.5 pb-0.5">
+                  <p className="index-label leading-tight text-foreground">
+                    {SOURCE_SHORT_LABELS[book.id]}
+                  </p>
+                  <p className="text-xs leading-snug text-on-surface-variant">
+                    {book.name}
+                  </p>
                 </div>
-              </button>
-            ))}
-          </div>
+              </div>
+            </button>
+          ))}
         </div>
       </DialogContent>
     </Dialog>

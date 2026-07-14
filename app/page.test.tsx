@@ -31,6 +31,11 @@ describe('HomePage', () => {
       'href',
       '/find-remedy',
     );
+    expect(screen.getByRole('link', { name: 'Android app' })).toHaveAttribute(
+      'href',
+      'https://play.google.com/store/apps/details?id=com.rasagyavatsal.homeoremedica',
+    );
+    expect(screen.queryByRole('link', { name: 'See how it works' })).not.toBeInTheDocument();
     expect(screen.getByRole('region', { name: 'Classical sources' })).toBeInTheDocument();
     expect(screen.queryByTestId('symptom-search')).not.toBeInTheDocument();
 
@@ -38,5 +43,16 @@ describe('HomePage', () => {
     expect(hero).toHaveClass('text-center');
     expect(screen.getByRole('region', { name: 'Remedy finder demonstration' }))
       .toHaveClass('preview-device');
+  });
+
+  it('does not render decorative copy above landing-page headings', () => {
+    render(<HomePage />);
+
+    [
+      'Homoeopathic remedy research',
+      'A considered workflow',
+      'Classical sources',
+      'Begin when ready',
+    ].forEach((label) => expect(screen.queryByText(label)).not.toBeInTheDocument());
   });
 });
