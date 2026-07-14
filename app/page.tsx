@@ -5,6 +5,7 @@ import { ArrowRight } from 'lucide-react';
 
 import { Footer } from '@/components/footer';
 import { Header } from '@/components/header';
+import { HeroHeading } from '@/components/hero-heading';
 import { RemedyPreview } from '@/components/remedy-preview';
 import { Button } from '@/components/ui/button';
 import { MotionItem, MotionRouteShell } from '@/components/ui/motion';
@@ -53,10 +54,8 @@ export default function HomePage() {
       <main>
         <section className="dilution-field border-b border-border">
           <MotionRouteShell className="page-shell flex flex-col items-center py-20 lg:py-28">
-            <div className="mx-auto max-w-4xl text-center">
-              <h1 className="display-hero font-medium">
-                A quieter way to find the remedy.
-              </h1>
+            <div className="mx-auto max-w-5xl text-center">
+              <HeroHeading />
               <p className="mx-auto mt-8 max-w-2xl text-lg leading-relaxed text-on-surface-variant md:text-xl">
                 Search symptoms across trusted classical sources, hold the important indications in view,
                 and compare the remedies that meet them.

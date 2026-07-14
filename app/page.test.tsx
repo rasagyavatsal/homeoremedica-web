@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
 import HomePage from './page';
@@ -25,7 +25,10 @@ describe('HomePage', () => {
     render(<HomePage />);
 
     expect(
-      screen.getByRole('heading', { level: 1, name: 'A quieter way to find the remedy.' }),
+      screen.getByRole('heading', {
+        level: 1,
+        name: 'Homoeopathic Remedy Finder for Doctors',
+      }),
     ).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Find a remedy' })).toHaveAttribute(
       'href',
@@ -43,6 +46,26 @@ describe('HomePage', () => {
     expect(hero).toHaveClass('text-center');
     expect(screen.getByRole('region', { name: 'Remedy finder demonstration' }))
       .toHaveClass('preview-device');
+  });
+
+  it('rotates the hero audience through practitioners and students', () => {
+    vi.useFakeTimers();
+    render(<HomePage />);
+
+    const heading = screen.getByRole('heading', { level: 1 });
+    const audience = screen.getByTestId('hero-audience');
+
+    expect(heading).toHaveClass('display-lg');
+    expect(audience).toHaveTextContent('Doctors');
+    expect(audience).toHaveClass('text-primary');
+
+    act(() => vi.advanceTimersByTime(3_000));
+    expect(heading).toHaveAccessibleName('Homoeopathic Remedy Finder for Practitioners');
+
+    act(() => vi.advanceTimersByTime(3_000));
+    expect(heading).toHaveAccessibleName('Homoeopathic Remedy Finder for Students');
+
+    vi.useRealTimers();
   });
 
   it('does not render decorative copy above landing-page headings', () => {
