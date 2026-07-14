@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { Book, SearchResult, Symptom } from '@homeoremedica/shared';
+import type { Book, SearchResult, Symptom } from '@/types';
 import { apiClient } from '@/lib/api/client';
 
 type SearchBookId = Book['id'];

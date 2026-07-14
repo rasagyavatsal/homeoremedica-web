@@ -10,7 +10,7 @@ import { ErrorAlert } from '@/components/error-alert';
 import { Button } from '@/components/ui/button';
 import { CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuthStore } from '@/lib/stores/auth-store';
-import { validatePassword, PASSWORD_RULES } from '@homeoremedica/shared';
+import { validatePassword, PASSWORD_RULES } from '@/lib/validation/password';
 import { AuthPageShell } from '../_components/auth-page-shell';
 import { PasswordField } from '../_components/password-field';
 import { TextField } from '../_components/text-field';

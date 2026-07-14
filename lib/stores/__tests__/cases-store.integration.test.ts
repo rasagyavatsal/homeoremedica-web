@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { normalizeCaseFromApi } from '../cases-store';
+import { normalizeCaseFromApi } from '../create-cases-store';
 import {
   createMockApiClientTyped,
   createMockGetTokenTyped,

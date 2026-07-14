@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { createCasesStore, isNonEmptyString, normalizeCaseFromApi, isValidCase } from '../cases-store';
+import { createCasesStore, isNonEmptyString, normalizeCaseFromApi, isValidCase } from '../create-cases-store';
 
 describe('cases-store utilities', () => {
   describe('isNonEmptyString', () => {
@@ -158,7 +158,7 @@ describe('cases-store', () => {
       getToken: mockGetToken,
     });
 
-    const initialCase = { id: '1', name: 'Old Name', userId: 'u1', timestamp: new Date() };
+    const initialCase = { id: '1', name: 'Old Name', selectedSymptoms: [], userId: 'u1', timestamp: new Date() };
     useCasesStore.setState({ cases: [initialCase] });
 
     const updatedData = { id: '1', name: 'New Name', userId: 'u1', createdAt: new Date().toISOString() };
@@ -190,8 +190,8 @@ describe('cases-store', () => {
     });
 
     const initialCases = [
-      { id: '1', name: 'Case 1', userId: 'u1', timestamp: new Date() },
-      { id: '2', name: 'Case 2', userId: 'u1', timestamp: new Date() },
+      { id: '1', name: 'Case 1', selectedSymptoms: [], userId: 'u1', timestamp: new Date() },
+      { id: '2', name: 'Case 2', selectedSymptoms: [], userId: 'u1', timestamp: new Date() },
     ];
     useCasesStore.setState({ cases: initialCases, selectedCase: initialCases[0] });
 

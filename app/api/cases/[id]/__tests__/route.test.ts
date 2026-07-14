@@ -54,11 +54,6 @@ vi.mock('@/lib/auth/middleware', () => ({
   requireAuth: (...args: any[]) => mockRequireAuth(...args),
 }));
 
-vi.mock('@homeoremedica/shared', async () => {
-  const actual = await vi.importActual('@homeoremedica/shared');
-  return actual;
-});
-
 import { PATCH, DELETE } from '../route';
 
 function createPatchRequest(body: any): NextRequest {

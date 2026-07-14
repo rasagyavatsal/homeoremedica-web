@@ -1,4 +1,5 @@
-import { ApiClient, SearchResult } from '@homeoremedica/shared';
+import { ApiClient } from '@/lib/api/base-client';
+import type { SearchResult } from '@/types';
 
 class WebApiClient extends ApiClient {
   // Search remedies (used by search-store.ts) — web-only

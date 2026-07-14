@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { createAuthStore } from '../auth-store';
+import { createAuthStore } from '../create-auth-store';
 import { createMockApiClient, createMockAuthAdapter, createMockStorage } from '../../__tests__/test-utils';
 
 describe('auth-store integration', () => {

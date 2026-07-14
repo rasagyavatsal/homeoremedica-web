@@ -1,6 +1,6 @@
 import { vi } from 'vitest';
-import { ApiClient } from '../api/client';
-import { AuthAdapter } from '../stores/auth-store';
+import { ApiClient } from '../api/base-client';
+import type { AuthAdapter } from '../stores/create-auth-store';
 import { StateStorage } from 'zustand/middleware';
 
 /**

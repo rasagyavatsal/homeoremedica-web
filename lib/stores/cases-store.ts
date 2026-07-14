@@ -1,4 +1,4 @@
-import { createCasesStore } from '@homeoremedica/shared';
+import { createCasesStore } from '@/lib/stores/create-cases-store';
 import { auth } from '@/lib/firebase';
 import { apiClient } from '@/lib/api/client';
 

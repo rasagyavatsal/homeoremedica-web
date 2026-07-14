@@ -1,4 +1,4 @@
-import { expandSearchTerms } from '../synonyms';
+import { expandSearchTerms } from './synonyms';
 
 export interface RepertoryQueryExecutor {
   all<T>(sql: string, params?: (string | number)[]): Promise<T[]>;

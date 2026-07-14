@@ -1,5 +1,5 @@
-import { FindRemedyResponse } from '../../types';
-import { createCaseSchema, findRemedySchema, FindRemedyRequest, updateCaseSchema } from '../validation/schemas';
+import type { FindRemedyResponse } from '@/types';
+import { createCaseSchema, findRemedySchema, type FindRemedyRequest, updateCaseSchema } from '@/lib/validation/schemas';
 
 function parseResponseBody(text: string) {
   const trimmedText = text.trim();

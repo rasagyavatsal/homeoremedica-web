@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import { BookId, Case, Symptom } from '../../types';
-import { ApiClient } from '../api/client';
+import type { BookId, Case, Symptom } from '@/types';
+import type { ApiClient } from '@/lib/api/base-client';
 
 export function isNonEmptyString(value: unknown): value is string {
   return typeof value === 'string' && value.trim().length > 0;

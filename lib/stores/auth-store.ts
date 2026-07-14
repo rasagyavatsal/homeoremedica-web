@@ -1,4 +1,4 @@
-import { createAuthStore, AuthAdapter } from '@homeoremedica/shared';
+import { createAuthStore, type AuthAdapter } from '@/lib/stores/create-auth-store';
 import { 
   signInWithEmail, 
   signUpWithEmail, 

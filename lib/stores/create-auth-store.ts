@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage, StateStorage } from 'zustand/middleware';
-import { User } from '../../types';
+import type { User } from '@/types';
 
 export interface FirebaseUser {
   uid: string;

@@ -17,7 +17,7 @@ import {
   Trash2,
   X,
 } from 'lucide-react';
-import type { Case } from '@homeoremedica/shared';
+import type { Case } from '@/types';
 
 import { Header } from '@/components/header';
 import { UnifiedSymptomSearch } from '@/components/unified-symptom-search';

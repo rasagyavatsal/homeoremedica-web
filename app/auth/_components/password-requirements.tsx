@@ -1,4 +1,4 @@
-import { PASSWORD_RULES, type validatePassword } from '@homeoremedica/shared';
+import { PASSWORD_RULES, type validatePassword } from '@/lib/validation/password';
 
 interface PasswordRequirementsProps {
   readonly passwordResult: ReturnType<typeof validatePassword> | null;

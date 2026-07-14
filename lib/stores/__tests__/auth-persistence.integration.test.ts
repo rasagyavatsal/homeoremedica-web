@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { createAuthStore } from '../auth-store';
+import { createAuthStore } from '../create-auth-store';
 
 describe('AuthStore Integration with Persistence', () => {
   let mockApiClient: any;

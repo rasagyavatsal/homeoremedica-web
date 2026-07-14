@@ -1,6 +1,6 @@
 import { vi } from 'vitest';
 import { createMockApiClient } from '../../__tests__/test-utils';
-import { createCasesStore } from '../cases-store';
+import { createCasesStore } from '../create-cases-store';
 
 export type MockApiClient = ReturnType<typeof createMockApiClient>;
 export type MockGetToken = ReturnType<typeof vi.fn<() => Promise<string | null>>>;

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { createCasesStore } from '../cases-store';
-import { ApiClient } from '../../api/client';
+import { createCasesStore } from '../create-cases-store';
+import { ApiClient } from '../../api/base-client';
 
 describe('CasesStore Integration with Zod Validation', () => {
   let mockApiClient: ApiClient;

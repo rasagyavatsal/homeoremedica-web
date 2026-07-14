@@ -23,7 +23,7 @@ import { useAuth } from '@/lib/contexts/auth-context';
 import { isGoogleUser, signOutUser } from '@/lib/auth/firebase-auth';
 import { motionClassNames } from '@/lib/motion/system';
 import { useAuthStore } from '@/lib/stores/auth-store';
-import { validatePassword } from '@homeoremedica/shared';
+import { validatePassword } from '@/lib/validation/password';
 
 export default function SettingsPage() {
   const { user, loading } = useAuth();
