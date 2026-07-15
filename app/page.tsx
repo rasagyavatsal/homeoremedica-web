@@ -8,7 +8,7 @@ import { Header } from '@/components/header';
 import { HeroHeading } from '@/components/hero-heading';
 import { RemedyPreview } from '@/components/remedy-preview';
 import { Button } from '@/components/ui/button';
-import { MotionItem, MotionRouteShell } from '@/components/ui/motion';
+import { MotionRouteShell } from '@/components/ui/motion';
 import { PLAY_STORE_URL } from '@/lib/constants/links';
 import { SEARCH_BOOKS } from '@/lib/seo/book-data';
 
@@ -39,12 +39,6 @@ export const metadata: Metadata = {
     images: ['/og.png'],
   },
 };
-
-const steps = [
-  ['Search', 'Begin with a few plain symptom keywords.'],
-  ['Select', 'Keep only the indications that describe the case.'],
-  ['Compare', 'Review remedies ranked against the selected symptoms.'],
-] as const;
 
 export default function HomePage() {
   return (
@@ -81,32 +75,10 @@ export default function HomePage() {
           </MotionRouteShell>
         </section>
 
-        <section id="how-it-works" className="page-shell py-24 lg:py-32">
-          <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
-            <div className="lg:col-span-5">
-              <h2 className="display-md">Less interface. More attention.</h2>
-              <p className="mt-6 max-w-lg text-base leading-relaxed text-on-surface-variant md:text-lg">
-                The finder keeps one source, one symptom set, and one ranked result in the same quiet workspace.
-              </p>
-            </div>
-            <div className="lg:col-span-7">
-              {steps.map(([title, description], index) => (
-                <MotionItem key={title} className="landing-step-grid grid gap-5 border-t border-border py-6 first:border-t-0">
-                  <span className="index-label pt-1 text-primary">0{index + 1}</span>
-                  <div>
-                    <h3 className="text-xl font-medium">{title}</h3>
-                    <p className="mt-2 text-on-surface-variant">{description}</p>
-                  </div>
-                </MotionItem>
-              ))}
-            </div>
-          </div>
-        </section>
-
         <section aria-label="Classical sources" className="border-y border-border bg-surface-container-low">
           <div className="page-shell py-24 lg:py-32">
             <div className="mb-12 max-w-2xl">
-              <h2 className="display-md">Four books. One clear place to search.</h2>
+              <h2 className="display-md">Four books. One place to search.</h2>
             </div>
             <div className="grid gap-px overflow-hidden rounded-xl border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
               {SEARCH_BOOKS.map((book, index) => {
@@ -119,13 +91,12 @@ export default function HomePage() {
                         alt=""
                         width={cover.width}
                         height={cover.height}
-                        sizes="5rem"
-                        className="h-24 w-auto rounded-sm object-cover opacity-80 grayscale transition duration-calm group-hover:opacity-100 group-hover:grayscale-0"
+                        sizes="12rem"
+                        className="h-48 w-auto rounded-sm object-cover opacity-80 grayscale transition duration-calm group-hover:opacity-100 group-hover:grayscale-0"
                       />
                       <span className="index-label text-primary">0{index + 1}</span>
                     </div>
                     <h3 className="text-lg font-medium leading-title">{book.name}</h3>
-                    <p className="mt-3 text-sm leading-relaxed text-on-surface-variant">{book.shortDescription}</p>
                   </article>
                 );
               })}

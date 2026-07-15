@@ -9,7 +9,9 @@ vi.mock('next/link', () => ({
 }));
 
 vi.mock('next/image', () => ({
-  default: () => <span data-testid="next-image" />,
+  default: ({ className, sizes }: { className?: string; sizes?: string }) => (
+    <span data-testid="next-image" className={className} data-sizes={sizes} />
+  ),
 }));
 
 vi.mock('@/components/header', () => ({
@@ -79,5 +81,21 @@ describe('HomePage', () => {
       'Classical sources',
       'Begin when ready',
     ].forEach((label) => expect(screen.queryByText(label)).not.toBeInTheDocument());
+  });
+
+  it('keeps the classical sources section focused on large book covers and names', () => {
+    render(<HomePage />);
+
+    expect(screen.queryByText('Less interface. More attention.')).not.toBeInTheDocument();
+    expect(screen.queryByText('Search')).not.toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { level: 2, name: 'Four books. One place to search.' }),
+    ).toBeInTheDocument();
+    expect(screen.queryByText('Practical bedside reference')).not.toBeInTheDocument();
+
+    screen.getAllByTestId('next-image').forEach((cover) => {
+      expect(cover).toHaveClass('h-48');
+      expect(cover).toHaveAttribute('data-sizes', '12rem');
+    });
   });
 });
