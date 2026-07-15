@@ -49,6 +49,8 @@ describe('RemedyPreview', () => {
 
     await advanceDemo(1_500);
 
+    expect(document.querySelector('[data-slot="search-backdrop"]')).toHaveClass('absolute', 'inset-0');
+    expect(document.querySelector('.preview-workspace')).toHaveClass('relative');
     expect(screen.getByText('Matching indications')).toBeInTheDocument();
     expect(screen.getAllByRole('button', { name: /Burning|Restlessness|Thirst/ })).toHaveLength(3);
     expect(screen.getByText('3 indications')).toBeInTheDocument();

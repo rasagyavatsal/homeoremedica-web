@@ -2,7 +2,18 @@ import { cva } from "class-variance-authority";
 import { motionClassNames } from "@/lib/motion/system";
 
 export const overlayBackdrop = cva(
-  `fixed inset-0 z-50 bg-scrim/70 backdrop-blur-sm ${motionClassNames.overlayBackdrop}`
+  `inset-0 z-50 bg-scrim/70 backdrop-blur-sm ${motionClassNames.overlayBackdrop}`,
+  {
+    variants: {
+      contained: {
+        false: "fixed",
+        true: "absolute",
+      },
+    },
+    defaultVariants: {
+      contained: false,
+    },
+  }
 );
 
 export const overlayVariants = cva(

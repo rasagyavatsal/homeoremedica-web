@@ -115,15 +115,14 @@ export function SymptomSearchView({
   const activeBookLabel = prettyBook(activeBook);
 
   return (
-    <div className="relative space-y-4">
+    <div className={cn('space-y-4', !containedOverlay && 'relative')}>
       {isOverlayOpen ? (
         <div
           aria-hidden="true"
           data-slot="search-backdrop"
           className={cn(
-            overlayBackdrop(),
-            'search-overlay-backdrop',
-            containedOverlay && 'preview-search-backdrop',
+            overlayBackdrop({ contained: containedOverlay }),
+            !containedOverlay && 'search-overlay-backdrop',
           )}
           onPointerDown={onDismissSearch}
         />

@@ -177,7 +177,7 @@ export function RemedyPreview() {
         </div>
       </div>
 
-      <div className="preview-workspace flex min-h-0 flex-1 flex-col gap-5 overflow-hidden py-5">
+      <div className="preview-workspace relative flex min-h-0 flex-1 flex-col gap-5 overflow-clip py-5">
         <section aria-label="Symptom search" className="mx-auto w-full max-w-3xl px-4 sm:px-6">
           <SymptomSearchView
             activeBook="boericke"

@@ -445,13 +445,6 @@
     box-shadow: var(--shadow-overlay);
   }
 
-  .preview-search-backdrop {
-    position: absolute;
-    inset: 0;
-    width: auto;
-    height: auto;
-  }
-
   .motion-overlay-backdrop[data-state="open"] {
     animation: quiet-fade-in var(--motion-duration-overlay) var(--motion-ease-gentle);
   }

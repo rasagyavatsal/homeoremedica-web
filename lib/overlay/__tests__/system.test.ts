@@ -10,6 +10,13 @@ describe('Overlay System', () => {
     expect(backdrop).toContain('motion-overlay-backdrop');
   });
 
+  it('can contain a scrim inside a positioned preview', () => {
+    const backdrop = overlayBackdrop({ contained: true });
+
+    expect(backdrop).toContain('absolute');
+    expect(backdrop).not.toContain('fixed');
+  });
+
   it('uses semantic surface and depth tokens', () => {
     const surface = overlayVariants();
     expect(surface).toContain('border-border');
