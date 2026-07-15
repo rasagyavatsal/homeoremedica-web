@@ -71,7 +71,7 @@ export default function LoginPage() {
             placeholder="••••••••"
             required
             rightLabel={
-              <Link href="/auth/reset-password" className="text-xs font-medium text-tertiary underline-offset-4 hover:underline">
+              <Link href="/auth/reset-password" className="text-sm font-medium text-tertiary underline underline-offset-4">
                 Forgot password?
               </Link>
             }
