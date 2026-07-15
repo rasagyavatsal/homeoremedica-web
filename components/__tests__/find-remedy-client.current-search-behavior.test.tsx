@@ -433,7 +433,7 @@ describe('FindRemedyClient current search behavior', () => {
     expect(within(sourceDialog).queryByText(/Choose one classical source for this search\./i)).toBeNull();
   });
 
-  it('renders Save case and Clear all buttons with responsive layout to prevent misalignment on small screens', () => {
+  it('right-aligns the Save case and Clear all buttons in the responsive header', () => {
     useSearchStore.setState({
       selectedSymptoms: [{ id: 'symptom-1', name: 'Burning pain' }],
       results: [],
@@ -445,6 +445,9 @@ describe('FindRemedyClient current search behavior', () => {
     // Assert the CardHeader for the selected symptoms panel has the responsive classes for mobile and desktop layout
     const header = screen.getByText('Selected symptoms').closest('.flex');
     expect(header).toHaveClass('flex-col', 'sm:flex-row');
+
+    const actions = screen.getByRole('button', { name: /Save case/i }).parentElement;
+    expect(actions).toHaveClass('ml-auto');
   });
 
   it('keeps the search compact and places symptoms beside remedies within the page gutters on desktop', () => {

@@ -184,7 +184,7 @@ function SelectedSymptomsPanel({
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="ml-auto flex flex-wrap items-center gap-2">
             <Button onClick={onSaveCase} variant="outline" size="sm" className="shrink-0">
               Save case
             </Button>
