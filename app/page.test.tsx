@@ -95,7 +95,9 @@ describe('HomePage', () => {
 
     screen.getAllByTestId('next-image').forEach((cover) => {
       expect(cover).toHaveClass('h-48');
-      expect(cover).toHaveAttribute('data-sizes', '12rem');
+      expect(cover).toHaveClass('w-36', 'object-cover');
+      expect(cover).not.toHaveClass('grayscale', 'opacity-80');
+      expect(cover).toHaveAttribute('data-sizes', '9rem');
     });
   });
 });

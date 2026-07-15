@@ -84,15 +84,15 @@ export default function HomePage() {
               {SEARCH_BOOKS.map((book, index) => {
                 const cover = SOURCE_COVERS[book.id];
                 return (
-                  <article key={book.id} className="group bg-card p-5 md:p-6">
+                  <article key={book.id} className="bg-card p-5 md:p-6">
                     <div className="mb-8 flex items-start justify-between gap-4">
                       <Image
                         src={cover.src}
                         alt=""
                         width={cover.width}
                         height={cover.height}
-                        sizes="12rem"
-                        className="h-48 w-auto rounded-sm object-cover opacity-80 grayscale transition duration-calm group-hover:opacity-100 group-hover:grayscale-0"
+                        sizes="9rem"
+                        className="h-48 w-36 rounded-sm object-cover"
                       />
                       <span className="index-label text-primary">0{index + 1}</span>
                     </div>
