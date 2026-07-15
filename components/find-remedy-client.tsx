@@ -6,28 +6,24 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
-  AlertCircle,
   BookOpen,
   Check,
   FileText,
   Loader2,
   Save,
   Trash2,
-  X,
 } from 'lucide-react';
 import type { Case } from '@/types';
 
 import { Header } from '@/components/header';
+import {
+  ResultsPanel,
+  SelectedSymptomsPanel,
+  type FinderResult,
+} from '@/components/remedy-finder-view';
 import { UnifiedSymptomSearch } from '@/components/unified-symptom-search';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Callout } from '@/components/ui/callout';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
 import {
   Dialog,
   DialogContent,
@@ -35,41 +31,20 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { MotionGroup, MotionItem, MotionSafeShell, MotionSection } from '@/components/ui/motion';
+import { MotionSafeShell, MotionSection } from '@/components/ui/motion';
 import { Field, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { motionClassNames } from '@/lib/motion/system';
 import { overlayRecipes } from '@/lib/overlay/system';
-import { cn, formatRemedyDisplayName } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 import { useAuth } from '@/lib/contexts/auth-context';
 import { useUserCases } from '@/lib/hooks/use-user-cases';
 import { getBookInfo, getBookOptions, type BookInfo } from '@/lib/seo/book-data';
 import { useCasesStore } from '@/lib/stores/cases-store';
 import { useSearchStore } from '@/lib/stores/search-store';
 
-type SearchResult = {
-  remedy: {
-    id: string;
-    name: string;
-    book?: string;
-  };
-  score: number;
-  matchedSymptoms: string[];
-};
-
 function prettyBook(bookId: string) {
   return bookId.charAt(0).toUpperCase() + bookId.slice(1);
-}
-
-function summarizeMatches(matches: string[]) {
-  if (matches.length === 0) return null;
-
-  const preview = matches.slice(0, 3);
-  const remaining = matches.length - preview.length;
-
-  return remaining > 0
-    ? `${preview.join(' · ')} · +${remaining} more`
-    : preview.join(' · ');
 }
 
 const SOURCE_SHORT_LABELS: Record<BookInfo['id'], string> = {
@@ -153,156 +128,6 @@ function DialogMasthead({
         </div>
       </div>
     </DialogHeader>
-  );
-}
-
-function SelectedSymptomsPanel({
-  symptoms,
-  activeBookName,
-  className,
-  onSaveCase,
-  onClear,
-  onRemove,
-}: Readonly<{
-  symptoms: Array<{ id: string; name: string }>;
-  activeBookName: string;
-  className?: string;
-  onSaveCase: () => void;
-  onClear: () => void;
-  onRemove: (id: string) => void;
-}>) {
-  if (symptoms.length === 0) return null;
-
-  return (
-    <MotionSection className={className}>
-      <Card>
-        <CardHeader className="flex flex-col items-start justify-between gap-4 border-b border-border sm:flex-row sm:items-center">
-          <div className="space-y-1.5">
-            <CardTitle className="text-lg md:text-xl">Selected symptoms</CardTitle>
-            <p className="index-label">
-              {symptoms.length} {symptoms.length === 1 ? 'entry' : 'entries'} · {activeBookName}
-            </p>
-          </div>
-
-          <div className="ml-auto flex flex-wrap items-center gap-2">
-            <Button onClick={onSaveCase} variant="outline" size="sm" className="shrink-0">
-              Save case
-            </Button>
-            <Button onClick={onClear} variant="ghost" size="sm" className="shrink-0">
-              Clear all
-            </Button>
-          </div>
-        </CardHeader>
-
-        <CardContent className="pt-2">
-          <div>
-            {symptoms.map((symptom, index) => (
-              <div
-                key={symptom.id}
-                className="flex items-center justify-between gap-4 border-b border-border py-3 last:border-b-0"
-              >
-                <div className="flex min-w-0 gap-3">
-                  <p
-                    aria-hidden="true"
-                    className="index-label select-none pt-0.5 text-primary"
-                  >
-                    {String(index + 1).padStart(2, '0')}
-                  </p>
-                  <div className="min-w-0">
-                    <p className="break-words text-sm leading-relaxed text-foreground">
-                      {symptom.name}
-                    </p>
-                  </div>
-                </div>
-
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => onRemove(symptom.id)}
-                  aria-label={`Remove ${symptom.name}`}
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-    </MotionSection>
-  );
-}
-
-function ResultsPanel({
-  results,
-  activeBookName,
-  selectedCount,
-  className,
-}: Readonly<{
-  results: SearchResult[];
-  activeBookName: string;
-  selectedCount: number;
-  className?: string;
-}>) {
-  if (results.length === 0) return null;
-
-  return (
-    <MotionSection className={className}>
-      <Card>
-        <CardHeader className="border-b border-border md:flex-row md:items-end md:justify-between">
-          <div className="space-y-1.5">
-            <CardTitle className="text-xl md:text-2xl">Matching remedies</CardTitle>
-            <p className="index-label">
-              {results.length} {results.length === 1 ? 'remedy' : 'remedies'} · {activeBookName}
-            </p>
-          </div>
-        </CardHeader>
-
-        <CardContent className="space-y-4 pt-4">
-          <Callout
-            variant="info"
-            icon={<AlertCircle className="h-4 w-4" />}
-            className="text-sm"
-          >
-            These results are for reference only. Consult a qualified practitioner before treatment.
-          </Callout>
-
-          <MotionGroup stagger={0.03}>
-            {results.map((result) => {
-              const sourceBook = result.remedy.book ? prettyBook(result.remedy.book) : activeBookName;
-              const summary = summarizeMatches(result.matchedSymptoms);
-              const matchLabel =
-                selectedCount > 0
-                  ? `Matches ${result.score} of ${selectedCount}`
-                  : `${result.score} ${result.score === 1 ? 'match' : 'matches'}`;
-
-              return (
-                <MotionItem key={result.remedy.id}>
-                  <div className="border-b border-border px-1 py-5 last:border-b-0">
-                    <div className="flex items-baseline gap-3">
-                      <h3 className="text-lg font-medium text-foreground transition-colors group-hover:text-primary">
-                        {formatRemedyDisplayName(result.remedy.name)}
-                      </h3>
-                    </div>
-
-                    <div className="mt-2 flex flex-wrap items-center gap-2">
-                      <Badge variant="default">{matchLabel}</Badge>
-                      <Badge variant="outline">{sourceBook}</Badge>
-                    </div>
-
-                    {summary ? (
-                      <p className="mt-2 text-sm leading-relaxed text-on-surface-variant">
-                        {summary}
-                      </p>
-                    ) : null}
-                  </div>
-                </MotionItem>
-              );
-            })}
-          </MotionGroup>
-        </CardContent>
-      </Card>
-    </MotionSection>
   );
 }
 
@@ -706,7 +531,7 @@ export default function FindRemedyClient() {
             />
 
             <ResultsPanel
-              results={results as SearchResult[]}
+              results={results as FinderResult[]}
               activeBookName={activeBookName}
               selectedCount={selectedSymptoms.length}
               className="lg:col-span-7"

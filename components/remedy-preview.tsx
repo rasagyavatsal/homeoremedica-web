@@ -1,13 +1,19 @@
 'use client';
 
-import { BookOpen, Check, FileText, Pause, Play, Plus, RotateCcw, Search } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { Pause, Play, RotateCcw } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
 
-import { Badge } from '@/components/ui/badge';
 import { BrandLockup } from '@/components/brand-lockup';
+import {
+  ResultsPanel,
+  SelectedSymptomsPanel,
+  SymptomSearchView,
+  type FinderIndication,
+  type FinderResult,
+  type FinderSymptom,
+} from '@/components/remedy-finder-view';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { motionClassNames } from '@/lib/motion/system';
+import { cn } from '@/lib/utils';
 
 const DEMOS = [
   {
@@ -66,21 +72,31 @@ function nextDelay(visible: number, first: number, following: number) {
   return visible === 0 ? first : following;
 }
 
+function symptomId(symptom: string) {
+  return `preview-${symptom.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+}
+
 export function RemedyPreview() {
   const [demoIndex, setDemoIndex] = useState(0);
   const [queryLength, setQueryLength] = useState(0);
   const [visibleMatches, setVisibleMatches] = useState(0);
-  const [selectedSymptoms, setSelectedSymptoms] = useState(0);
+  const [selectedCount, setSelectedCount] = useState(0);
   const [visibleRemedies, setVisibleRemedies] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
+  const [isDropdownDismissed, setIsDropdownDismissed] = useState(false);
   const demo = DEMOS[demoIndex];
+
+  const resetStage = () => {
+    setQueryLength(0);
+    setVisibleMatches(0);
+    setSelectedCount(0);
+    setVisibleRemedies(0);
+    setIsDropdownDismissed(false);
+  };
 
   const replay = () => {
     setDemoIndex(0);
-    setQueryLength(0);
-    setVisibleMatches(0);
-    setSelectedSymptoms(0);
-    setVisibleRemedies(0);
+    resetStage();
     setIsPlaying(true);
   };
 
@@ -96,35 +112,50 @@ export function RemedyPreview() {
     } else if (visibleMatches < demo.symptoms.length) {
       callback = () => setVisibleMatches((count) => count + 1);
       delay = nextDelay(visibleMatches, DEMO_TIMING.firstMatch, DEMO_TIMING.match);
-    } else if (selectedSymptoms < demo.symptoms.length) {
-      callback = () => setSelectedSymptoms((count) => count + 1);
-      delay = nextDelay(selectedSymptoms, DEMO_TIMING.firstSelection, DEMO_TIMING.selection);
+    } else if (selectedCount < demo.symptoms.length) {
+      callback = () => setSelectedCount((count) => count + 1);
+      delay = nextDelay(selectedCount, DEMO_TIMING.firstSelection, DEMO_TIMING.selection);
     } else if (visibleRemedies < demo.remedies.length) {
       callback = () => setVisibleRemedies((count) => count + 1);
       delay = nextDelay(visibleRemedies, DEMO_TIMING.firstRemedy, DEMO_TIMING.remedy);
     } else {
       callback = () => {
         setDemoIndex((index) => (index + 1) % DEMOS.length);
-        setQueryLength(0);
-        setVisibleMatches(0);
-        setSelectedSymptoms(0);
-        setVisibleRemedies(0);
+        resetStage();
       };
       delay = DEMO_TIMING.hold;
     }
 
     const timer = window.setTimeout(callback, delay);
     return () => window.clearTimeout(timer);
-  }, [demo, isPlaying, queryLength, selectedSymptoms, visibleMatches, visibleRemedies]);
+  }, [demo, isPlaying, queryLength, selectedCount, visibleMatches, visibleRemedies]);
 
-  const dropdownOpen = queryLength === demo.query.length && visibleRemedies === 0;
+  const query = demo.query.slice(0, queryLength);
+  const dropdownOpen = queryLength === demo.query.length && selectedCount < demo.symptoms.length && !isDropdownDismissed;
+
+  const indications = useMemo<FinderIndication[]>(
+    () => demo.symptoms.slice(0, visibleMatches).map((name) => ({ name, books: ['boericke'] })),
+    [demo.symptoms, visibleMatches],
+  );
+  const selectedSymptoms = useMemo<FinderSymptom[]>(
+    () => demo.symptoms.slice(0, selectedCount).map((name) => ({ id: symptomId(name), name, books: ['boericke'] })),
+    [demo.symptoms, selectedCount],
+  );
+  const results = useMemo<FinderResult[]>(
+    () => demo.remedies.slice(0, visibleRemedies).map(([name, score, summary]) => ({
+      remedy: { id: symptomId(name), name, book: 'boericke' },
+      score: Number(score),
+      matchedSymptoms: summary.split(' · '),
+    })),
+    [demo.remedies, visibleRemedies],
+  );
 
   return (
     <section
       aria-label="Remedy finder demonstration"
       className="preview-device aspect-preview-mobile max-w-preview-mobile md:aspect-preview-desktop md:max-w-preview-desktop"
     >
-      <div className="flex items-center justify-between gap-4 border-b border-border bg-card px-3 py-2 md:px-5">
+      <div className="flex shrink-0 items-center justify-between gap-4 border-b border-border bg-card px-3 py-2 md:px-5">
         <span className="sm:hidden"><BrandLockup compact /></span>
         <span className="hidden sm:inline-flex"><BrandLockup /></span>
         <div className="flex items-center gap-3">
@@ -137,9 +168,7 @@ export function RemedyPreview() {
               aria-label={isPlaying ? 'Pause demonstration' : 'Play demonstration'}
               onClick={() => setIsPlaying((playing) => !playing)}
             >
-              {isPlaying
-                ? <Pause aria-hidden="true" className="h-4 w-4" />
-                : <Play aria-hidden="true" className="h-4 w-4" />}
+              {isPlaying ? <Pause aria-hidden="true" className="h-4 w-4" /> : <Play aria-hidden="true" className="h-4 w-4" />}
             </Button>
             <Button type="button" size="icon" variant="ghost" aria-label="Replay demonstration" onClick={replay}>
               <RotateCcw aria-hidden="true" className="h-4 w-4" />
@@ -148,119 +177,54 @@ export function RemedyPreview() {
         </div>
       </div>
 
-      <div className="preview-workspace space-y-3 p-3 md:p-5">
+      <div className="preview-workspace flex min-h-0 flex-1 flex-col gap-5 overflow-hidden py-5">
+        <section aria-label="Symptom search" className="mx-auto w-full max-w-3xl px-4 sm:px-6">
+          <SymptomSearchView
+            activeBook="boericke"
+            query={query}
+            selectedSymptoms={selectedSymptoms}
+            results={indications}
+            totalResults={demo.symptoms.length}
+            isSearching={queryLength === demo.query.length && visibleMatches === 0}
+            isLoadingMore={false}
+            showResults={dropdownOpen}
+            showEmptyState={false}
+            isOverlayOpen={dropdownOpen}
+            containedOverlay
+            readOnly
+            onOpenBooks={() => undefined}
+            onOpenCases={() => undefined}
+            onQueryChange={() => undefined}
+            onOpenSearch={() => setIsDropdownDismissed(false)}
+            onDismissSearch={() => setIsDropdownDismissed(true)}
+            onClearQuery={replay}
+            onSymptomSelect={(name) => {
+              const index = demo.symptoms.map(String).indexOf(name);
+              if (index >= 0) setSelectedCount((count) => Math.max(count, index + 1));
+            }}
+            onResultsScroll={() => undefined}
+          />
+        </section>
 
-        <div className="flex flex-wrap items-center justify-end gap-2">
-          <Badge variant="outline" className="gap-2 py-2">
-            <BookOpen aria-hidden="true" className="h-4 w-4 text-primary" />
-            <span className="text-on-surface-variant">Source</span>
-            <span className="font-semibold text-foreground">Boericke</span>
-          </Badge>
-          <Badge variant="outline" className="gap-2 py-2">
-            <FileText aria-hidden="true" className="h-4 w-4" />
-            Saved cases
-          </Badge>
-        </div>
-
-        <div className="relative">
-          <div className={`rounded-xl border border-border bg-card shadow-soft ${motionClassNames.surface}`}>
-            <div className="flex min-h-control-lg items-center gap-3 px-4 md:px-6">
-              <Search aria-hidden="true" className="h-5 w-5 shrink-0 text-primary" />
-              <output
-                aria-label="Case being searched"
-                className="min-w-0 flex-1 overflow-hidden whitespace-nowrap text-base text-foreground md:text-lg"
-              >
-                {demo.query.slice(0, queryLength)}
-                <span aria-hidden="true" className="preview-cursor" />
-              </output>
-            </div>
-          </div>
-
-          {dropdownOpen ? (
-            <div className="preview-dropdown absolute left-0 right-0 top-full z-20 mt-3 overflow-hidden rounded-xl border border-border bg-popover shadow-overlay">
-              <div className="flex items-center justify-between gap-3 border-b border-border px-4 py-3 md:px-6">
-                <p className="text-sm font-medium text-foreground">Matching indications</p>
-                <span className="index-label">{demo.symptoms.length} indications</span>
-              </div>
-              <div role="listbox" aria-label="Matching indications">
-                {demo.symptoms.slice(0, visibleMatches).map((symptom, index) => {
-                  const isSelected = index < selectedSymptoms;
-                  return (
-                    <div
-                      key={symptom}
-                      role="option"
-                      aria-selected={isSelected}
-                      className="preview-row flex items-center justify-between gap-4 border-b border-border px-4 py-3 last:border-b-0 md:px-6"
-                    >
-                      <div className="min-w-0">
-                        <p className="text-sm font-medium leading-relaxed text-foreground">{symptom}</p>
-                        <p className="index-label mt-1">Boericke</p>
-                      </div>
-                      {isSelected ? (
-                        <span className="flex shrink-0 items-center gap-2 text-primary">
-                          <Badge>Selected</Badge>
-                          <Check aria-hidden="true" className="h-4 w-4" />
-                        </span>
-                      ) : (
-                        <Plus aria-hidden="true" className="h-4 w-4 shrink-0 text-on-surface-variant" />
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          ) : null}
-        </div>
-
-        <div className="preview-workspace-grid grid gap-3 md:grid-cols-2">
-        <Card className={visibleRemedies > 0 ? 'hidden md:block' : undefined}>
-          <CardHeader className="flex-row items-end justify-between border-b border-border p-4 pb-3">
-            <div className="space-y-1">
-              <CardTitle className="text-base">Selected symptoms</CardTitle>
-              <p className="index-label">{selectedSymptoms} entries · Boericke</p>
-            </div>
-            <span className="index-label text-primary">{String(selectedSymptoms).padStart(2, '0')}</span>
-          </CardHeader>
-          <CardContent className="min-h-preview-symptoms px-4 pb-2 pt-1">
-            {demo.symptoms.slice(0, selectedSymptoms).map((symptom, index) => (
-              <div key={symptom} className="preview-row flex gap-3 border-b border-border py-2.5 last:border-b-0">
-                <span aria-hidden="true" className="index-label pt-0.5 text-primary">
-                  {String(index + 1).padStart(2, '0')}
-                </span>
-                <span className="text-sm leading-relaxed text-foreground">{symptom}</span>
-              </div>
-            ))}
-          </CardContent>
-          <div className="border-t border-border px-4 py-3">
-            <Button type="button" size="sm" className="pointer-events-none gap-2" tabIndex={-1}>
-              <Search aria-hidden="true" className="h-4 w-4" />
-              Find remedies
-              <span className="rounded-full bg-primary-foreground/20 px-2 py-1 font-code text-micro leading-none tracking-label">
-                {String(selectedSymptoms).padStart(2, '0')}
-              </span>
-            </Button>
-          </div>
-        </Card>
-
-        <Card className="min-h-preview-remedies">
-          <CardHeader className="border-b border-border p-4 pb-3">
-            <CardTitle className="text-base">Matching remedies</CardTitle>
-            <p className="index-label">{visibleRemedies} remedies · Boericke</p>
-          </CardHeader>
-          <CardContent className="px-4 pb-2 pt-1" aria-live="polite">
-            {demo.remedies.slice(0, visibleRemedies).map(([remedy, score, summary]) => (
-              <div key={remedy} className="preview-row border-b border-border py-3 last:border-b-0">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-sm font-medium text-foreground">{remedy}</span>
-                  <Badge>Matches {score} of {demo.symptoms.length}</Badge>
-                  <Badge variant="outline">Boericke</Badge>
-                </div>
-                <p className="mt-1.5 text-xs leading-relaxed text-on-surface-variant">{summary}</p>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-        </div>
+        <section
+          aria-label="Selected symptoms and matching remedies"
+          className={cn('page-shell grid items-start gap-5', results.length > 0 && 'lg:grid-cols-12')}
+        >
+          <SelectedSymptomsPanel
+            symptoms={selectedSymptoms}
+            activeBookName="Boericke"
+            className={results.length > 0 ? 'lg:col-span-5' : undefined}
+            onSaveCase={() => undefined}
+            onClear={replay}
+            onRemove={() => undefined}
+          />
+          <ResultsPanel
+            results={results}
+            activeBookName="Boericke"
+            selectedCount={selectedSymptoms.length}
+            className="lg:col-span-7"
+          />
+        </section>
       </div>
     </section>
   );

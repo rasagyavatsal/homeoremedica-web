@@ -127,8 +127,6 @@
     --layout-textarea: 6.25rem;
     --layout-breadcrumb: 11.25rem;
     --layout-loading: 60vh;
-    --layout-preview-symptoms: 9rem;
-    --layout-preview-remedies: 8.25rem;
     --layout-preview-desktop: 70rem;
     --layout-preview-mobile: 22rem;
     --aspect-preview-desktop: 16 / 10;
@@ -154,7 +152,6 @@
     --motion-duration-section: 340ms;
     --motion-duration-item: 240ms;
     --motion-duration-overlay: 280ms;
-    --motion-duration-preview: 360ms;
     --motion-duration-reduced: 80ms;
     --motion-ease-standard: cubic-bezier(0.22, 1, 0.36, 1);
     --motion-ease-gentle: cubic-bezier(0.33, 1, 0.68, 1);
@@ -264,16 +261,6 @@
   @keyframes quiet-sheet-out {
     from { opacity: 1; transform: translateY(0); }
     to { opacity: 0; transform: translateY(var(--motion-distance-page)); }
-  }
-
-  @keyframes preview-row-in {
-    from { opacity: 0; transform: translateY(var(--motion-distance-item)); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  @keyframes preview-cursor-pulse {
-    0%, 45% { opacity: 1; }
-    55%, 100% { opacity: 0; }
   }
 
   * {
@@ -445,11 +432,10 @@
 
   .motion-press:active { transform: scale(var(--motion-scale-enter)); }
 
-  .preview-row {
-    animation: preview-row-in var(--motion-duration-preview) var(--motion-ease-standard) both;
-  }
-
   .preview-device {
+    position: relative;
+    display: flex;
+    flex-direction: column;
     width: 100%;
     margin-inline: auto;
     overflow: hidden;
@@ -459,14 +445,11 @@
     box-shadow: var(--shadow-overlay);
   }
 
-  .preview-cursor {
-    display: inline-block;
-    width: var(--stroke-strong);
-    height: var(--space-5);
-    margin-inline-start: var(--space-1);
-    vertical-align: text-bottom;
-    background: hsl(var(--primary));
-    animation: preview-cursor-pulse calc(var(--motion-duration-preview) * 2) steps(1, end) infinite;
+  .preview-search-backdrop {
+    position: absolute;
+    inset: 0;
+    width: auto;
+    height: auto;
   }
 
   .motion-overlay-backdrop[data-state="open"] {
@@ -497,8 +480,6 @@
   .scrollbar-thin { scrollbar-width: thin; }
 
   .min-h-viewport-below-header { min-height: calc(100svh - var(--size-header)); }
-  .min-h-preview-symptoms { min-height: var(--layout-preview-symptoms); }
-  .min-h-preview-remedies { min-height: var(--layout-preview-remedies); }
   .balanced-copy { text-wrap: balance; }
   .flex-grow-2 { flex: 2 1 0%; }
   .landing-step-grid { grid-template-columns: auto minmax(0, 1fr); }

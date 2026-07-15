@@ -20,26 +20,28 @@ describe('RemedyPreview', () => {
     vi.useRealTimers();
   });
 
-  it('types beside its caret before revealing selected symptoms and matching remedies', async () => {
+  it('uses the live finder search control before revealing selected symptoms and matching remedies', async () => {
     render(<RemedyPreview />);
 
-    const query = screen.getByLabelText('Case being searched');
-    expect(query).toHaveTextContent('');
-    expect(query.lastElementChild).toHaveClass('preview-cursor');
+    const query = screen.getByRole('textbox', { name: 'Search symptom keywords' });
+    expect(query).toHaveValue('');
+    expect(query).toHaveAttribute('placeholder', 'Search symptom keywords…');
     expect(screen.queryByText('Arsenicum album')).not.toBeInTheDocument();
 
     await advanceDemo(2_000);
 
-    expect(query).toHaveTextContent('burning pain at night');
+    expect(query).toHaveValue('burning pain at night');
     expect(screen.getByText('Selected symptoms')).toBeInTheDocument();
 
     await advanceDemo(4_000);
 
     expect(screen.getByText('Burning pains, worse at night')).toBeInTheDocument();
-    expect(screen.getByText('Arsenicum album')).toBeInTheDocument();
+    expect(screen.getByText('Arsenicum Album')).toBeInTheDocument();
     expect(screen.getByText('Matches 3 of 3')).toBeInTheDocument();
     expect(screen.getByText('Matching remedies')).toBeInTheDocument();
     expect(screen.getAllByText('Boericke').length).toBeGreaterThan(0);
+    expect(screen.getByText(/These results are for reference only/)).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /Find remedies/i })).not.toBeInTheDocument();
   });
 
   it('opens a matching-indications dropdown before selecting symptoms', async () => {
@@ -47,10 +49,10 @@ describe('RemedyPreview', () => {
 
     await advanceDemo(1_500);
 
-    const dropdown = screen.getByRole('listbox', { name: 'Matching indications' });
-    expect(dropdown).toBeInTheDocument();
-    expect(screen.getAllByRole('option')).toHaveLength(3);
+    expect(screen.getByText('Matching indications')).toBeInTheDocument();
+    expect(screen.getAllByRole('button', { name: /Burning|Restlessness|Thirst/ })).toHaveLength(3);
     expect(screen.getByText('3 indications')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Close search' })).toBeInTheDocument();
   });
 
   it('rotates through more than one symptom case', async () => {
@@ -58,7 +60,9 @@ describe('RemedyPreview', () => {
 
     await advanceDemo(9_000);
 
-    expect(screen.getByLabelText('Case being searched')).toHaveTextContent(/^dry cough/);
+    expect(
+      (screen.getByRole('textbox', { name: 'Search symptom keywords' }) as HTMLInputElement).value,
+    ).toMatch(/^dry cough/);
   });
 
   it('can pause and replay the demonstration', async () => {
@@ -66,13 +70,13 @@ describe('RemedyPreview', () => {
 
     await advanceDemo(500);
     fireEvent.click(screen.getByRole('button', { name: 'Pause demonstration' }));
-    const pausedQuery = screen.getByLabelText('Case being searched').textContent;
+    const pausedQuery = screen.getByRole('textbox', { name: 'Search symptom keywords' }).getAttribute('value');
 
     await advanceDemo(3_000);
-    expect(screen.getByLabelText('Case being searched')).toHaveTextContent(pausedQuery ?? '');
+    expect(screen.getByRole('textbox', { name: 'Search symptom keywords' })).toHaveValue(pausedQuery ?? '');
 
     fireEvent.click(screen.getByRole('button', { name: 'Replay demonstration' }));
-    expect(screen.getByLabelText('Case being searched')).toHaveTextContent('');
+    expect(screen.getByRole('textbox', { name: 'Search symptom keywords' })).toHaveValue('');
     expect(screen.getByRole('button', { name: 'Pause demonstration' })).toBeInTheDocument();
   });
 });
