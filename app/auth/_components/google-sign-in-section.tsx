@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Chrome } from 'lucide-react';
+import { GoogleIcon } from '@/components/icons/google-icon';
 import { Button } from '@/components/ui/button';
 import { useAuthStore } from '@/lib/stores/auth-store';
 import { getGoogleSignInErrorMessage } from '../_lib/error-helpers';
@@ -22,7 +22,7 @@ export function GoogleSignInSection({ onError }: GoogleSignInSectionProps) {
 
     try {
       await signInWithGoogle();
-      router.push('/');
+      router.push('/find-remedy');
     } catch (err: any) {
       console.error('Google sign-in error:', err);
       onError(getGoogleSignInErrorMessage(err));
@@ -53,8 +53,8 @@ export function GoogleSignInSection({ onError }: GoogleSignInSectionProps) {
         onClick={handleGoogle}
         disabled={isDisabled}
       >
-        <Chrome className="h-5 w-5" />
-        Continue with Google
+        <GoogleIcon className="h-5 w-5" />
+        Sign in with Google
       </Button>
     </>
   );

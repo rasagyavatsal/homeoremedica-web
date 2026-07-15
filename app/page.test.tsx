@@ -1,12 +1,17 @@
 import React from 'react';
-import { render, screen, within } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
 import HomePage from './page';
-import { FIND_REMEDY_FAQ_ITEMS } from '@/lib/seo/find-remedy-content';
 
 vi.mock('next/link', () => ({
   default: ({ children, href, ...props }: any) => <a href={href} {...props}>{children}</a>,
+}));
+
+vi.mock('next/image', () => ({
+  default: ({ className, sizes }: { className?: string; sizes?: string }) => (
+    <span data-testid="next-image" className={className} data-sizes={sizes} />
+  ),
 }));
 
 vi.mock('@/components/header', () => ({
@@ -17,49 +22,109 @@ vi.mock('@/components/footer', () => ({
   Footer: () => <footer data-testid="footer" />,
 }));
 
-vi.mock('@/components/unified-symptom-search', () => ({
-  UnifiedSymptomSearch: () => <div data-testid="symptom-search">Symptom Search</div>,
-}));
+describe('HomePage', () => {
+  it('introduces the product and sends the primary action to the dedicated finder', () => {
+    render(<HomePage />);
 
-vi.mock('@/lib/contexts/auth-context', () => ({
-  useAuth: () => ({
-    user: null,
-    loading: false,
-  }),
-}));
+    expect(
+      screen.getByRole('heading', {
+        level: 1,
+        name: 'Homoeopathic Remedy Finder for Doctors',
+      }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Find a remedy' })).toHaveAttribute(
+      'href',
+      '/find-remedy',
+    );
+    expect(screen.getByRole('link', { name: 'Android app' })).toHaveAttribute(
+      'href',
+      'https://play.google.com/store/apps/details?id=com.rasagyavatsal.homeoremedica',
+    );
+    expect(screen.queryByRole('link', { name: 'See how it works' })).not.toBeInTheDocument();
+    expect(screen.getByRole('region', { name: 'Classical sources' })).toBeInTheDocument();
+    expect(screen.queryByTestId('symptom-search')).not.toBeInTheDocument();
 
-vi.mock('@/lib/hooks/use-user-cases', () => ({
-  useUserCases: () => ({ loading: false }),
-}));
+    const hero = screen.getByRole('heading', { level: 1 }).parentElement;
+    expect(hero).toHaveClass('text-center');
+    const remedyPreview = screen.getByRole('region', { name: 'Remedy finder demonstration' });
+    const referenceDisclaimer = screen.getByText(
+      'Results are a reference for study and practitioner research, not medical diagnosis or treatment advice.',
+    );
+    const classicalSources = screen.getByRole('region', { name: 'Classical sources' });
 
-describe('HomePage structured data', () => {
-  it('renders FAQPage JSON-LD from the same FAQ copy shown on the page', () => {
-    const { container } = render(<HomePage />);
+    expect(remedyPreview).toHaveClass('preview-device');
+    expect(remedyPreview.compareDocumentPosition(referenceDisclaimer)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(referenceDisclaimer.compareDocumentPosition(classicalSources)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(referenceDisclaimer).toHaveClass('mx-auto', 'text-center');
+  });
 
-    const faqRegion = screen.getByRole('region', { name: 'Find remedy features' });
-    const script = container.querySelector('script[type="application/ld+json"]');
-    expect(script).toBeTruthy();
+  it('rotates the hero audience through practitioners and students', () => {
+    vi.useFakeTimers();
+    render(<HomePage />);
 
-    const jsonLd = JSON.parse(script!.innerHTML);
-    expect(jsonLd['@context']).toBe('https://schema.org');
-    expect(jsonLd['@type']).toBe('FAQPage');
-    expect(jsonLd.mainEntity).toHaveLength(FIND_REMEDY_FAQ_ITEMS.length);
+    const heading = screen.getByRole('heading', { level: 1 });
+    const audience = screen.getByTestId('hero-audience');
 
-    FIND_REMEDY_FAQ_ITEMS.forEach((faq) => {
-      expect(within(faqRegion).getByRole('heading', { name: faq.question })).toBeInTheDocument();
-      expect(within(faqRegion).getByText(faq.answer)).toBeInTheDocument();
-      expect(jsonLd.mainEntity).toContainEqual({
-        '@type': 'Question',
-        name: faq.question,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: faq.answer,
-        },
-      });
+    expect(heading).toHaveClass('display-lg');
+    expect(audience).toHaveClass('text-primary');
+    expect(audience.parentElement).toHaveClass('gap-2');
+    expect(audience).toHaveTextContent('Doctors');
+    expect(screen.queryByTestId('hero-audience-sizer')).not.toBeInTheDocument();
+
+    act(() => vi.advanceTimersByTime(3_000));
+    expect(heading).toHaveAccessibleName('Homoeopathic Remedy Finder for Practitioners');
+
+    act(() => vi.advanceTimersByTime(3_000));
+    expect(heading).toHaveAccessibleName('Homoeopathic Remedy Finder for Students');
+
+    vi.useRealTimers();
+  });
+
+  it('does not render decorative copy above landing-page headings', () => {
+    render(<HomePage />);
+
+    [
+      'Homoeopathic remedy research',
+      'A considered workflow',
+      'Classical sources',
+      'Begin when ready',
+    ].forEach((label) => expect(screen.queryByText(label)).not.toBeInTheDocument());
+  });
+
+  it('keeps the classical sources section focused on large book covers and names', () => {
+    render(<HomePage />);
+
+    expect(screen.queryByText('Less interface. More attention.')).not.toBeInTheDocument();
+    expect(screen.queryByText('Search')).not.toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { level: 2, name: 'Four books. One place to search.' }),
+    ).toBeInTheDocument();
+    expect(screen.queryByText('Practical bedside reference')).not.toBeInTheDocument();
+
+    screen.getAllByTestId('next-image').forEach((cover) => {
+      expect(cover).toHaveClass('h-48');
+      expect(cover).toHaveClass('w-36', 'object-cover');
+      expect(cover).not.toHaveClass('grayscale', 'opacity-80');
+      expect(cover).toHaveAttribute('data-sizes', '9rem');
     });
+  });
 
-    expect(within(faqRegion).queryByText(/^Remedies$/)).toBeNull();
-    expect(within(faqRegion).queryByText(/^Indications$/)).toBeNull();
-    expect(within(faqRegion).queryByText(/^Sources$/)).toBeNull();
+  it('replaces the generic closing callout with a saved-cases section', () => {
+    render(<HomePage />);
+
+    const casesSection = screen.getByRole('region', { name: 'Saved cases' });
+
+    expect(casesSection).toContainElement(
+      screen.getByRole('heading', { level: 2, name: 'Save cases. Pick up where you left off.' }),
+    );
+    expect(casesSection).toContainElement(screen.getByRole('region', { name: 'Saved cases preview' }));
+    expect(casesSection).not.toContainElement(screen.getByText(/Results are a reference for study/));
+    expect(screen.queryByText('Give the case your full attention.')).not.toBeInTheDocument();
+    const casesPreview = screen.getByRole('region', { name: 'Saved cases preview' });
+    const findRemedyLink = screen.getByRole('link', { name: 'Find Remedy' });
+
+    expect(findRemedyLink).toHaveAttribute('href', '/find-remedy');
+    expect(casesPreview.compareDocumentPosition(findRemedyLink)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(findRemedyLink.parentElement).toHaveClass('justify-center');
   });
 });

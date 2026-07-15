@@ -10,6 +10,7 @@ describe('ContactClient', () => {
     const title = screen.getByRole('heading', { level: 1, name: 'Contact' });
     expect(title).toBeInTheDocument();
     expect(screen.queryByText('Utility contact')).not.toBeInTheDocument();
+    expect(screen.queryByText('Support and feedback')).not.toBeInTheDocument();
     expect(screen.queryByText(/Have a product question or need support/i)).toBeNull();
   });
 });

@@ -19,9 +19,8 @@ export default function NotFound() {
         <div className="mx-auto w-full max-w-xl space-y-6 text-center">
           <h1 className="display-md">Not in the ledger</h1>
 
-          <div aria-hidden="true" className="rule-double mx-auto w-16" />
 
-          <p className="mx-auto max-w-md text-base leading-relaxed text-on-surface-variant [text-wrap:balance]">
+          <p className="balanced-copy mx-auto max-w-md text-base leading-relaxed text-on-surface-variant">
             The page you requested is not catalogued here. Check the address for
             misprints, or return to the index.
           </p>
@@ -30,7 +29,7 @@ export default function NotFound() {
 
           <div className="flex flex-wrap items-center justify-center gap-3">
             <Button asChild>
-              <Link href="/">Open symptom finder</Link>
+              <Link href="/find-remedy">Open symptom finder</Link>
             </Button>
           </div>
         </div>

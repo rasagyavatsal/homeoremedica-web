@@ -3,15 +3,23 @@ import { themeConfig } from '@/lib/theme-config'
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'HomeoRemedica - Simple Homeopathic Repertory',
+    name: 'HomeoRemedica - Homoeopathic Remedy Finder',
     short_name: 'HomeoRemedica',
-    description: 'Simple Homeopathic Repertory - Search homeopathic remedies across classical repertories from Boericke, Clarke, Kent & Allen. Free symptom matching tool for practitioners and students.',
+    description: 'A calm, focused homoeopathic remedy finder for searching classical materia medica by symptom.',
     start_url: '/',
     display: 'standalone',
     background_color: themeConfig.light.backgroundColor,
     theme_color: themeConfig.light.themeColor,
     orientation: 'portrait-primary',
     scope: '/',
+    icons: [
+      {
+        src: '/mark.png',
+        sizes: '128x128',
+        type: 'image/png',
+        purpose: 'any',
+      },
+    ],
     // id: 'homeoremedica', // Next.js types might not natively support all PWA fields yet, cast if necessary
     categories: [
       'health',
@@ -23,7 +31,7 @@ export default function manifest(): MetadataRoute.Manifest {
         name: 'Find Remedy',
         short_name: 'Find',
         description: 'Search symptoms and find remedies',
-        url: '/',
+        url: '/find-remedy',
       }
     ] as any,
     prefer_related_applications: false,

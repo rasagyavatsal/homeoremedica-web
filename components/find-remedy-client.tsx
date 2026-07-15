@@ -1,38 +1,29 @@
 "use client"
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
-  AlertCircle,
-  ArrowRight,
-  ArrowUpRight,
   BookOpen,
   Check,
   FileText,
   Loader2,
   Save,
-  Search,
   Trash2,
-  X,
 } from 'lucide-react';
-import type { Case } from '@homeoremedica/shared';
+import type { Case } from '@/types';
 
-import { Footer } from '@/components/footer';
 import { Header } from '@/components/header';
-import { FinderHero } from '@/components/finder-hero';
+import {
+  ResultsPanel,
+  SelectedSymptomsPanel,
+  type FinderResult,
+} from '@/components/remedy-finder-view';
 import { UnifiedSymptomSearch } from '@/components/unified-symptom-search';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Callout } from '@/components/ui/callout';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
 import {
   Dialog,
   DialogContent,
@@ -40,49 +31,20 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { MotionGroup, MotionItem, MotionSafeShell, MotionSection } from '@/components/ui/motion';
+import { MotionSafeShell, MotionSection } from '@/components/ui/motion';
 import { Field, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { motionClassNames } from '@/lib/motion/system';
 import { overlayRecipes } from '@/lib/overlay/system';
-import {
-  FIND_REMEDY_EXAMPLE_QUERIES,
-  FIND_REMEDY_FAQ_ITEMS,
-  FIND_REMEDY_FEATURE_INTRO,
-  FIND_REMEDY_FEATURE_SECTIONS,
-  FIND_REMEDY_HERO_DESCRIPTION,
-  FIND_REMEDY_SOURCE_OVERVIEW,
-} from '@/lib/seo/find-remedy-content';
-import { cn, formatRemedyDisplayName } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 import { useAuth } from '@/lib/contexts/auth-context';
 import { useUserCases } from '@/lib/hooks/use-user-cases';
 import { getBookInfo, getBookOptions, type BookInfo } from '@/lib/seo/book-data';
 import { useCasesStore } from '@/lib/stores/cases-store';
 import { useSearchStore } from '@/lib/stores/search-store';
 
-type SearchResult = {
-  remedy: {
-    id: string;
-    name: string;
-    book?: string;
-  };
-  score: number;
-  matchedSymptoms: string[];
-};
-
 function prettyBook(bookId: string) {
   return bookId.charAt(0).toUpperCase() + bookId.slice(1);
-}
-
-function summarizeMatches(matches: string[]) {
-  if (matches.length === 0) return null;
-
-  const preview = matches.slice(0, 3);
-  const remaining = matches.length - preview.length;
-
-  return remaining > 0
-    ? `${preview.join(' · ')} · +${remaining} more`
-    : preview.join(' · ');
 }
 
 const SOURCE_SHORT_LABELS: Record<BookInfo['id'], string> = {
@@ -100,10 +62,10 @@ const SOURCE_COVER_IMAGES: Record<BookInfo['id'], { src: string; width: number; 
 };
 
 const SOURCE_COVER_FALLBACK_ACCENTS: Record<BookInfo['id'], string> = {
-  boericke: 'bg-gradient-to-b from-primary/20 via-surface-container-high to-surface-container-low',
-  clarke: 'bg-gradient-to-b from-tertiary/25 via-surface-container-high to-surface-container-low',
-  kent: 'bg-gradient-to-b from-secondary/50 via-surface-container-high to-surface-container-low',
-  allen: 'bg-gradient-to-b from-primary/12 via-surface-container-high to-surface-container-low',
+  boericke: 'bg-surface-container-low',
+  clarke: 'bg-surface-container-low',
+  kent: 'bg-surface-container-low',
+  allen: 'bg-surface-container-low',
 };
 
 function SourceCover({
@@ -121,7 +83,7 @@ function SourceCover({
     <span
       aria-hidden="true"
       className={cn(
-        'relative block overflow-hidden rounded-sm outline outline-1 -outline-offset-1 outline-foreground/20',
+        'relative block overflow-hidden rounded-sm border border-border',
         SOURCE_COVER_FALLBACK_ACCENTS[bookId],
         className,
       )}
@@ -141,100 +103,6 @@ function SourceCover({
   );
 }
 
-function HomeExampleQueries({
-  onTryQuery,
-}: Readonly<{
-  onTryQuery: (query: string) => void;
-}>) {
-  return (
-    <MotionSection className="mx-auto w-full max-w-3xl pt-2">
-      <div className="mx-auto flex max-w-3xl flex-wrap items-baseline justify-center gap-2">
-        {FIND_REMEDY_EXAMPLE_QUERIES.map((query) => (
-          <button
-            key={query}
-            type="button"
-            onClick={() => onTryQuery(query)}
-            className={`inline-flex min-h-9 items-center justify-center rounded-md border border-border/50 bg-surface-container-lowest px-3 py-1.5 font-code text-xs tracking-[0.04em] text-on-surface-variant transition-colors hover:border-tertiary/60 hover:text-tertiary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${motionClassNames.press}`}
-          >
-            {query}
-          </button>
-        ))}
-      </div>
-    </MotionSection>
-  );
-}
-
-function FinderFeatureSections() {
-  return (
-    <MotionSection
-      role="region"
-      aria-label="Find remedy features"
-      className="mx-auto w-full max-w-4xl space-y-10 border-t border-border/40 pt-8 md:pt-10"
-    >
-      <section className="space-y-4">
-        <div className="space-y-2">
-          <h2 className="font-display text-2xl font-medium leading-tight tracking-display text-foreground md:text-3xl">
-            {FIND_REMEDY_FEATURE_INTRO.heading}
-          </h2>
-        </div>
-        <p className="text-base leading-8 text-on-surface-variant md:text-lg md:leading-8">
-          {FIND_REMEDY_FEATURE_INTRO.body}
-        </p>
-      </section>
-
-      <div className="space-y-8">
-        {FIND_REMEDY_FEATURE_SECTIONS.map((feature) => (
-          <section key={feature.heading} className="border-t border-border/35 pt-7">
-            <h3 className="font-display text-xl font-medium leading-tight tracking-display text-foreground">
-              {feature.heading}
-            </h3>
-            <p className="mt-3 text-base leading-8 text-on-surface-variant">
-              {feature.body}
-            </p>
-          </section>
-        ))}
-      </div>
-
-      <section className="space-y-4 border-y border-border/40 py-7">
-        <h2 className="font-display text-2xl font-medium leading-tight tracking-display text-foreground md:text-3xl">
-          {FIND_REMEDY_SOURCE_OVERVIEW.heading}
-        </h2>
-        <p className="text-base leading-8 text-on-surface-variant">
-          {FIND_REMEDY_SOURCE_OVERVIEW.body}
-        </p>
-        <div className="flex flex-wrap gap-2">
-          {FIND_REMEDY_EXAMPLE_QUERIES.map((query) => (
-            <span
-              key={query}
-              className="inline-flex min-h-9 items-center rounded-md border border-border/50 bg-surface-container-lowest px-3 py-1.5 font-code text-xs tracking-[0.04em] text-on-surface-variant"
-            >
-              {query}
-            </span>
-          ))}
-        </div>
-      </section>
-
-      <section className="space-y-5">
-        <h2 className="font-display text-2xl font-medium leading-tight tracking-display text-foreground md:text-3xl">
-          Find remedy FAQ
-        </h2>
-        <div className="grid gap-x-8 gap-y-5 md:grid-cols-2">
-          {FIND_REMEDY_FAQ_ITEMS.map((item) => (
-            <article key={item.question} className="border-b border-border/30 pb-5">
-              <h3 className="font-display text-lg font-medium leading-tight tracking-display text-foreground">
-                {item.question}
-              </h3>
-              <p className="mt-2 text-sm leading-relaxed text-on-surface-variant">
-                {item.answer}
-              </p>
-            </article>
-          ))}
-        </div>
-      </section>
-    </MotionSection>
-  );
-}
-
 function DialogMasthead({
   icon,
   title,
@@ -247,9 +115,9 @@ function DialogMasthead({
   descriptionVisible?: boolean;
 }>) {
   return (
-    <DialogHeader className="border-b-2 border-foreground/70 px-4 py-4 sm:px-6">
+    <DialogHeader className="border-b border-border px-4 py-4 sm:px-6">
       <div className="flex items-start gap-3">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-sm border border-tertiary/35 bg-tertiary/[0.08] text-tertiary">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent text-accent-foreground">
           {icon}
         </div>
         <div className="space-y-1 text-left">
@@ -260,153 +128,6 @@ function DialogMasthead({
         </div>
       </div>
     </DialogHeader>
-  );
-}
-
-function SelectedSymptomsPanel({
-  symptoms,
-  activeBookName,
-  onSaveCase,
-  onClear,
-  onRemove,
-}: Readonly<{
-  symptoms: Array<{ id: string; name: string }>;
-  activeBookName: string;
-  onSaveCase: () => void;
-  onClear: () => void;
-  onRemove: (id: string) => void;
-}>) {
-  if (symptoms.length === 0) return null;
-
-  return (
-    <MotionSection>
-      <Card>
-        <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b-2 border-foreground/70">
-          <div className="space-y-1.5">
-            <CardTitle className="text-lg md:text-xl">Selected symptoms</CardTitle>
-            <p className="font-code text-xs tracking-[0.04em] text-on-surface-variant">
-              {symptoms.length} {symptoms.length === 1 ? 'entry' : 'entries'} · {activeBookName}
-            </p>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2">
-            <Button onClick={onSaveCase} variant="outline" size="sm" className="shrink-0">
-              Save case
-            </Button>
-            <Button onClick={onClear} variant="ghost" size="sm" className="shrink-0">
-              Clear all
-            </Button>
-          </div>
-        </CardHeader>
-
-        <CardContent className="pt-2">
-          <div>
-            {symptoms.map((symptom, index) => (
-              <div
-                key={symptom.id}
-                className="flex items-center justify-between gap-4 border-b border-border/25 py-2.5"
-              >
-                <div className="flex min-w-0 gap-3">
-                  <p
-                    aria-hidden="true"
-                    className="select-none pt-0.5 font-code text-[10px] tracking-[0.1em] text-tertiary/80"
-                  >
-                    {String(index + 1).padStart(2, '0')}
-                  </p>
-                  <div className="min-w-0">
-                    <p className="break-words text-sm leading-relaxed text-foreground">
-                      {symptom.name}
-                    </p>
-                  </div>
-                </div>
-
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => onRemove(symptom.id)}
-                  aria-label={`Remove ${symptom.name}`}
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-    </MotionSection>
-  );
-}
-
-function ResultsPanel({
-  results,
-  activeBookName,
-  selectedCount,
-}: Readonly<{
-  results: SearchResult[];
-  activeBookName: string;
-  selectedCount: number;
-}>) {
-  if (results.length === 0) return null;
-
-  return (
-    <MotionSection>
-      <Card>
-        <CardHeader className="border-b-2 border-foreground/70 md:flex-row md:items-end md:justify-between">
-          <div className="space-y-1.5">
-            <CardTitle className="text-xl md:text-2xl">Matching remedies</CardTitle>
-            <p className="font-code text-xs tracking-[0.04em] text-on-surface-variant">
-              {results.length} {results.length === 1 ? 'remedy' : 'remedies'} · {activeBookName}
-            </p>
-          </div>
-        </CardHeader>
-
-        <CardContent className="space-y-4 pt-4">
-          <Callout
-            variant="info"
-            icon={<AlertCircle className="h-4 w-4" />}
-            className="text-sm"
-          >
-            These results are for reference only. Consult a qualified practitioner before treatment.
-          </Callout>
-
-          <MotionGroup stagger={0.03}>
-            {results.map((result) => {
-              const sourceBook = result.remedy.book ? prettyBook(result.remedy.book) : activeBookName;
-              const summary = summarizeMatches(result.matchedSymptoms);
-              const matchLabel =
-                selectedCount > 0
-                  ? `Matches ${result.score} of ${selectedCount}`
-                  : `${result.score} ${result.score === 1 ? 'match' : 'matches'}`;
-
-              return (
-                <MotionItem key={result.remedy.id}>
-                  <div className="border-b border-border/30 px-1 py-4">
-                    <div className="flex items-baseline gap-3">
-                      <h3 className="font-display text-lg font-medium tracking-display text-foreground transition-colors group-hover:text-tertiary">
-                        {formatRemedyDisplayName(result.remedy.name)}
-                      </h3>
-                      <span aria-hidden="true" className="leader-dots hidden xs:block" />
-                    </div>
-
-                    <div className="mt-2 flex flex-wrap items-center gap-2">
-                      <Badge variant="default">{matchLabel}</Badge>
-                      <Badge variant="outline">{sourceBook}</Badge>
-                    </div>
-
-                    {summary ? (
-                      <p className="mt-2 text-sm leading-relaxed text-on-surface-variant">
-                        {summary}
-                      </p>
-                    ) : null}
-                  </div>
-                </MotionItem>
-              );
-            })}
-          </MotionGroup>
-        </CardContent>
-      </Card>
-    </MotionSection>
   );
 }
 
@@ -438,10 +159,10 @@ function CasesDialog({
           <div
             key={caseItem.id}
             className={cn(
-              `relative rounded-sm border border-l-[3px] px-4 py-4 transition-colors ${motionClassNames.surface}`,
+              `relative rounded-lg border px-4 py-4 transition-colors ${motionClassNames.surface}`,
               selectedCaseId === caseItem.id
-                ? 'border-border/40 border-l-primary bg-primary/[0.06]'
-                : 'border-border/40 border-l-foreground/30 bg-surface-bright hover:border-l-tertiary',
+                ? 'border-primary bg-accent'
+                : 'border-border bg-surface-bright hover:border-primary',
             )}
           >
             <button
@@ -451,7 +172,7 @@ function CasesDialog({
             >
               <div className="space-y-2">
                 <p className="font-display text-base font-medium tracking-display text-foreground">{caseItem.name}</p>
-                <div className="flex flex-wrap items-center gap-2 font-code text-[10px] tracking-[0.08em] text-on-surface-variant">
+                <div className="index-label flex flex-wrap items-center gap-2">
                   <span>{caseItem.timestamp.toLocaleDateString()}</span>
                   <span aria-hidden="true">·</span>
                   <span>{prettyBook(caseItem.bookId ?? 'all')}</span>
@@ -476,7 +197,7 @@ function CasesDialog({
             </Button>
 
             {selectedCaseId === caseItem.id ? (
-              <div className="absolute right-12 top-2 flex h-7 w-7 items-center justify-center rounded-sm bg-primary/10 text-primary">
+              <div className="absolute right-12 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-accent text-accent-foreground">
                 <Check className="h-4 w-4" />
               </div>
             ) : null}
@@ -562,7 +283,7 @@ function SaveCaseDialog({
             <Button type="button" variant="ghost" className="flex-1" onClick={onCancel}>
               Cancel
             </Button>
-            <Button type="submit" disabled={!caseName.trim() || isSaving} className="flex-[2] gap-2">
+            <Button type="submit" disabled={!caseName.trim() || isSaving} className="flex-grow-2 gap-2">
               {isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
               {isSaving ? 'Saving...' : 'Save case'}
             </Button>
@@ -588,50 +309,48 @@ function SourceDialog({
 }>) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className={overlayRecipes.dialog.centeredCompact}>
+      <DialogContent className={cn(overlayRecipes.dialog.centeredCompact, 'max-h-viewport-dialog')}>
         <DialogMasthead
           icon={<BookOpen className="h-5 w-5" />}
           title="Select source"
           description="Choose the source book used for remedy matching."
         />
 
-        <div className="p-4 sm:p-6">
-          <div className="grid grid-cols-cards gap-2.5 sm:gap-3">
-            {books.map((book) => (
-              <button
-                key={book.id}
-                type="button"
-                onClick={() => onSelectBook(book.id)}
-                aria-label={`Select source: ${book.name}`}
-                aria-pressed={activeBookId === book.id}
-                className={cn(
-                  `w-full rounded-sm border p-2 text-left transition-[background-color,border-color] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${motionClassNames.surface} ${motionClassNames.press}`,
-                  activeBookId === book.id
-                    ? 'border-primary/55 bg-primary/10'
-                    : 'border-border/40 bg-surface-bright hover:border-tertiary/60',
-                )}
-              >
-                <div className="space-y-1.5">
-                  <SourceCover bookId={book.id} className="mx-auto w-20 sm:w-24">
-                    {activeBookId === book.id ? (
-                      <div className="absolute right-1.5 top-1.5 flex h-5 w-5 items-center justify-center rounded-sm bg-primary text-primary-foreground">
-                        <Check className="h-3.5 w-3.5" />
-                      </div>
-                    ) : null}
-                  </SourceCover>
+        <div className="grid min-h-0 grid-cols-2 gap-2.5 overflow-y-auto p-4 sm:gap-3 sm:p-6">
+          {books.map((book) => (
+            <button
+              key={book.id}
+              type="button"
+              onClick={() => onSelectBook(book.id)}
+              aria-label={`Select source: ${book.name}`}
+              aria-pressed={activeBookId === book.id}
+              className={cn(
+                `w-full rounded-lg border p-2 text-left ${motionClassNames.surface} ${motionClassNames.press}`,
+                activeBookId === book.id
+                  ? 'border-primary bg-accent'
+                  : 'border-border bg-surface-bright hover:border-primary',
+              )}
+            >
+              <div className="space-y-1.5">
+                <SourceCover bookId={book.id} className="mx-auto w-20 sm:w-24">
+                  {activeBookId === book.id ? (
+                    <div className="absolute right-1.5 top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-primary-foreground">
+                      <Check className="h-3.5 w-3.5" />
+                    </div>
+                  ) : null}
+                </SourceCover>
 
-                  <div className="space-y-1 px-0.5 pb-0.5">
-                    <p className="font-code text-xs font-medium tracking-[0.04em] leading-tight text-foreground">
-                      {SOURCE_SHORT_LABELS[book.id]}
-                    </p>
-                    <p className="text-xs leading-snug text-on-surface-variant">
-                      {book.name}
-                    </p>
-                  </div>
+                <div className="space-y-1 px-0.5 pb-0.5">
+                  <p className="index-label leading-tight text-foreground">
+                    {SOURCE_SHORT_LABELS[book.id]}
+                  </p>
+                  <p className="text-xs leading-snug text-on-surface-variant">
+                    {book.name}
+                  </p>
                 </div>
-              </button>
-            ))}
-          </div>
+              </div>
+            </button>
+          ))}
         </div>
       </DialogContent>
     </Dialog>
@@ -647,7 +366,6 @@ export default function FindRemedyClient() {
   const [isSaving, setIsSaving] = useState(false);
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [searchResetSignal, setSearchResetSignal] = useState(0);
-  const [seededQuery, setSeededQuery] = useState<{ value: string; token: number } | null>(null);
 
   const {
     selectedSymptoms,
@@ -668,8 +386,13 @@ export default function FindRemedyClient() {
   const bookOptions = getBookOptions();
   const activeBookInfo = getBookInfo(activeBook);
   const activeBookName = activeBookInfo?.name ?? prettyBook(activeBook);
-  const showHero = !isSearchActive && selectedSymptoms.length === 0 && results.length === 0;
-  const currentSearchHasContent = !showHero;
+  const currentSearchHasContent = isSearchActive || selectedSymptoms.length > 0 || results.length > 0;
+
+  useEffect(() => {
+    if (selectedSymptoms.length > 0) {
+      void findRemedies();
+    }
+  }, [activeBook, findRemedies, selectedSymptoms]);
 
   const displayCases = cases.filter(
     (caseItem) => typeof caseItem?.id === 'string' && caseItem.id.trim().length > 0,
@@ -690,18 +413,6 @@ export default function FindRemedyClient() {
     }
 
     return globalThis.confirm(message);
-  };
-
-  const handleFindRemedies = async () => {
-    if (selectedSymptoms.length === 0) {
-      return;
-    }
-
-    try {
-      await findRemedies();
-    } catch (error) {
-      console.error('Search error:', error);
-    }
   };
 
   const handleSaveCase = () => {
@@ -772,104 +483,62 @@ export default function FindRemedyClient() {
     <div className="min-h-screen flex flex-col bg-background text-foreground">
       <Header />
 
-      <main className="flex-1 min-h-screen">
-        <MotionSafeShell
-          className={cn(
-            'mx-auto flex w-full max-w-6xl flex-col px-4 sm:px-6 lg:px-8',
-            showHero ? 'gap-6 py-8 lg:py-14' : 'gap-5 py-4 lg:py-6',
-          )}
-        >
-          {showHero ? (
+      <main className="flex-1">
+        <h1 className="sr-only">Find a homoeopathic remedy</h1>
+        <MotionSafeShell className="min-h-viewport-below-header flex flex-col gap-5 py-5 lg:py-8">
+          <section
+            aria-label="Symptom search"
+            className="mx-auto w-full max-w-3xl px-4 sm:px-6"
+          >
             <MotionSection>
-              <FinderHero
-                align="center"
-                title="Homeopathic remedy finder"
-                description={FIND_REMEDY_HERO_DESCRIPTION}
-                descriptionClassName="text-base md:text-base [text-wrap:balance]"
-                className="mx-auto max-w-3xl"
+              <UnifiedSymptomSearch
+                selectedSymptoms={selectedSymptoms}
+                onOpenCases={() => setCasesModalOpen(true)}
+                onOpenBooks={() => setBooksModalOpen(true)}
+                onSearchActive={setIsSearchActive}
+                resetSignal={searchResetSignal}
+                onSymptomSelect={(symptom: string) => {
+                  const existing = selectedSymptoms.find((item) => item.name === symptom);
+                  if (existing) {
+                    removeSymptom(existing.id);
+                    return;
+                  }
+
+                  addSymptom({
+                    id: `unified-${symptom.trim().replace(/\s+/g, '-')}`,
+                    name: symptom,
+                    books: [activeBook],
+                  });
+                }}
               />
             </MotionSection>
-          ) : null}
+          </section>
 
-          <MotionSection>
-            <UnifiedSymptomSearch
-              selectedSymptoms={selectedSymptoms}
-              onOpenCases={() => setCasesModalOpen(true)}
-              onOpenBooks={() => setBooksModalOpen(true)}
-              onSearchActive={setIsSearchActive}
-              resetSignal={searchResetSignal}
-              seededQuery={seededQuery}
-              onSymptomSelect={(symptom: string) => {
-                const existing = selectedSymptoms.find((item) => item.name === symptom);
-                if (existing) {
-                  removeSymptom(existing.id);
-                  return;
-                }
-
-                addSymptom({
-                  id: `unified-${symptom.trim().replace(/\s+/g, '-')}`,
-                  name: symptom,
-                  books: [activeBook],
-                });
-              }}
-            />
-          </MotionSection>
-
-          <MotionSection
+          <section
+            aria-label="Selected symptoms and matching remedies"
             className={cn(
-              'flex flex-wrap items-center gap-3',
-              showHero && 'justify-center',
+              'page-shell grid items-start gap-5',
+              results.length > 0 && 'lg:grid-cols-12',
             )}
           >
-            <Button
-              type="button"
-              onClick={handleFindRemedies}
-              disabled={selectedSymptoms.length === 0}
-              aria-label="Find remedies"
-              className="gap-2"
-            >
-              <Search className="h-4 w-4" />
-              Find remedies
-              {selectedSymptoms.length > 0 ? (
-                <span
-                  aria-hidden="true"
-                  className="rounded-sm bg-primary-foreground/20 px-1.5 py-1 font-code text-[10px] leading-none tracking-[0.08em]"
-                >
-                  {String(selectedSymptoms.length).padStart(2, '0')}
-                </span>
-              ) : (
-                <ArrowRight className="h-4 w-4" />
-              )}
-            </Button>
-          </MotionSection>
-
-          {showHero ? (
-            <HomeExampleQueries
-              onTryQuery={(query) => {
-                setSeededQuery({ value: query, token: Date.now() });
-              }}
+            <SelectedSymptomsPanel
+              symptoms={selectedSymptoms}
+              activeBookName={activeBookName}
+              className={results.length > 0 ? 'lg:col-span-5' : undefined}
+              onSaveCase={handleSaveCase}
+              onClear={clearSymptoms}
+              onRemove={removeSymptom}
             />
-          ) : null}
 
-          {showHero ? <FinderFeatureSections /> : null}
-
-          <SelectedSymptomsPanel
-            symptoms={selectedSymptoms}
-            activeBookName={activeBookName}
-            onSaveCase={handleSaveCase}
-            onClear={clearSymptoms}
-            onRemove={removeSymptom}
-          />
-
-          <ResultsPanel
-            results={results as SearchResult[]}
-            activeBookName={activeBookName}
-            selectedCount={selectedSymptoms.length}
-          />
+            <ResultsPanel
+              results={results as FinderResult[]}
+              activeBookName={activeBookName}
+              selectedCount={selectedSymptoms.length}
+              className="lg:col-span-7"
+            />
+          </section>
         </MotionSafeShell>
       </main>
-
-      <Footer />
 
       <CasesDialog
         open={casesModalOpen}

@@ -134,6 +134,53 @@ describe('useSearchStore unit tests', () => {
       expect(state.searchStatus.isSearching).toBe(false);
       expect(state.results).toEqual([]);
     });
+
+    it('should ignore stale results when symptoms change during automatic matching', async () => {
+      let resolveFirst!: (results: any[]) => void;
+      let resolveSecond!: (results: any[]) => void;
+      vi.mocked(apiClient.searchRemedies)
+        .mockImplementationOnce(() => new Promise((resolve) => { resolveFirst = resolve; }))
+        .mockImplementationOnce(() => new Promise((resolve) => { resolveSecond = resolve; }));
+
+      const store = useSearchStore.getState();
+      store.addSymptom({ id: 's1', name: 'S1' });
+      const firstSearch = store.findRemedies();
+
+      store.addSymptom({ id: 's2', name: 'S2' });
+      const secondSearch = store.findRemedies();
+
+      const currentResults = [{ remedyId: 'current', score: 2 }];
+      resolveSecond(currentResults);
+      await secondSearch;
+
+      resolveFirst([{ remedyId: 'stale', score: 1 }]);
+      await firstSearch;
+
+      expect(useSearchStore.getState().results).toEqual(currentResults);
+    });
+
+    it('should clear search status when a pending search is invalidated', async () => {
+      let resolveSearch!: (results: any[]) => void;
+      vi.mocked(apiClient.searchRemedies).mockImplementationOnce(
+        () => new Promise((resolve) => { resolveSearch = resolve; }),
+      );
+
+      const store = useSearchStore.getState();
+      store.addSymptom({ id: 's1', name: 'S1' });
+      const pendingSearch = store.findRemedies();
+
+      expect(useSearchStore.getState().searchStatus.isSearching).toBe(true);
+
+      store.clearSymptoms();
+
+      expect(useSearchStore.getState().searchStatus.isSearching).toBe(false);
+
+      resolveSearch([{ remedyId: 'stale', score: 1 }]);
+      await pendingSearch;
+
+      expect(useSearchStore.getState().searchStatus.isSearching).toBe(false);
+      expect(useSearchStore.getState().results).toEqual([]);
+    });
   });
 
   describe('migration', () => {

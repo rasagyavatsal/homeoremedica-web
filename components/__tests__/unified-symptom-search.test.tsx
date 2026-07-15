@@ -60,6 +60,48 @@ describe('UnifiedSymptomSearch', () => {
     expect(getSearchInput()).toBeInTheDocument();
   });
 
+  it('renders a compact search control', () => {
+    render(
+      <UnifiedSymptomSearch onSymptomSelect={mockOnSymptomSelect} />
+    );
+
+    const input = getSearchInput();
+    expect(input).toHaveClass('h-control');
+    expect(input).not.toHaveClass('h-control-lg');
+    expect(input.parentElement).toHaveClass('py-2');
+  });
+
+  it('opens the shared blurred backdrop and dismisses it with an icon-only close button', async () => {
+    mockSearchSymptoms.mockResolvedValue({
+      results: [{ name: 'Headache frontal', books: ['boericke'], matchType: 'partial' }],
+      total: 1,
+    });
+
+    render(
+      <UnifiedSymptomSearch onSymptomSelect={mockOnSymptomSelect} />
+    );
+
+    const input = getSearchInput();
+    fireEvent.focus(input);
+
+    const backdrop = document.querySelector<HTMLElement>('[data-slot="search-backdrop"]');
+    expect(backdrop).toHaveClass(
+      'bg-scrim/70',
+      'backdrop-blur-sm',
+      'search-overlay-backdrop',
+    );
+
+    await typeSearchQuery('headache');
+
+    const closeButton = await screen.findByRole('button', { name: 'Close search' });
+    expect(closeButton).toHaveTextContent('');
+    fireEvent.click(closeButton);
+
+    expect(screen.queryByText('Headache frontal')).not.toBeInTheDocument();
+    expect(document.querySelector('[data-slot="search-backdrop"]')).toBeNull();
+    expect(input).toHaveValue('headache');
+  });
+
   it('renders books button with active book', () => {
     render(
       <UnifiedSymptomSearch onSymptomSelect={mockOnSymptomSelect} />
@@ -211,6 +253,7 @@ describe('UnifiedSymptomSearch', () => {
     await waitFor(() => {
       expect(screen.queryByText('Headache')).not.toBeInTheDocument();
     });
+    expect(document.querySelector('[data-slot="search-backdrop"]')).toBeNull();
   });
 
   it('"No symptoms found" message for empty results', async () => {
@@ -220,11 +263,19 @@ describe('UnifiedSymptomSearch', () => {
       <UnifiedSymptomSearch onSymptomSelect={mockOnSymptomSelect} />
     );
 
+    fireEvent.focus(getSearchInput());
     await typeSearchQuery('xyznonexistent');
 
     await waitFor(() => {
       expect(screen.getByText(/No symptoms found/)).toBeInTheDocument();
     });
+
+    const emptyMessage = screen.getByText(/No symptoms found/);
+    const emptyOverlay = document.querySelector('[data-slot="search-empty-overlay"]');
+    expect(emptyOverlay).toHaveClass('absolute', 'top-full');
+    expect(emptyMessage.closest('.search-overlay-surface')).not.toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'Close search' }));
+    expect(screen.queryByText(/No symptoms found/)).not.toBeInTheDocument();
   });
 
   it('calls onOpenCases when Saved Cases button is clicked', () => {

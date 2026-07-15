@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { findRemedySchema } from '@homeoremedica/shared';
+import { findRemedySchema } from '@/lib/validation/schemas';
 import { ApiError } from '@/lib/types/backend';
 import { findRemedyResponseForApi } from '@/lib/server/repertory/service';
 

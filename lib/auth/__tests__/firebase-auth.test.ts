@@ -5,7 +5,7 @@ const { mockChangePassword } = vi.hoisted(() => ({
   mockChangePassword: vi.fn(),
 }));
 
-vi.mock('@homeoremedica/shared', () => ({
+vi.mock('@/lib/auth/core', () => ({
   createFirebaseAuthCore: vi.fn(() => ({
     changePassword: mockChangePassword,
   })),

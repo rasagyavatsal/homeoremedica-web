@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import sqlite3 from 'sqlite3';
 import path from 'path';
-import { createRepertorySearchService } from '@homeoremedica/shared';
+import { createRepertorySearchService } from '@/lib/server/repertory/search-service';
 
 describe('Search Service with Web DB', () => {
   let service: ReturnType<typeof createRepertorySearchService>;

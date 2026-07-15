@@ -1,8 +1,5 @@
 {
   "name": "@homeoremedica/web",
-  "workspaces": [
-    "packages/*"
-  ],
   "version": "4.0.3",
   "private": true,
   "scripts": {
@@ -20,7 +17,6 @@
   "dependencies": {
     "@google-cloud/firestore": "^7.11.3",
     "@google-cloud/storage": "^7.18.0",
-    "@homeoremedica/shared": "*",
     "@honeybadger-io/js": "^6.12.3",
     "@honeybadger-io/nextjs": "^5.10.7",
     "@honeybadger-io/react": "^6.1.27",

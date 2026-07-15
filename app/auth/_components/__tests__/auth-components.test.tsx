@@ -116,14 +116,15 @@ describe('Auth components', () => {
   describe('GoogleSignInSection', () => {
     it('renders Google sign-in button', () => {
       render(<GoogleSignInSection onError={vi.fn()} />);
-      expect(screen.getByRole('button', { name: /continue with google/i })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /sign in with google/i })).toBeInTheDocument();
+      expect(screen.getByTestId('google-icon')).toBeInTheDocument();
     });
 
     it('triggers google sign in store call on click', async () => {
       mockSignInWithGoogle.mockResolvedValue(undefined);
       render(<GoogleSignInSection onError={vi.fn()} />);
 
-      const button = screen.getByRole('button', { name: /continue with google/i });
+      const button = screen.getByRole('button', { name: /sign in with google/i });
       fireEvent.click(button);
 
       await expect(mockSignInWithGoogle).toHaveBeenCalled();

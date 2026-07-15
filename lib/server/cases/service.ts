@@ -1,7 +1,7 @@
 import { adminDb } from '@/lib/firebase-admin';
 import { Timestamp } from 'firebase-admin/firestore';
-import { createCaseSchema, updateCaseSchema } from '@homeoremedica/shared';
-import type { UpdateCaseRequest } from '@homeoremedica/shared';
+import { createCaseSchema, updateCaseSchema } from '@/lib/validation/schemas';
+import type { UpdateCaseRequest } from '@/lib/validation/schemas';
 import { CaseDoc, SerializedCase, ApiError } from '@/lib/types/backend';
 
 export function serializeCase(id: string, data: Partial<CaseDoc>): SerializedCase {

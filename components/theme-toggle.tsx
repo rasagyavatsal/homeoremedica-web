@@ -20,7 +20,6 @@ export function ThemeToggle({ className }: Readonly<{ className?: string }>) {
 
   const actionLabel = resolvedTheme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'
   const Icon = resolvedTheme === 'dark' ? Moon : Sun
-  const iconSize = 16
 
   return (
     <button
@@ -35,15 +34,15 @@ export function ThemeToggle({ className }: Readonly<{ className?: string }>) {
         <motion.div
           key={resolvedTheme}
           data-testid="theme-toggle-icon"
-          initial={reducedMotion ? { opacity: 0 } : { opacity: 0, scale: 1.35 }}
-          animate={reducedMotion ? { opacity: 1 } : { opacity: 1, scale: 1 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           transition={{
             type: 'tween',
             ease: MOTION_EASING,
             duration: reducedMotion ? MOTION_DURATIONS.reduced : MOTION_DURATIONS.item,
           }}
         >
-          <Icon size={iconSize} aria-hidden="true" />
+          <Icon className="h-4 w-4" aria-hidden="true" />
         </motion.div>
       ) : (
         <div className="h-4 w-4" />

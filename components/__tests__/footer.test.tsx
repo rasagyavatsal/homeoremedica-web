@@ -51,16 +51,14 @@ describe('Footer', () => {
     expect(screen.queryByText(/^v\d+\.\d+\.\d+$/)).toBeNull();
     vi.unstubAllEnvs();
   });
-  it('uses consistent sizing and spacing for footer links', () => {
+  it('uses tokenized touch sizing and spacing for footer links', () => {
     render(<Footer />);
     const findRemedyLink = screen.getByRole('link', { name: 'Find Remedy' });
     
-    // Should use the inline-link control sizing which gives min-h-10 and px-1.5
-    expect(findRemedyLink.className).toContain('min-h-10');
+    expect(findRemedyLink.className).toContain('min-h-touch');
     expect(findRemedyLink.className).toContain('px-1.5');
     // Should offset the padding to maintain layout alignment
     expect(findRemedyLink.className).toContain('-mx-1.5');
-    // Should include base control ring styles
-    expect(findRemedyLink.className).toContain('focus-visible:ring-2');
+    expect(findRemedyLink.className).toContain('focus-visible:outline-none');
   });
 });

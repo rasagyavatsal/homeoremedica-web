@@ -13,6 +13,6 @@ export function useAuthRedirect() {
   useEffect(() => {
     if (loading) return;
     if (!user) return;
-    router.replace('/');
+    router.replace('/find-remedy');
   }, [loading, user, router]);
 }

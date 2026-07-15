@@ -1,30 +1,30 @@
 import { cva } from "class-variance-authority"
 
 export const controlVariants = cva(
-  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50",
+  "focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50",
   {
     variants: {
       size: {
-        default: "h-11 px-3 py-2 text-sm",
-        sm: "h-9 px-3 text-sm",
-        header: "min-h-9 px-3 py-1.5 text-sm",
-        "header-icon": "h-9 w-9",
-        lg: "h-12 px-6 text-base",
-        icon: "h-10 w-10",
+        default: "h-control px-4 py-2 text-sm",
+        sm: "h-control-sm px-3 text-sm",
+        header: "min-h-touch px-3 py-2 text-sm",
+        "header-icon": "h-control-sm w-control-sm",
+        lg: "h-control-lg px-6 text-base",
+        icon: "h-control w-control",
         switch: "h-6 w-11",
-        textarea: "min-h-[100px] px-3 py-2 text-sm",
-        button: "h-11 px-4 py-2 text-sm",
-        "inline-link": "min-h-10 px-1.5",
-        pill: "min-h-10 px-3 py-2 text-sm",
+        textarea: "min-h-24 px-4 py-3 text-sm",
+        button: "h-control px-4 py-2 text-sm",
+        "inline-link": "min-h-touch px-1.5",
+        pill: "min-h-touch px-3 py-2 text-sm",
       },
       shape: {
-        default: "rounded-lg",
-        sm: "rounded-md",
+        default: "rounded-md",
+        sm: "rounded-sm",
         full: "rounded-full",
       },
       ring: {
-        default: "focus-visible:ring-ring/20",
-        strong: "focus-visible:ring-ring",
+        default: "",
+        strong: "",
       }
     },
     defaultVariants: {

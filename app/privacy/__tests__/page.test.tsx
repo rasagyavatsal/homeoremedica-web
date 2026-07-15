@@ -21,6 +21,7 @@ describe('PrivacyClient', () => {
     render(<PrivacyClient />);
 
     expect(screen.queryByText('Utility policy')).not.toBeInTheDocument();
+    expect(screen.queryByText('Your information')).not.toBeInTheDocument();
   });
 
   it('renders the "Information We Collect" section', () => {

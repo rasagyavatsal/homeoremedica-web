@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { searchSymptomsForApi, searchRemediesForApi, findRemedyResponseForApi } from './service';
 
-vi.mock('@homeoremedica/shared', () => ({
+vi.mock('@/lib/server/repertory/search-service', () => ({
   createRepertorySearchService: vi.fn().mockReturnValue({
     suggestSymptoms: vi.fn(),
     countSymptomSuggestions: vi.fn(),
@@ -15,7 +15,7 @@ vi.mock('@/lib/db/client', () => ({
   dbGet: vi.fn(),
 }));
 
-import { createRepertorySearchService } from '@homeoremedica/shared';
+import { createRepertorySearchService } from '@/lib/server/repertory/search-service';
 
 describe('Server Repertory Service', () => {
   let mockSearchService: any;

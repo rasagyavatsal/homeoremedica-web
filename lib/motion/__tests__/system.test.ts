@@ -4,7 +4,8 @@ import {
   MOTION_DURATIONS,
   MOTION_DISTANCES,
   createEnterTransition,
-  createFadeUpVariants,
+  createQuietItemVariants,
+  createQuietRevealVariants,
   createGroupVariants,
   getMotionDuration,
 } from '@/lib/motion/system';
@@ -16,13 +17,25 @@ describe('motion system', () => {
 
   it('caps durations when reduced motion is enabled', () => {
     expect(getMotionDuration(0.24, true)).toBe(MOTION_DURATIONS.reduced);
-    expect(getMotionDuration(0.1, true)).toBe(0.1);
+    expect(getMotionDuration(0.05, true)).toBe(0.05);
   });
 
-  it('removes transform distance in reduced motion fade-up variants', () => {
-    const variants = createFadeUpVariants({ reducedMotion: true, distance: 12 });
+  it('removes transform distance and blur in reduced motion reveals', () => {
+    const variants = createQuietRevealVariants({ reducedMotion: true, distance: 12 });
     expect(variants.hidden).toMatchObject({ opacity: 0, y: 0 });
     expect(variants.visible).toMatchObject({ opacity: 1, y: 0 });
+    expect(variants.hidden).toMatchObject({ filter: 'none' });
+  });
+
+  it('uses a restrained scale only for changing items', () => {
+    expect(createQuietItemVariants({ reducedMotion: false }).hidden).toMatchObject({
+      opacity: 0,
+      scale: 0.99,
+    });
+    expect(createQuietItemVariants({ reducedMotion: true }).hidden).toMatchObject({
+      opacity: 0,
+      scale: 1,
+    });
   });
 
   it('removes stagger and delays for reduced motion groups', () => {

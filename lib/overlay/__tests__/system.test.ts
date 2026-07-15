@@ -1,68 +1,60 @@
-import { overlayVariants, overlayBackdrop } from '../system';
+import { overlayVariants, overlayBackdrop, overlayRecipes } from '../system';
 
 describe('Overlay System', () => {
-  it('provides a consistent scrim background', () => {
+  it('provides a calm, consistent scrim', () => {
     const backdrop = overlayBackdrop();
-    expect(backdrop).toContain('bg-scrim/60');
+    expect(backdrop).toContain('bg-scrim/70');
+    expect(backdrop).toContain('backdrop-blur-sm');
     expect(backdrop).toContain('fixed');
     expect(backdrop).toContain('inset-0');
-    expect(backdrop).toContain('z-50');
     expect(backdrop).toContain('motion-overlay-backdrop');
   });
 
-  it('provides base surface styles for overlays', () => {
-    const surface = overlayVariants();
-    expect(surface).toContain('z-50');
-    expect(surface).toContain('border');
-    expect(surface).toContain('border-foreground/25');
-    expect(surface).not.toMatch(/\bshadow-/);
+  it('can contain a scrim inside a positioned preview', () => {
+    const backdrop = overlayBackdrop({ contained: true });
+
+    expect(backdrop).toContain('absolute');
+    expect(backdrop).not.toContain('fixed');
   });
 
-  it('supports dialog variant', () => {
+  it('uses semantic surface and depth tokens', () => {
+    const surface = overlayVariants();
+    expect(surface).toContain('border-border');
+    expect(surface).toContain('bg-popover');
+    expect(surface).toContain('shadow-overlay');
+  });
+
+  it('supports centered dialogs through a token-backed position recipe', () => {
     const dialog = overlayVariants({ variant: 'dialog' });
     expect(dialog).toContain('fixed');
-    expect(dialog).toContain('left-[50%]');
-    expect(dialog).toContain('top-[50%]');
-    expect(dialog).toContain('translate-x-[-50%]');
-    expect(dialog).toContain('translate-y-[-50%]');
-    expect(dialog).toContain('rounded-md');
-    expect(dialog).toContain('bg-card');
+    expect(dialog).toContain('overlay-dialog-position');
+    expect(dialog).toContain('rounded-xl');
     expect(dialog).toContain('motion-overlay-surface');
   });
 
-  it('supports sheet variant', () => {
+  it('supports mobile sheets', () => {
     const sheet = overlayVariants({ variant: 'sheet' });
-    expect(sheet).toContain('fixed');
-    expect(sheet).toContain('inset-x-0');
+    expect(sheet).toContain('overlay-sheet-position');
     expect(sheet).toContain('bottom-0');
-    expect(sheet).toContain('rounded-t-md');
-    expect(sheet).toContain('bg-card');
+    expect(sheet).toContain('rounded-t-xl');
     expect(sheet).toContain('motion-overlay-sheet');
   });
 
-  it('supports popover variant', () => {
+  it('supports popovers and dropdowns', () => {
     const popover = overlayVariants({ variant: 'popover' });
-    expect(popover).toContain('rounded-md');
-    expect(popover).toContain('bg-popover');
-    expect(popover).toContain('p-4');
-    expect(popover).toContain('motion-overlay-popover');
-  });
-
-  it('supports dropdown variant', () => {
     const dropdown = overlayVariants({ variant: 'dropdown' });
-    expect(dropdown).toContain('rounded-md');
-    expect(dropdown).toContain('bg-popover');
-    expect(dropdown).toContain('p-1.5');
+    expect(popover).toContain('rounded-lg');
+    expect(popover).toContain('p-4');
+    expect(dropdown).toContain('rounded-lg');
+    expect(dropdown).toContain('min-w-48');
     expect(dropdown).toContain('motion-overlay-popover');
   });
 
-  it('supports responsiveDialog variant', () => {
+  it('supports responsive dialogs and tokenized picker dimensions', () => {
     const dialog = overlayVariants({ variant: 'responsiveDialog' });
-    expect(dialog).toContain('fixed');
+    expect(dialog).toContain('overlay-responsive-position');
     expect(dialog).toContain('bottom-0');
-    expect(dialog).toContain('left-1/2');
-    expect(dialog).toContain('-translate-x-1/2');
-    expect(dialog).toContain('bg-card');
-    expect(dialog).toContain('text-foreground');
+    expect(dialog).toContain('sm:rounded-xl');
+    expect(overlayRecipes.picker.viewport).toContain('overlay-picker-viewport');
   });
 });

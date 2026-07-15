@@ -16,4 +16,9 @@ describe('Theme Configuration', () => {
     expect(themeConfig.dark.themeColor).toMatch(hexRegex)
     expect(themeConfig.dark.backgroundColor).toMatch(hexRegex)
   })
+
+  it('uses true black for dark browser chrome', () => {
+    expect(themeConfig.dark.backgroundColor).toBe('#000000')
+    expect(themeConfig.dark.themeColor).toBe('#000000')
+  })
 })

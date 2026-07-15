@@ -46,7 +46,6 @@ vi.mock('lucide-react', () => ({
   EyeOff: (props: any) => <span data-testid="eye-off-icon" {...props} />,
   Mail: (props: any) => <span data-testid="mail-icon" {...props} />,
   Lock: (props: any) => <span data-testid="lock-icon" {...props} />,
-  Chrome: (props: any) => <span data-testid="chrome-icon" {...props} />,
   User: (props: any) => <span data-testid="user-icon" {...props} />,
   AlertCircle: (props: any) => <span data-testid="alert-circle-icon" {...props} />,
 }));
@@ -176,4 +175,3 @@ describe('SignupPage Strict Password Rules', () => {
     expect(mockSignUp).toHaveBeenCalledWith('test@example.com', 'MySecure123!@', 'Test User');
   });
 });
-

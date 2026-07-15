@@ -1,5 +1,6 @@
 import { dbAll, dbGet } from '@/lib/db/client';
-import { createRepertorySearchService, SearchResult, Remedy, BookId } from '@homeoremedica/shared';
+import { createRepertorySearchService } from '@/lib/server/repertory/search-service';
+import type { SearchResult, Remedy, BookId } from '@/types';
 import { FindRemedyResponse } from '@/lib/types/backend';
 
 export const searchService = createRepertorySearchService({

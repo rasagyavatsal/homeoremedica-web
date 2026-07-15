@@ -42,7 +42,7 @@ vi.mock('@/lib/contexts/auth-context', () => ({
 
 // Mock next/image
 vi.mock('next/image', () => ({
-  default: (props: any) => <img alt="" {...props} />,
+  default: () => <span data-testid="next-image" />,
 }));
 
 // Mock lucide-react
@@ -51,7 +51,6 @@ vi.mock('lucide-react', () => ({
   EyeOff: (props: any) => <span data-testid="eye-off-icon" {...props} />,
   Mail: (props: any) => <span data-testid="mail-icon" {...props} />,
   Lock: (props: any) => <span data-testid="lock-icon" {...props} />,
-  Chrome: (props: any) => <span data-testid="chrome-icon" {...props} />,
   Search: (props: any) => <span data-testid="search-icon" {...props} />,
   Database: (props: any) => <span data-testid="database-icon" {...props} />,
   BookOpen: (props: any) => <span data-testid="book-icon" {...props} />,
@@ -83,7 +82,7 @@ describe('LoginPage', () => {
   it('renders Google sign-in button', () => {
     render(<LoginPage />);
 
-    expect(screen.getByRole('button', { name: /Continue with Google/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Sign in with Google/i })).toBeInTheDocument();
   });
 
   it('shows error message on failed sign-in', async () => {
@@ -106,13 +105,13 @@ describe('LoginPage', () => {
     });
   });
 
-  it('redirects authenticated user to home page', async () => {
+  it('redirects authenticated user to the finder', async () => {
     mockAuthUser.current = { uid: 'u1', email: 'test@test.com', displayName: 'Test' };
 
     render(<LoginPage />);
 
     await waitFor(() => {
-      expect(mockReplace).toHaveBeenCalledWith('/');
+      expect(mockReplace).toHaveBeenCalledWith('/find-remedy');
     });
   });
 
