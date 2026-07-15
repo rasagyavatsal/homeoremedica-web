@@ -109,7 +109,7 @@ export default function HomePage() {
           <div className="page-shell py-24 lg:py-32">
             <div className="cases-heading-grid mb-12 grid gap-8 lg:items-end">
               <div>
-                <h2 className="display-md max-w-3xl">Give the case your full attention.</h2>
+                <h2 className="display-md max-w-3xl">Save cases. Pick up where you left off.</h2>
                 <p className="mt-5 max-w-2xl text-on-surface-variant">
                   Save the source and selected symptoms together, then return to the case without rebuilding your research.
                 </p>

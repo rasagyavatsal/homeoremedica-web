@@ -101,15 +101,16 @@ describe('HomePage', () => {
     });
   });
 
-  it('places the full-attention message with the saved-cases preview', () => {
+  it('replaces the generic closing callout with a saved-cases section', () => {
     render(<HomePage />);
 
     const casesSection = screen.getByRole('region', { name: 'Saved cases' });
 
     expect(casesSection).toContainElement(
-      screen.getByRole('heading', { level: 2, name: 'Give the case your full attention.' }),
+      screen.getByRole('heading', { level: 2, name: 'Save cases. Pick up where you left off.' }),
     );
     expect(casesSection).toContainElement(screen.getByRole('region', { name: 'Saved cases preview' }));
+    expect(screen.queryByText('Give the case your full attention.')).not.toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Open the finder' })).toHaveAttribute('href', '/find-remedy');
   });
 });
