@@ -7,6 +7,13 @@ describe('CasesPreview', () => {
   it('shows saved cases and switches the active case', () => {
     render(<CasesPreview />);
 
+    expect(screen.getByRole('region', { name: 'Saved cases preview' })).toHaveClass(
+      'preview-device',
+      'aspect-preview-mobile',
+      'max-w-preview-mobile',
+      'md:aspect-preview-desktop',
+      'md:max-w-preview-desktop',
+    );
     expect(screen.getByText('Showing 3 cases')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Night-time burning pain/i })).toHaveAttribute('aria-pressed', 'true');
     expect(screen.getByRole('heading', { name: 'Night-time burning pain' })).toBeInTheDocument();

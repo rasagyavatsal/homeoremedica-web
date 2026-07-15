@@ -49,7 +49,7 @@ export function CasesPreview() {
   return (
     <section
       aria-label="Saved cases preview"
-      className="overflow-hidden rounded-xl border border-border bg-card shadow-soft"
+      className="preview-device aspect-preview-mobile max-w-preview-mobile md:aspect-preview-desktop md:max-w-preview-desktop"
     >
       <div className="flex items-center justify-between gap-4 border-b border-border px-5 py-4 md:px-6">
         <div className="flex items-center gap-3">
@@ -61,7 +61,7 @@ export function CasesPreview() {
         <span className="index-label">Showing {PREVIEW_CASES.length} cases</span>
       </div>
 
-      <div className="cases-preview-grid grid">
+      <div className="cases-preview-grid grid min-h-0 flex-1">
         <div className="border-b border-border bg-surface-container-low p-3 md:border-b-0 md:border-r">
           {PREVIEW_CASES.map((caseItem, index) => {
             const isActive = index === activeIndex;
