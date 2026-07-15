@@ -72,6 +72,9 @@ export default function HomePage() {
 
             <div className="mt-16 w-full lg:mt-20">
               <RemedyPreview />
+              <p className="mx-auto mt-6 max-w-3xl text-center text-sm text-on-surface-variant">
+                Results are a reference for study and practitioner research, not medical diagnosis or treatment advice.
+              </p>
             </div>
           </MotionRouteShell>
         </section>
@@ -126,10 +129,6 @@ export default function HomePage() {
                 </Link>
               </Button>
             </div>
-
-            <p className="mt-6 max-w-3xl text-sm text-on-surface-variant">
-              Results are a reference for study and practitioner research, not medical diagnosis or treatment advice.
-            </p>
           </div>
         </section>
       </main>

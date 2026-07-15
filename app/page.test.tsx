@@ -46,8 +46,16 @@ describe('HomePage', () => {
 
     const hero = screen.getByRole('heading', { level: 1 }).parentElement;
     expect(hero).toHaveClass('text-center');
-    expect(screen.getByRole('region', { name: 'Remedy finder demonstration' }))
-      .toHaveClass('preview-device');
+    const remedyPreview = screen.getByRole('region', { name: 'Remedy finder demonstration' });
+    const referenceDisclaimer = screen.getByText(
+      'Results are a reference for study and practitioner research, not medical diagnosis or treatment advice.',
+    );
+    const classicalSources = screen.getByRole('region', { name: 'Classical sources' });
+
+    expect(remedyPreview).toHaveClass('preview-device');
+    expect(remedyPreview.compareDocumentPosition(referenceDisclaimer)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(referenceDisclaimer.compareDocumentPosition(classicalSources)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(referenceDisclaimer).toHaveClass('mx-auto', 'text-center');
   });
 
   it('rotates the hero audience through practitioners and students', () => {
@@ -110,6 +118,7 @@ describe('HomePage', () => {
       screen.getByRole('heading', { level: 2, name: 'Save cases. Pick up where you left off.' }),
     );
     expect(casesSection).toContainElement(screen.getByRole('region', { name: 'Saved cases preview' }));
+    expect(casesSection).not.toContainElement(screen.getByText(/Results are a reference for study/));
     expect(screen.queryByText('Give the case your full attention.')).not.toBeInTheDocument();
     const casesPreview = screen.getByRole('region', { name: 'Saved cases preview' });
     const findRemedyLink = screen.getByRole('link', { name: 'Find Remedy' });
