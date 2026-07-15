@@ -100,4 +100,16 @@ describe('HomePage', () => {
       expect(cover).toHaveAttribute('data-sizes', '9rem');
     });
   });
+
+  it('places the full-attention message with the saved-cases preview', () => {
+    render(<HomePage />);
+
+    const casesSection = screen.getByRole('region', { name: 'Saved cases' });
+
+    expect(casesSection).toContainElement(
+      screen.getByRole('heading', { level: 2, name: 'Give the case your full attention.' }),
+    );
+    expect(casesSection).toContainElement(screen.getByRole('region', { name: 'Saved cases preview' }));
+    expect(screen.getByRole('link', { name: 'Open the finder' })).toHaveAttribute('href', '/find-remedy');
+  });
 });

@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 
+import { CasesPreview } from '@/components/cases-preview';
 import { Footer } from '@/components/footer';
 import { Header } from '@/components/header';
 import { HeroHeading } from '@/components/hero-heading';
@@ -104,20 +105,28 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="page-shell py-24 lg:py-32">
-          <div className="quiet-panel dilution-field landing-cta-grid grid gap-10 overflow-hidden p-8 md:p-12 lg:items-end">
-            <div>
-              <h2 className="display-md max-w-3xl">Give the case your full attention.</h2>
-              <p className="mt-5 max-w-2xl text-on-surface-variant">
-                Results are a reference for study and practitioner research, not medical diagnosis or treatment advice.
-              </p>
+        <section aria-label="Saved cases" className="dilution-field border-t border-border">
+          <div className="page-shell py-24 lg:py-32">
+            <div className="cases-heading-grid mb-12 grid gap-8 lg:items-end">
+              <div>
+                <h2 className="display-md max-w-3xl">Give the case your full attention.</h2>
+                <p className="mt-5 max-w-2xl text-on-surface-variant">
+                  Save the source and selected symptoms together, then return to the case without rebuilding your research.
+                </p>
+              </div>
+              <Button asChild size="lg" className="w-fit gap-3">
+                <Link href="/find-remedy">
+                  Open the finder
+                  <ArrowRight aria-hidden="true" className="h-4 w-4" />
+                </Link>
+              </Button>
             </div>
-            <Button asChild size="lg" className="gap-3">
-              <Link href="/find-remedy">
-                Open the finder
-                <ArrowRight aria-hidden="true" className="h-4 w-4" />
-              </Link>
-            </Button>
+
+            <CasesPreview />
+
+            <p className="mt-6 max-w-3xl text-sm text-on-surface-variant">
+              Results are a reference for study and practitioner research, not medical diagnosis or treatment advice.
+            </p>
           </div>
         </section>
       </main>
