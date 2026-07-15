@@ -158,6 +158,29 @@ describe('useSearchStore unit tests', () => {
 
       expect(useSearchStore.getState().results).toEqual(currentResults);
     });
+
+    it('should clear search status when a pending search is invalidated', async () => {
+      let resolveSearch!: (results: any[]) => void;
+      vi.mocked(apiClient.searchRemedies).mockImplementationOnce(
+        () => new Promise((resolve) => { resolveSearch = resolve; }),
+      );
+
+      const store = useSearchStore.getState();
+      store.addSymptom({ id: 's1', name: 'S1' });
+      const pendingSearch = store.findRemedies();
+
+      expect(useSearchStore.getState().searchStatus.isSearching).toBe(true);
+
+      store.clearSymptoms();
+
+      expect(useSearchStore.getState().searchStatus.isSearching).toBe(false);
+
+      resolveSearch([{ remedyId: 'stale', score: 1 }]);
+      await pendingSearch;
+
+      expect(useSearchStore.getState().searchStatus.isSearching).toBe(false);
+      expect(useSearchStore.getState().results).toEqual([]);
+    });
   });
 
   describe('migration', () => {

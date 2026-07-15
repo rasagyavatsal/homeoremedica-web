@@ -27,6 +27,16 @@ interface SearchState {
   findRemedies: () => Promise<void>;
 }
 
+function clearSearchStatus(status: SearchState['searchStatus']): SearchState['searchStatus'] {
+  return {
+    ...status,
+    isSearching: false,
+    currentBook: undefined,
+    completedBooks: [],
+    progress: 0,
+  };
+}
+
 export const useSearchStore = create<SearchState>()(
   persist(
     (set, get) => {
@@ -50,7 +60,12 @@ export const useSearchStore = create<SearchState>()(
       
         setActiveBook: (book) => {
           invalidatePendingSearch();
-          set({ activeBook: book, selectedSymptoms: [], results: [] });
+          set((state) => ({
+            activeBook: book,
+            selectedSymptoms: [],
+            results: [],
+            searchStatus: clearSearchStatus(state.searchStatus),
+          }));
         },
 
         addSymptom: (symptom) => {
@@ -58,6 +73,7 @@ export const useSearchStore = create<SearchState>()(
           set((state) => ({
             selectedSymptoms: [...state.selectedSymptoms.filter(s => s.id !== symptom.id), symptom],
             results: [],
+            searchStatus: clearSearchStatus(state.searchStatus),
           }));
         },
 
@@ -66,17 +82,25 @@ export const useSearchStore = create<SearchState>()(
           set((state) => ({
             selectedSymptoms: state.selectedSymptoms.filter(s => s.id !== symptomId),
             results: [],
+            searchStatus: clearSearchStatus(state.searchStatus),
           }));
         },
 
         clearSymptoms: () => {
           invalidatePendingSearch();
-          set({ selectedSymptoms: [], results: [] });
+          set((state) => ({
+            selectedSymptoms: [],
+            results: [],
+            searchStatus: clearSearchStatus(state.searchStatus),
+          }));
         },
 
         clearResults: () => {
           invalidatePendingSearch();
-          set({ results: [] });
+          set((state) => ({
+            results: [],
+            searchStatus: clearSearchStatus(state.searchStatus),
+          }));
         },
 
         setSearchQuery: (query) => set({ searchQuery: query }),
