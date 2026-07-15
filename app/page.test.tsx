@@ -111,6 +111,11 @@ describe('HomePage', () => {
     );
     expect(casesSection).toContainElement(screen.getByRole('region', { name: 'Saved cases preview' }));
     expect(screen.queryByText('Give the case your full attention.')).not.toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Open the finder' })).toHaveAttribute('href', '/find-remedy');
+    const casesPreview = screen.getByRole('region', { name: 'Saved cases preview' });
+    const findRemedyLink = screen.getByRole('link', { name: 'Find Remedy' });
+
+    expect(findRemedyLink).toHaveAttribute('href', '/find-remedy');
+    expect(casesPreview.compareDocumentPosition(findRemedyLink)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(findRemedyLink.parentElement).toHaveClass('justify-center');
   });
 });

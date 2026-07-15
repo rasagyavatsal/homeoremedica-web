@@ -476,7 +476,6 @@
   .balanced-copy { text-wrap: balance; }
   .flex-grow-2 { flex: 2 1 0%; }
   .landing-step-grid { grid-template-columns: auto minmax(0, 1fr); }
-  .cases-heading-grid { grid-template-columns: minmax(0, 1fr); }
   .radix-select-size {
     height: var(--radix-select-trigger-height);
     min-width: var(--radix-select-trigger-width);
@@ -538,7 +537,6 @@
 
   @media (min-width: 1024px) {
     .landing-step-grid { grid-template-columns: var(--space-16) minmax(0, 1fr); }
-    .cases-heading-grid { grid-template-columns: minmax(0, 1fr) auto; }
   }
 }
 

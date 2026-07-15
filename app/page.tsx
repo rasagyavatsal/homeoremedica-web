@@ -107,22 +107,25 @@ export default function HomePage() {
 
         <section aria-label="Saved cases" className="dilution-field border-t border-border">
           <div className="page-shell py-24 lg:py-32">
-            <div className="cases-heading-grid mb-12 grid gap-8 lg:items-end">
+            <div className="mb-12">
               <div>
                 <h2 className="display-md max-w-3xl">Save cases. Pick up where you left off.</h2>
                 <p className="mt-5 max-w-2xl text-on-surface-variant">
                   Save the source and selected symptoms together, then return to the case without rebuilding your research.
                 </p>
               </div>
-              <Button asChild size="lg" className="w-fit gap-3">
+            </div>
+
+            <CasesPreview />
+
+            <div className="mt-6 flex justify-center">
+              <Button asChild size="lg" className="gap-3">
                 <Link href="/find-remedy">
-                  Open the finder
+                  Find Remedy
                   <ArrowRight aria-hidden="true" className="h-4 w-4" />
                 </Link>
               </Button>
             </div>
-
-            <CasesPreview />
 
             <p className="mt-6 max-w-3xl text-sm text-on-surface-variant">
               Results are a reference for study and practitioner research, not medical diagnosis or treatment advice.
