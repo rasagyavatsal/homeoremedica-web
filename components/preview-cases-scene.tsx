@@ -239,6 +239,7 @@ export function PreviewCasesScene() {
           if (selectedCaseId === caseId) setSelectedCaseId(null);
         }}
         onLogin={() => undefined}
+        manageFocus={!autoplay}
       />
 
       <SaveCaseDialog
@@ -259,6 +260,7 @@ export function PreviewCasesScene() {
           setAutoplay(false);
           setStage('workspace');
         }}
+        manageFocus={!autoplay}
       />
     </div>
   );

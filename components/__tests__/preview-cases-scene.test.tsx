@@ -44,12 +44,41 @@ describe('PreviewCasesScene', () => {
     ).toHaveClass('bg-accent');
   });
 
+  it('does not move focus while dialogs autoplay', () => {
+    vi.useFakeTimers();
+    render(
+      <>
+        <button type="button">Outside preview</button>
+        <PreviewCasesScene />
+      </>,
+    );
+
+    const outsidePreview = screen.getByRole('button', { name: 'Outside preview' });
+    outsidePreview.focus();
+
+    act(() => vi.advanceTimersByTime(1_400));
+    expect(screen.getByRole('dialog', { name: 'Save case' })).toBeInTheDocument();
+    expect(document.activeElement).toBe(outsidePreview);
+
+    for (const _character of 'Night-time burning pain') {
+      act(() => vi.advanceTimersByTime(45));
+    }
+    act(() => vi.advanceTimersByTime(1_000));
+    expect(screen.getByRole('dialog', { name: 'Saved cases' })).toBeInTheDocument();
+    expect(document.activeElement).toBe(outsidePreview);
+
+    act(() => vi.advanceTimersByTime(2_000));
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(document.activeElement).toBe(outsidePreview);
+  });
+
   it('keeps the case workflow manually interactive', () => {
     vi.useFakeTimers();
     render(<PreviewCasesScene />);
 
     fireEvent.click(screen.getByRole('button', { name: 'Save case' }));
     const saveDialog = screen.getByRole('dialog', { name: 'Save case' });
+    expect(within(saveDialog).getByLabelText('Case name')).toHaveFocus();
     fireEvent.change(within(saveDialog).getByLabelText('Case name'), {
       target: { value: 'Manual preview case' },
     });
