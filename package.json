@@ -67,7 +67,7 @@
     "@vitest/coverage-v8": "^4.0.18",
     "dotenv": "^17.2.1",
     "eslint": "^9.39.5",
-    "eslint-config-next": "^15.5.16",
+    "eslint-config-next": "^16.2.10",
     "fast-glob": "^3.3.3",
     "jsdom": "^28.1.0",
     "playwright": "^1.61.1",
