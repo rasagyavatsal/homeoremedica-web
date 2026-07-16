@@ -20,13 +20,6 @@ export function getErrorStatus(error: ApiError): number {
   }
 }
 
-export function getInternalErrorMessage(error: unknown) {
-  if (process.env.NODE_ENV === 'production') {
-    return 'Internal server error';
-  }
-  return error instanceof Error ? error.message : 'Internal server error';
-}
-
 export function handleApiError(error: unknown, context?: string) {
   if (context) {
     console.error(`[API Error] ${context}:`, error);
@@ -40,7 +33,7 @@ export function handleApiError(error: unknown, context?: string) {
   
   return NextResponse.json({
     code: 'INTERNAL_ERROR',
-    message: getInternalErrorMessage(error)
+    message: 'Internal server error'
   }, { status: 500 });
 }
 

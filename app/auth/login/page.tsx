@@ -59,6 +59,7 @@ export default function LoginPage() {
             value={email}
             onChange={(event) => setEmail(event.target.value)}
             placeholder="your@email.com"
+            autoComplete="username"
             icon={Mail}
             required
           />
@@ -69,9 +70,10 @@ export default function LoginPage() {
             value={password}
             onChange={(event) => setPassword(event.target.value)}
             placeholder="••••••••"
+            autoComplete="current-password"
             required
             rightLabel={
-              <Link href="/auth/reset-password" className="text-xs font-medium text-tertiary underline-offset-4 hover:underline">
+              <Link href="/auth/reset-password" className="text-sm font-medium text-tertiary underline underline-offset-4">
                 Forgot password?
               </Link>
             }

@@ -3,16 +3,13 @@
  * No additional tracking needed - app is free for all users.
  */
 
-import { adminDb } from '@/lib/firebase-admin';
+import { getAdminDb } from '@/lib/firebase-admin';
 import { UserDoc } from '@/lib/types/backend';
 import { Timestamp } from 'firebase-admin/firestore';
 
-// Mock data for development mode
-const mockUsers: Record<string, UserDoc> = {};
-
 export async function createOrUpdateUser(uid: string, email: string, name?: string): Promise<UserDoc> {
   try {
-    const userRef = adminDb.collection('users').doc(uid);
+    const userRef = getAdminDb().collection('users').doc(uid);
     const userDoc = await userRef.get();
     
     if (userDoc.exists) {
@@ -46,16 +43,6 @@ export async function createOrUpdateUser(uid: string, email: string, name?: stri
     return newUser;
   } catch (error) {
     console.error('Error creating/updating user:', error);
-    // Fallback to mock user only if Firebase is completely unavailable
-    const now = new Date();
-    const mockUser: UserDoc = {
-      email,
-      name: name || '',
-      createdAt: now as any,
-      updatedAt: now as any
-    };
-    mockUsers[uid] = mockUser;
-    console.log(`Using mock user data for ${uid} due to Firebase error`);
-    return mockUser;
+    throw error;
   }
 }

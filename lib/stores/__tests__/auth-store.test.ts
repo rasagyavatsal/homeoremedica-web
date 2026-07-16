@@ -130,6 +130,27 @@ describe('auth-store', () => {
     expect(mockApiClient.getSession).toHaveBeenCalledWith('Google User');
   });
 
+  it('rolls back Firebase authentication when the backend session fails', async () => {
+    const firebaseUser = { uid: 'google123', email: 'google@example.com', displayName: 'Google User' };
+    const backendError = { code: 'INTERNAL_ERROR', message: 'Internal server error' };
+    mockAuthAdapter.signInWithGoogle.mockResolvedValue(firebaseUser);
+    mockApiClient.getSession.mockRejectedValue(backendError);
+
+    const useAuthStore = createAuthStore({
+      apiClient: mockApiClient,
+      authAdapter: mockAuthAdapter,
+      storage: mockStorage,
+    });
+
+    await expect(useAuthStore.getState().signInWithGoogle()).rejects.toMatchObject({
+      code: 'backend/connection-failed',
+    });
+
+    expect(mockAuthAdapter.signOutUser).toHaveBeenCalledOnce();
+    expect(mockApiClient.setAuthToken).toHaveBeenLastCalledWith(null);
+    expect(useAuthStore.getState()).toMatchObject({ user: null, loading: false });
+  });
+
   it('should wrap network errors in signInWithGoogle', async () => {
     const networkError = new Error('Failed to fetch');
     mockAuthAdapter.signInWithGoogle.mockRejectedValue(networkError);
@@ -202,7 +223,7 @@ describe('auth-store', () => {
     expect(mockAuthAdapter.changePassword).toHaveBeenCalledWith('old', 'new');
   });
 
-  it('should initialize auth listener correctly', () => {
+  it('should initialize auth listener correctly', async () => {
     const unsubscribe = vi.fn();
     mockAuthAdapter.onIdTokenChange.mockReturnValue(unsubscribe);
 
@@ -221,7 +242,8 @@ describe('auth-store', () => {
     const firebaseUser = { uid: '456', email: 'other@example.com', displayName: 'Other User' };
     
     callback('new-token', firebaseUser);
-    
+
+    await vi.waitFor(() => expect(useAuthStore.getState().initialized).toBe(true));
     let state = useAuthStore.getState();
     expect(state.user).toEqual({
       id: '456',

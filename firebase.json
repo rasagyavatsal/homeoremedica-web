@@ -13,6 +13,18 @@
       ]
     }
   ],
+  "auth": {
+    "providers": {
+      "emailPassword": true,
+      "googleSignIn": {
+        "oAuthBrandDisplayName": "HomeoRemedica",
+        "supportEmail": "rasagyavatsal1@gmail.com",
+        "authorizedRedirectUris": [
+          "https://homeoremedica-web-dev--homeoremedica-dev.us-central1.hosted.app"
+        ]
+      }
+    }
+  },
   "firestore": {
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"

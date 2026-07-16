@@ -150,6 +150,15 @@ describe('LoginPage', () => {
     expect(signupLink.closest('a')).toHaveAttribute('href', '/auth/signup');
   });
 
+  it('shows a password reset link', () => {
+    render(<LoginPage />);
+
+    expect(screen.getByRole('link', { name: 'Forgot password?' })).toHaveAttribute(
+      'href',
+      '/auth/reset-password'
+    );
+  });
+
   it('does not render redundant helper descriptions', () => {
     render(<LoginPage />);
     expect(screen.queryByText('Sign in to continue.')).not.toBeInTheDocument();

@@ -92,6 +92,7 @@ export default function SignupPage() {
             value={name}
             onChange={(event) => setName(event.target.value)}
             placeholder="Your name"
+            autoComplete="name"
             icon={User}
             required
           />
@@ -103,6 +104,7 @@ export default function SignupPage() {
             value={email}
             onChange={(event) => setEmail(event.target.value)}
             placeholder="your@email.com"
+            autoComplete="email"
             icon={Mail}
             required
           />
@@ -115,6 +117,7 @@ export default function SignupPage() {
               onChange={(event) => setPassword(event.target.value)}
               onFocus={() => setIsPasswordFocused(true)}
               onBlur={() => setIsPasswordFocused(false)}
+              autoComplete="new-password"
               placeholder="Min 12 characters"
               required
             />
@@ -125,6 +128,7 @@ export default function SignupPage() {
             id="confirmPassword"
             label="Confirm password"
             type="password"
+            autoComplete="new-password"
             value={confirmPassword}
             onChange={(event) => setConfirmPassword(event.target.value)}
             placeholder="Confirm password"

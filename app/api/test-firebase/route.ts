@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { adminAuth, adminDb } from '@/lib/firebase-admin';
+import { getAdminAuth, getAdminDb } from '@/lib/firebase-admin';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -10,10 +10,10 @@ export async function GET() {
       return NextResponse.json({ message: 'Not found' }, { status: 404 });
     }
     // Test Firebase Admin connection
-    const testUser = await adminAuth.listUsers(1);
+    const testUser = await getAdminAuth().listUsers(1);
     
     // Test Firestore connection
-    await adminDb.collection('test').doc('connection').get();
+    await getAdminDb().collection('test').doc('connection').get();
     
     return NextResponse.json({
       success: true,

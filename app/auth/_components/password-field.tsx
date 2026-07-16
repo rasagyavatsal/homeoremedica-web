@@ -16,6 +16,7 @@ interface PasswordFieldProps {
   readonly required?: boolean;
   readonly onFocus?: () => void;
   readonly onBlur?: () => void;
+  readonly autoComplete?: React.HTMLInputAutoCompleteAttribute;
 }
 
 export function PasswordField({
@@ -28,6 +29,7 @@ export function PasswordField({
   required = true,
   onFocus,
   onBlur,
+  autoComplete,
 }: PasswordFieldProps) {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -50,6 +52,7 @@ export function PasswordField({
           onChange={onChange}
           onFocus={onFocus}
           onBlur={onBlur}
+          autoComplete={autoComplete}
           placeholder={placeholder}
           className="pl-10 pr-10"
           required={required}

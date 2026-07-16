@@ -15,6 +15,14 @@ function parseResponseBody(text: string) {
   return text;
 }
 
+function createNonJsonError(status: number) {
+  return {
+    code: 'INTERNAL_ERROR',
+    message: 'The server could not complete the request. Please try again.',
+    details: { status },
+  };
+}
+
 export class ApiClient {
   private readonly baseUrl: string;
   private authToken: string | null = null;
@@ -51,11 +59,9 @@ export class ApiClient {
     const data = parseResponseBody(text);
 
     if (!response.ok) {
-      const error = data && typeof data === 'object' ? data : {
-        code: 'INTERNAL_ERROR',
-        message: text || `Request failed with status ${response.status}`,
-        details: { status: response.status }
-      };
+      const error = data && typeof data === 'object'
+        ? data
+        : createNonJsonError(response.status);
       throw error;
     }
 

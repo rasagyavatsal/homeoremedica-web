@@ -47,103 +47,99 @@ export interface AuthState {
 
 export function createAuthStore(config: AuthStoreConfig) {
   const { apiClient, authAdapter, storage, onLogout } = config;
+  let interactiveAuthPending = false;
 
   return create<AuthState>()(
     persist(
-      (set, get) => ({
+      (set, get) => {
+        const toUser = (firebaseUser: FirebaseUser, name?: string): User => ({
+          id: firebaseUser.uid,
+          email: firebaseUser.email,
+          name: name || firebaseUser.displayName || '',
+        });
+
+        const createBackendError = () => {
+          const error = new Error('Failed to connect to backend. Please check your connection.');
+          (error as Error & { code: string }).code = 'backend/connection-failed';
+          return error;
+        };
+
+        const rollbackAuthentication = async () => {
+          apiClient.setAuthToken(null);
+          set({ user: null });
+          await Promise.resolve(authAdapter.signOutUser()).catch((error) => {
+            console.error('Failed to roll back Firebase authentication:', error);
+          });
+        };
+
+        const establishBackendSession = async (firebaseUser: FirebaseUser, name?: string) => {
+          try {
+            const token = await authAdapter.getCurrentUserToken();
+            if (!token) {
+              throw createBackendError();
+            }
+
+            apiClient.setAuthToken(token);
+            await apiClient.getSession(name);
+            return toUser(firebaseUser, name);
+          } catch (error) {
+            console.error('Failed to establish backend session:', error);
+            await rollbackAuthentication();
+            throw createBackendError();
+          }
+        };
+
+        return {
         user: null,
         loading: false,
         initialized: false,
         
         signIn: async (email: string, password: string) => {
           set({ loading: true });
+          interactiveAuthPending = true;
           try {
             const firebaseUser = await authAdapter.signInWithEmail(email, password);
-            const token = await authAdapter.getCurrentUserToken();
-            if (token) {
-              apiClient.setAuthToken(token);
-            }
-
-            try {
-              await apiClient.getSession();
-            } catch (error) {
-              console.error('Failed to establish backend session after sign-in:', error);
-            }
-
-            const user: User = {
-              id: firebaseUser.uid,
-              email: firebaseUser.email,
-              name: firebaseUser.displayName || '',
-            };
-            
+            const user = await establishBackendSession(firebaseUser);
             set({ user, loading: false });
           } catch (error) {
             set({ loading: false });
             throw error;
+          } finally {
+            interactiveAuthPending = false;
           }
         },
         
         signUp: async (email: string, password: string, name?: string) => {
           set({ loading: true });
+          interactiveAuthPending = true;
           try {
             const firebaseUser = await authAdapter.signUpWithEmail(email, password, name);
-            const token = await authAdapter.getCurrentUserToken();
-            if (token) {
-              apiClient.setAuthToken(token);
-            }
-
-            try {
-              await apiClient.getSession(name);
-            } catch (error) {
-              console.error('Failed to establish backend session after sign-up:', error);
-            }
-
-            const user: User = {
-              id: firebaseUser.uid,
-              email: firebaseUser.email,
-              name: name || firebaseUser.displayName || '',
-            };
-            
+            const user = await establishBackendSession(firebaseUser, name);
             set({ user, loading: false });
           } catch (error) {
             set({ loading: false });
             throw error;
+          } finally {
+            interactiveAuthPending = false;
           }
         },
 
         signInWithGoogle: async () => {
           set({ loading: true });
+          interactiveAuthPending = true;
           try {
             const firebaseUser = await authAdapter.signInWithGoogle();
-            const token = await authAdapter.getCurrentUserToken();
-            if (token) {
-              apiClient.setAuthToken(token);
-            }
-
-            try {
-              await apiClient.getSession(firebaseUser.displayName);
-            } catch (error) {
-              console.error('Failed to establish backend session after Google sign-in:', error);
-            }
-
-            const user: User = {
-              id: firebaseUser.uid,
-              email: firebaseUser.email,
-              name: firebaseUser.displayName || '',
-            };
-            
+            const user = await establishBackendSession(firebaseUser, firebaseUser.displayName);
             set({ user, loading: false });
           } catch (error: any) {
             set({ loading: false });
             console.error('signInWithGoogle error in store:', error);
-            
             if (error?.message?.includes('fetch') || error?.message?.includes('network')) {
-              const backendError = new Error('Failed to connect to backend. Please check your connection.');
-              (backendError as any).code = 'backend/connection-failed';
-              throw backendError;
+              throw createBackendError();
             }
-            
             throw error;
+          } finally {
+            interactiveAuthPending = false;
           }
         },
         
@@ -166,21 +162,26 @@ export function createAuthStore(config: AuthStoreConfig) {
           return authAdapter.onIdTokenChange((token, firebaseUser) => {
             apiClient.setAuthToken(token);
             if (firebaseUser) {
-              const currentUser = get().user;
-              set({ 
-                user: {
-                  id: firebaseUser.uid,
-                  email: firebaseUser.email,
-                  name: firebaseUser.displayName || currentUser?.name || '',
-                },
-                initialized: true
+              if (interactiveAuthPending) {
+                set({ initialized: true });
+                return;
+              }
+
+              const currentName = get().user?.name || firebaseUser.displayName;
+              set({ user: null });
+              void apiClient.getSession(currentName).then(() => {
+                set({ user: toUser(firebaseUser, currentName), initialized: true });
+              }).catch(async (error) => {
+                console.error('Failed to restore backend session:', error);
+                await rollbackAuthentication();
+                set({ initialized: true });
               });
             } else {
               set({ user: null, initialized: true });
             }
           });
         }
-      }),
+      }},
       {
         name: 'auth-storage',
         storage: createJSONStorage(() => storage),

@@ -296,6 +296,34 @@ describe('FindRemedyClient current search behavior', () => {
     expect(within(saveDialog).queryByText(/Use a concise label you will recognise later/i)).toBeNull();
   });
 
+  it('shows a concise inline error when saving a case fails', async () => {
+    const addCase = vi.fn().mockRejectedValue({
+      code: 'INTERNAL_ERROR',
+      message: 'The server could not complete the request. Please try again.',
+    });
+    useSearchStore.setState({
+      selectedSymptoms: [{ id: 'symptom-1', name: 'Burning pain' }],
+      results: [],
+      searchQuery: '',
+    });
+    useCasesStore.setState({ addCase });
+    const alertSpy = vi.spyOn(globalThis, 'alert');
+
+    render(<FindRemedyClient />);
+
+    fireEvent.click(screen.getByRole('button', { name: /Save case/i }));
+    const saveDialog = await screen.findByRole('dialog');
+    fireEvent.change(within(saveDialog).getByLabelText('Case name'), {
+      target: { value: 'Patient A' },
+    });
+    fireEvent.click(within(saveDialog).getByRole('button', { name: 'Save case' }));
+
+    expect(await within(saveDialog).findByRole('alert')).toHaveTextContent(
+      'The server could not complete the request. Please try again.',
+    );
+    expect(alertSpy).not.toHaveBeenCalled();
+  });
+
   it('keeps landing and editorial copy out of the focused finder in every search state', async () => {
     render(<FindRemedyClient />);
 

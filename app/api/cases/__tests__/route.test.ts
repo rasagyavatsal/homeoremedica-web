@@ -45,12 +45,12 @@ vi.mock('@/lib/firebase-admin', () => {
   });
 
   return {
-    adminDb: {
+    getAdminDb: () => ({
       collection: (...args: any[]) => {
         mockCollection(...args);
         return createCollectionMock();
       },
-    },
+    }),
     adminSdk: {
       firestore: {
         Timestamp: {

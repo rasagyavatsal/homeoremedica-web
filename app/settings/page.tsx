@@ -172,6 +172,7 @@ export default function SettingsPage() {
                       <Input
                         id="current-password"
                         type={showPasswords.current ? 'text' : 'password'}
+                        autoComplete="current-password"
                         value={currentPassword}
                         onChange={(event) => setCurrentPassword(event.target.value)}
                         placeholder="••••••••"
@@ -195,6 +196,7 @@ export default function SettingsPage() {
                       <Input
                         id="new-password"
                         type={showPasswords.new ? 'text' : 'password'}
+                        autoComplete="new-password"
                         value={newPassword}
                         onChange={(event) => setNewPassword(event.target.value)}
                         placeholder="Min 12 characters"
@@ -238,6 +240,7 @@ export default function SettingsPage() {
                       <Input
                         id="confirm-password"
                         type={showPasswords.confirm ? 'text' : 'password'}
+                        autoComplete="new-password"
                         value={confirmPassword}
                         onChange={(event) => setConfirmPassword(event.target.value)}
                         placeholder="Confirm new password"
