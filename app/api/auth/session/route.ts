@@ -14,16 +14,12 @@ function isApiError(error: unknown): error is ApiError {
   );
 }
 
-function getErrorMessage(error: unknown) {
-  return error instanceof Error ? error.message : 'Internal server error';
-}
-
 function getErrorDetails(error: unknown) {
   return {
     type: typeof error,
     hasCode: isApiError(error),
     code: isApiError(error) ? error.code : 'no code',
-    message: getErrorMessage(error),
+    message: error instanceof Error ? error.message : 'Internal server error',
     stack: error instanceof Error ? error.stack : 'no stack'
   };
 }
@@ -58,7 +54,7 @@ export async function POST(request: NextRequest) {
     
     return NextResponse.json({
       code: 'INTERNAL_ERROR',
-      message: getErrorMessage(error)
+      message: 'Internal server error'
     }, { status: 500 });
   }
 }

@@ -87,6 +87,6 @@ describe('POST /api/auth/session', () => {
     expect(res.status).toBe(500);
     const data = await res.json();
     expect(data.code).toBe('INTERNAL_ERROR');
-    expect(data.message).toBe('Firestore down');
+    expect(data.message).toBe('Internal server error');
   });
 });

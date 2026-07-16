@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { adminAuth } from '@/lib/firebase-admin';
+import { getAdminAuth } from '@/lib/firebase-admin';
 import { ApiError } from '@/lib/types/backend';
 
 export interface AuthenticatedRequest extends NextRequest {
@@ -10,13 +10,15 @@ export interface AuthenticatedRequest extends NextRequest {
 }
 
 export async function verifyAuthToken(request: NextRequest): Promise<{ uid: string; email: string } | null> {
-  try {
-    const authHeader = request.headers.get('authorization');
-    if (!authHeader?.startsWith('Bearer ')) {
-      return null;
-    }
+  const authHeader = request.headers.get('authorization');
+  if (!authHeader?.startsWith('Bearer ')) {
+    return null;
+  }
 
-    const token = authHeader.split('Bearer ')[1];
+  const token = authHeader.split('Bearer ')[1];
+  const adminAuth = getAdminAuth();
+
+  try {
     const decodedToken = await adminAuth.verifyIdToken(token);
     
     return {

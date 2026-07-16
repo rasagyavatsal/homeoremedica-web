@@ -36,9 +36,9 @@ vi.mock('@/lib/firebase-admin', () => {
   }
 
   return {
-    adminDb: {
+    getAdminDb: () => ({
       collection: mockRootCollection,
-    },
+    }),
   };
 });
 

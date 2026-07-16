@@ -11,6 +11,7 @@ interface TextFieldProps {
   readonly placeholder?: string;
   readonly required?: boolean;
   readonly icon: LucideIcon;
+  readonly autoComplete?: React.HTMLInputAutoCompleteAttribute;
 }
 
 export function TextField({
@@ -22,6 +23,7 @@ export function TextField({
   placeholder,
   required = true,
   icon: Icon,
+  autoComplete,
 }: TextFieldProps) {
   return (
     <Field>
@@ -36,6 +38,7 @@ export function TextField({
           placeholder={placeholder}
           className="pl-10"
           required={required}
+          autoComplete={autoComplete}
         />
       </div>
     </Field>

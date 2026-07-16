@@ -247,6 +247,7 @@ function SaveCaseDialog({
   caseName,
   onCaseNameChange,
   isSaving,
+  error,
   onSubmit,
   onCancel,
 }: Readonly<{
@@ -255,6 +256,7 @@ function SaveCaseDialog({
   caseName: string;
   onCaseNameChange: (value: string) => void;
   isSaving: boolean;
+  error: string;
   onSubmit: (event?: React.FormEvent) => void;
   onCancel: () => void;
 }>) {
@@ -278,6 +280,8 @@ function SaveCaseDialog({
               onChange={(event) => onCaseNameChange(event.target.value)}
             />
           </Field>
+
+          {error ? <Callout variant="destructive">{error}</Callout> : null}
 
           <div className="flex items-center gap-3">
             <Button type="button" variant="ghost" className="flex-1" onClick={onCancel}>
@@ -364,6 +368,7 @@ export default function FindRemedyClient() {
   const [saveCaseModalOpen, setSaveCaseModalOpen] = useState(false);
   const [caseName, setCaseName] = useState('');
   const [isSaving, setIsSaving] = useState(false);
+  const [saveCaseError, setSaveCaseError] = useState('');
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [searchResetSignal, setSearchResetSignal] = useState(0);
 
@@ -421,6 +426,7 @@ export default function FindRemedyClient() {
       return;
     }
 
+    setSaveCaseError('');
     setSaveCaseModalOpen(true);
   };
 
@@ -430,6 +436,7 @@ export default function FindRemedyClient() {
     if (!caseName.trim()) return;
 
     setIsSaving(true);
+    setSaveCaseError('');
     try {
       await addCase(caseName, selectedSymptoms, activeBook, user!.uid);
       setSaveCaseModalOpen(false);
@@ -437,7 +444,7 @@ export default function FindRemedyClient() {
       setCasesModalOpen(true);
     } catch (error: any) {
       console.error('Save case error:', error);
-      globalThis.alert(error?.message || 'Failed to save case. Please try again.');
+      setSaveCaseError(error?.message || 'Failed to save case. Please try again.');
     } finally {
       setIsSaving(false);
     }
@@ -557,6 +564,7 @@ export default function FindRemedyClient() {
         caseName={caseName}
         onCaseNameChange={setCaseName}
         isSaving={isSaving}
+        error={saveCaseError}
         onSubmit={confirmSaveCase}
         onCancel={() => setSaveCaseModalOpen(false)}
       />

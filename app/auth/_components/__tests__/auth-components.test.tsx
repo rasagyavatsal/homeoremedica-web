@@ -85,6 +85,19 @@ describe('Auth components', () => {
 
       expect(screen.getByTestId('forgot')).toBeInTheDocument();
     });
+
+    it('passes the autocomplete purpose to the password input', () => {
+      render(
+        <PasswordField
+          label="Password"
+          value=""
+          onChange={vi.fn()}
+          autoComplete="current-password"
+        />
+      );
+
+      expect(screen.getByLabelText('Password')).toHaveAttribute('autocomplete', 'current-password');
+    });
   });
 
   describe('PasswordRequirements', () => {

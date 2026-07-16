@@ -10,7 +10,7 @@ const { mockUserGet, mockUserSet, mockUserUpdate, mockTimestampNow } = vi.hoiste
 }));
 
 vi.mock('@/lib/firebase-admin', () => ({
-  adminDb: {
+  getAdminDb: () => ({
     collection: () => ({
       doc: () => ({
         get: mockUserGet,
@@ -18,7 +18,7 @@ vi.mock('@/lib/firebase-admin', () => ({
         update: mockUserUpdate,
       }),
     }),
-  },
+  }),
 }));
 
 vi.mock('firebase-admin/firestore', () => ({
@@ -112,13 +112,11 @@ describe('createOrUpdateUser', () => {
     expect(result.email).toBe('same@test.com');
   });
 
-  it('falls back to mock user on Firebase error', async () => {
+  it('propagates Firebase errors instead of creating a false backend session', async () => {
     mockUserGet.mockRejectedValue(new Error('Firestore unavailable'));
 
-    const result = await createOrUpdateUser('uid-6', 'fallback@test.com', 'Fallback');
-
-    expect(result.email).toBe('fallback@test.com');
-    expect(result.name).toBe('Fallback');
-    // Should not throw
+    await expect(
+      createOrUpdateUser('uid-6', 'fallback@test.com', 'Fallback'),
+    ).rejects.toThrow('Firestore unavailable');
   });
 });

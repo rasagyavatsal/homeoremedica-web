@@ -1,16 +1,13 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { NextRequest } from 'next/server';
 
-const { mockVerifyIdToken } = vi.hoisted(() => ({
+const { mockGetAdminAuth, mockVerifyIdToken } = vi.hoisted(() => ({
+  mockGetAdminAuth: vi.fn(),
   mockVerifyIdToken: vi.fn(),
 }));
 
 vi.mock('@/lib/firebase-admin', () => ({
-  adminAuth: {
-    verifyIdToken: mockVerifyIdToken,
-  },
-  adminDb: {},
-  adminSdk: {},
+  getAdminAuth: () => mockGetAdminAuth(),
 }));
 
 import { verifyAuthToken, requireAuth, createAuthError } from '../middleware';
@@ -26,6 +23,7 @@ function createMockRequest(authHeader?: string): NextRequest {
 describe('verifyAuthToken', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockGetAdminAuth.mockReturnValue({ verifyIdToken: mockVerifyIdToken });
   });
 
   it('returns null for missing authorization header', async () => {
@@ -74,6 +72,16 @@ describe('verifyAuthToken', () => {
     expect(result).toBeNull();
   });
 
+  it('propagates Firebase Admin initialization failures', async () => {
+    mockGetAdminAuth.mockImplementation(() => {
+      throw new Error('Firebase Admin credentials missing');
+    });
+
+    const request = createMockRequest('Bearer token');
+
+    await expect(verifyAuthToken(request)).rejects.toThrow('Firebase Admin credentials missing');
+  });
+
   it('returns empty email string when decoded token has no email', async () => {
     mockVerifyIdToken.mockResolvedValue({
       uid: 'user-no-email',
@@ -91,6 +99,7 @@ describe('verifyAuthToken', () => {
 describe('requireAuth', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockGetAdminAuth.mockReturnValue({ verifyIdToken: mockVerifyIdToken });
   });
 
   it('throws AUTH_REQUIRED error when token is invalid', async () => {

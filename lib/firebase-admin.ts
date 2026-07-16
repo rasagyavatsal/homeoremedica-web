@@ -65,8 +65,7 @@ function initializeFirebaseAdminApp() {
   );
 }
 
-// Initialize Firebase Admin SDK
-const app = (() => {
+function getFirebaseAdminApp() {
   if (adminSdk.apps.length === 0) {
     try {
       return initializeFirebaseAdminApp();
@@ -78,9 +77,13 @@ const app = (() => {
   }
 
   return adminSdk.apps[0]!;
-})();
+}
 
 export { adminSdk };
-export const adminDb = adminSdk.firestore(app);
-export const adminAuth = adminSdk.auth(app);
-export default app;
+export function getAdminDb() {
+  return adminSdk.firestore(getFirebaseAdminApp());
+}
+
+export function getAdminAuth() {
+  return adminSdk.auth(getFirebaseAdminApp());
+}

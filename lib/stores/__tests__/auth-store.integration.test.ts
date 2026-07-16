@@ -123,7 +123,7 @@ describe('auth-store integration', () => {
   });
 
   describe('initializeAuthListener', () => {
-    it('updates user on token change and sets initialized: true', () => {
+    it('updates user on token change and sets initialized: true', async () => {
       let capturedCallback: ((token: string | null, user: any) => void) | null = null;
       mockAuthAdapter.onIdTokenChange.mockImplementation((cb: any) => {
         capturedCallback = cb;
@@ -149,6 +149,7 @@ describe('auth-store integration', () => {
         displayName: 'Listener User',
       });
 
+      await vi.waitFor(() => expect(store.getState().initialized).toBe(true));
       const state = store.getState();
       expect(state.initialized).toBe(true);
       expect(state.user).toEqual({

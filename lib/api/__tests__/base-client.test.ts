@@ -172,8 +172,20 @@ describe('ApiClient', () => {
 
       await expect(client.getCases()).rejects.toEqual({
         code: 'INTERNAL_ERROR',
-        message: 'Internal Server Error',
+        message: 'The server could not complete the request. Please try again.',
         details: { status: 500 },
+      });
+    });
+
+    it('never exposes an HTML error document to callers', async () => {
+      fetchSpy.mockResolvedValueOnce({
+        ok: false,
+        status: 500,
+        text: () => Promise.resolve('<!DOCTYPE html><html><body>secret stack trace</body></html>'),
+      });
+
+      await expect(client.getCases()).rejects.not.toMatchObject({
+        message: expect.stringContaining('secret stack trace'),
       });
     });
   });

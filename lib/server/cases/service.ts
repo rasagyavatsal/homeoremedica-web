@@ -1,4 +1,4 @@
-import { adminDb } from '@/lib/firebase-admin';
+import { getAdminDb } from '@/lib/firebase-admin';
 import { Timestamp } from 'firebase-admin/firestore';
 import { createCaseSchema, updateCaseSchema } from '@/lib/validation/schemas';
 import type { UpdateCaseRequest } from '@/lib/validation/schemas';
@@ -32,7 +32,7 @@ export function serializeCase(id: string, data: Partial<CaseDoc>): SerializedCas
 }
 
 function getCasesCollection(userId: string) {
-  return adminDb.collection('cases').doc(userId).collection('items');
+  return getAdminDb().collection('cases').doc(userId).collection('items');
 }
 
 export async function listCases(userId: string): Promise<SerializedCase[]> {
