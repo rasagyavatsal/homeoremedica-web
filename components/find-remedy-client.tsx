@@ -8,30 +8,22 @@ import { useRouter } from 'next/navigation';
 import {
   BookOpen,
   Check,
-  FileText,
   Loader2,
   Save,
-  Trash2,
 } from 'lucide-react';
 import type { Case } from '@/types';
 
+import { CasesDialog } from '@/components/cases-dialog';
+import { DialogMasthead } from '@/components/dialog-masthead';
+import { FinderWorkspace } from '@/components/finder-workspace';
 import { Header } from '@/components/header';
-import {
-  ResultsPanel,
-  SelectedSymptomsPanel,
-  type FinderResult,
-} from '@/components/remedy-finder-view';
 import { UnifiedSymptomSearch } from '@/components/unified-symptom-search';
 import { Button } from '@/components/ui/button';
 import { Callout } from '@/components/ui/callout';
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
 } from '@/components/ui/dialog';
-import { MotionSafeShell, MotionSection } from '@/components/ui/motion';
 import { Field, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { motionClassNames } from '@/lib/motion/system';
@@ -100,144 +92,6 @@ function SourceCover({
       />
       {children}
     </span>
-  );
-}
-
-function DialogMasthead({
-  icon,
-  title,
-  description,
-  descriptionVisible = false,
-}: Readonly<{
-  icon: React.ReactNode;
-  title: string;
-  description: string;
-  descriptionVisible?: boolean;
-}>) {
-  return (
-    <DialogHeader className="border-b border-border px-4 py-4 sm:px-6">
-      <div className="flex items-start gap-3">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent text-accent-foreground">
-          {icon}
-        </div>
-        <div className="space-y-1 text-left">
-          <DialogTitle className="text-xl">{title}</DialogTitle>
-          <DialogDescription className={descriptionVisible ? 'text-sm text-on-surface-variant' : 'sr-only'}>
-            {description}
-          </DialogDescription>
-        </div>
-      </div>
-    </DialogHeader>
-  );
-}
-
-function CasesDialog({
-  open,
-  onOpenChange,
-  cases,
-  selectedCaseId,
-  canManageCases,
-  onLoadCase,
-  onDeleteCase,
-  onLogin,
-}: Readonly<{
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  cases: Case[];
-  selectedCaseId?: string | null;
-  canManageCases: boolean;
-  onLoadCase: (caseItem: Case) => void;
-  onDeleteCase: (caseId: string) => void;
-  onLogin: () => void;
-}>) {
-  let content;
-
-  if (canManageCases && cases.length > 0) {
-    content = (
-      <div className="space-y-3">
-        {cases.map((caseItem) => (
-          <div
-            key={caseItem.id}
-            className={cn(
-              `relative rounded-lg border px-4 py-4 transition-colors ${motionClassNames.surface}`,
-              selectedCaseId === caseItem.id
-                ? 'border-primary bg-accent'
-                : 'border-border bg-surface-bright hover:border-primary',
-            )}
-          >
-            <button
-              type="button"
-              onClick={() => onLoadCase(caseItem)}
-              className="block w-full pr-10 text-left"
-            >
-              <div className="space-y-2">
-                <p className="font-display text-base font-medium tracking-display text-foreground">{caseItem.name}</p>
-                <div className="index-label flex flex-wrap items-center gap-2">
-                  <span>{caseItem.timestamp.toLocaleDateString()}</span>
-                  <span aria-hidden="true">·</span>
-                  <span>{prettyBook(caseItem.bookId ?? 'all')}</span>
-                  <span aria-hidden="true">·</span>
-                  <span>{caseItem.selectedSymptoms?.length ?? 0} symptoms</span>
-                </div>
-              </div>
-            </button>
-
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              className="absolute right-2 top-2"
-              onClick={(event) => {
-                event.stopPropagation();
-                onDeleteCase(caseItem.id);
-              }}
-              aria-label={`Delete ${caseItem.name}`}
-            >
-              <Trash2 className="h-4 w-4" />
-            </Button>
-
-            {selectedCaseId === caseItem.id ? (
-              <div className="absolute right-12 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-accent text-accent-foreground">
-                <Check className="h-4 w-4" />
-              </div>
-            ) : null}
-          </div>
-        ))}
-      </div>
-    );
-  } else if (canManageCases) {
-    content = (
-      <div className="flex flex-col items-start gap-4">
-        <Callout variant="default" className="w-full">
-          No saved cases yet. Create one after running a search.
-        </Callout>
-      </div>
-    );
-  } else {
-    content = (
-      <div className="flex flex-col items-start gap-4">
-        <Button onClick={onLogin} className="w-full sm:w-auto">
-          Sign in
-        </Button>
-      </div>
-    );
-  }
-
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent variant="responsiveDialog" className="sm:max-w-2xl">
-        <DialogMasthead
-          icon={<FileText className="h-5 w-5" />}
-          title="Saved cases"
-          description={canManageCases ? 'Saved cases available to review.' : 'Sign in to access saved cases.'}
-          descriptionVisible={!canManageCases}
-        />
-
-        <div className="flex-1 overflow-y-auto p-4 sm:p-6">
-          {content}
-        </div>
-      </DialogContent>
-    </Dialog>
   );
 }
 
@@ -483,62 +337,36 @@ export default function FindRemedyClient() {
     <div className="min-h-screen flex flex-col bg-background text-foreground">
       <Header />
 
-      <main className="flex-1">
-        <h1 className="sr-only">Find a homoeopathic remedy</h1>
-        <MotionSafeShell className="min-h-viewport-below-header flex flex-col gap-5 py-5 lg:py-8">
-          <section
-            aria-label="Symptom search"
-            className="mx-auto w-full max-w-3xl px-4 sm:px-6"
-          >
-            <MotionSection>
-              <UnifiedSymptomSearch
-                selectedSymptoms={selectedSymptoms}
-                onOpenCases={() => setCasesModalOpen(true)}
-                onOpenBooks={() => setBooksModalOpen(true)}
-                onSearchActive={setIsSearchActive}
-                resetSignal={searchResetSignal}
-                onSymptomSelect={(symptom: string) => {
-                  const existing = selectedSymptoms.find((item) => item.name === symptom);
-                  if (existing) {
-                    removeSymptom(existing.id);
-                    return;
-                  }
+      <FinderWorkspace
+        search={(
+          <UnifiedSymptomSearch
+            selectedSymptoms={selectedSymptoms}
+            onOpenCases={() => setCasesModalOpen(true)}
+            onOpenBooks={() => setBooksModalOpen(true)}
+            onSearchActive={setIsSearchActive}
+            resetSignal={searchResetSignal}
+            onSymptomSelect={(symptom: string) => {
+              const existing = selectedSymptoms.find((item) => item.name === symptom);
+              if (existing) {
+                removeSymptom(existing.id);
+                return;
+              }
 
-                  addSymptom({
-                    id: `unified-${symptom.trim().replace(/\s+/g, '-')}`,
-                    name: symptom,
-                    books: [activeBook],
-                  });
-                }}
-              />
-            </MotionSection>
-          </section>
-
-          <section
-            aria-label="Selected symptoms and matching remedies"
-            className={cn(
-              'page-shell grid items-start gap-5',
-              results.length > 0 && 'lg:grid-cols-12',
-            )}
-          >
-            <SelectedSymptomsPanel
-              symptoms={selectedSymptoms}
-              activeBookName={activeBookName}
-              className={results.length > 0 ? 'lg:col-span-5' : undefined}
-              onSaveCase={handleSaveCase}
-              onClear={clearSymptoms}
-              onRemove={removeSymptom}
-            />
-
-            <ResultsPanel
-              results={results as FinderResult[]}
-              activeBookName={activeBookName}
-              selectedCount={selectedSymptoms.length}
-              className="lg:col-span-7"
-            />
-          </section>
-        </MotionSafeShell>
-      </main>
+              addSymptom({
+                id: `unified-${symptom.trim().replace(/\s+/g, '-')}`,
+                name: symptom,
+                books: [activeBook],
+              });
+            }}
+          />
+        )}
+        symptoms={selectedSymptoms}
+        results={results}
+        activeBookName={activeBookName}
+        onSaveCase={handleSaveCase}
+        onClear={clearSymptoms}
+        onRemove={removeSymptom}
+      />
 
       <CasesDialog
         open={casesModalOpen}
