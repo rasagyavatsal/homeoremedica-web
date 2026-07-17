@@ -86,9 +86,10 @@ export const themePolicy = {
     if (globalThis.window === undefined) return noop
 
     const syncPreference = (event: StorageEvent) => {
-      if (event.key !== THEME_STORAGE_KEY) return
+      if (event.storageArea !== globalThis.localStorage) return
+      if (event.key !== null && event.key !== THEME_STORAGE_KEY) return
 
-      callback(isResolvedTheme(event.newValue) ? event.newValue : 'system')
+      callback(themePolicy.getPreference())
     }
 
     globalThis.addEventListener('storage', syncPreference)

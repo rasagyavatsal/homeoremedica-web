@@ -6,10 +6,11 @@ import { ThemeProvider, useTheme } from '../theme-context'
 import { THEME_STORAGE_KEY, themePolicy } from '@/lib/theme'
 
 function ThemeConsumer() {
-  const { resolvedTheme, toggleTheme } = useTheme()
+  const { preference, resolvedTheme, toggleTheme } = useTheme()
   return (
     <>
-      <output>{resolvedTheme}</output>
+      <output data-testid="preference">{preference}</output>
+      <output data-testid="resolved-theme">{resolvedTheme}</output>
       <button onClick={toggleTheme}>Toggle</button>
     </>
   )
@@ -24,6 +25,12 @@ function setMatchMedia(matches: boolean) {
     removeEventListener: vi.fn(),
     dispatchEvent: vi.fn(),
   }))
+}
+
+function dispatchLocalStorageEvent(init: StorageEventInit) {
+  const event = new StorageEvent('storage', init)
+  Object.defineProperty(event, 'storageArea', { value: localStorage })
+  fireEvent(window, event)
 }
 
 describe('ThemeProvider', () => {
@@ -58,14 +65,58 @@ describe('ThemeProvider', () => {
     )
 
     localStorage.setItem(THEME_STORAGE_KEY, 'dark')
-    fireEvent(window, new StorageEvent('storage', {
+    dispatchLocalStorageEvent({
       key: THEME_STORAGE_KEY,
       newValue: 'dark',
-    }))
+    })
 
     await waitFor(() => {
-      expect(screen.getByText('dark')).toBeInTheDocument()
+      expect(screen.getByTestId('resolved-theme')).toHaveTextContent('dark')
       expect(document.documentElement).toHaveClass('dark')
+    })
+  })
+
+  it('falls back to the system theme when another document removes the stored preference', async () => {
+    localStorage.setItem(THEME_STORAGE_KEY, 'dark')
+    render(
+      <ThemeProvider>
+        <ThemeConsumer />
+      </ThemeProvider>
+    )
+
+    localStorage.removeItem(THEME_STORAGE_KEY)
+    dispatchLocalStorageEvent({
+      key: THEME_STORAGE_KEY,
+      oldValue: 'dark',
+      newValue: null,
+    })
+
+    await waitFor(() => {
+      expect(screen.getByTestId('preference')).toHaveTextContent('system')
+      expect(screen.getByTestId('resolved-theme')).toHaveTextContent('light')
+      expect(document.documentElement).not.toHaveClass('dark')
+    })
+  })
+
+  it('falls back to the system theme when another document clears local storage', async () => {
+    localStorage.setItem(THEME_STORAGE_KEY, 'dark')
+    render(
+      <ThemeProvider>
+        <ThemeConsumer />
+      </ThemeProvider>
+    )
+
+    localStorage.clear()
+    dispatchLocalStorageEvent({
+      key: null,
+      oldValue: null,
+      newValue: null,
+    })
+
+    await waitFor(() => {
+      expect(screen.getByTestId('preference')).toHaveTextContent('system')
+      expect(screen.getByTestId('resolved-theme')).toHaveTextContent('light')
+      expect(document.documentElement).not.toHaveClass('dark')
     })
   })
 })
