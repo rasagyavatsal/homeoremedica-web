@@ -41,6 +41,19 @@ describe('Header', () => {
     expect(screen.queryByRole('link', { name: /^remedies$/i })).toBeNull();
   });
 
+  it('centers the brand lockup within the header', () => {
+    render(
+      <ThemeProvider>
+        <Header />
+      </ThemeProvider>,
+    );
+
+    expect(screen.getByRole('link', { name: 'HomeoRemedica home' })).toHaveClass(
+      'inline-flex',
+      'items-center',
+    );
+  });
+
   it('renders as a sticky header inside a contained surface', () => {
     render(
       <ThemeProvider>

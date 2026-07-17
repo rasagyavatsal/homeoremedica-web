@@ -29,4 +29,10 @@ describe('BrandLockup', () => {
       expect(image).toHaveAttribute('alt', '');
     }
   });
+
+  it('balances the wordmark size with the logo', () => {
+    render(<BrandLockup />);
+
+    expect(screen.getByText('HomeoRemedica')).toHaveClass('text-xl');
+  });
 });

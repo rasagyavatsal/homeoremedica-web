@@ -24,7 +24,7 @@ export function BrandLockup({ compact = false, className }: Readonly<{ compact?:
         />
       </span>
       {compact ? null : (
-        <span className="font-display text-base font-medium tracking-display text-foreground">
+        <span className="font-display text-xl font-medium tracking-display text-foreground">
           HomeoRemedica
         </span>
       )}
