@@ -16,7 +16,7 @@ describe('WebApiClient', () => {
 
   it('should call searchRemedies with correct parameters', async () => {
     const symptoms = ['itching', 'fever'];
-    const book = 'boericke';
+    const book = 'boericke-MM';
     
     await apiClient.searchRemedies(symptoms, book);
 
@@ -28,7 +28,7 @@ describe('WebApiClient', () => {
 
   it('should call searchSymptoms with correct parameters and URL encoding', async () => {
     const query = 'itching & burning';
-    const book = 'clarke';
+    const book = 'clarke-MM';
     const limit = 50;
     const offset = 10;
     

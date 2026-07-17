@@ -9,8 +9,8 @@ export const dynamic = 'force-dynamic';
 export async function GET(request: NextRequest) {
   try {
     const user = await requireAuth(request);
-    const cases = await listCases(user.uid);
-    return NextResponse.json({ cases });
+    const result = await listCases(user.uid);
+    return NextResponse.json(result);
   } catch (error) {
     return handleApiError(error, 'Get cases');
   }

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { isSearchBookId } from '@/lib/seo/book-data';
 import { searchSymptomsForApi } from '@/lib/server/repertory/service';
 
 export async function GET(req: NextRequest) {
@@ -15,6 +16,10 @@ export async function GET(req: NextRequest) {
 
     if (!book) {
       return NextResponse.json({ error: 'Book is required' }, { status: 400 });
+    }
+
+    if (!isSearchBookId(book)) {
+      return NextResponse.json({ error: 'Invalid book' }, { status: 400 });
     }
     
     const response = await searchSymptomsForApi(book, query, limit, offset);

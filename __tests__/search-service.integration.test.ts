@@ -38,9 +38,9 @@ describe('Search Service with Web DB', () => {
   });
 
   it('should find remedies without throwing no such column error', async () => {
-    const symptoms = await service.listSymptoms('boericke', undefined, 2);
+    const symptoms = await service.listSymptoms('boericke-MM', undefined, 2);
     if (symptoms.length > 0) {
-      const results = await service.findRemedies('boericke', [symptoms[0]]);
+      const results = await service.findRemedies('boericke-MM', [symptoms[0]]);
       expect(results).toBeDefined();
       expect(Array.isArray(results)).toBe(true);
       if (results.length > 0) {

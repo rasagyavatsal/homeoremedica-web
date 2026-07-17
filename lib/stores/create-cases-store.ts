@@ -1,13 +1,22 @@
 import { create } from 'zustand';
 import type { BookId, Case, Symptom } from '@/types';
 import type { ApiClient } from '@/lib/api/base-client';
+import { isSearchBookId } from '@/lib/seo/book-data';
 
 export function isNonEmptyString(value: unknown): value is string {
   return typeof value === 'string' && value.trim().length > 0;
 }
 
 export function normalizeCaseFromApi(caseData: any): Case | null {
-  if (!isNonEmptyString(caseData?.id)) {
+  const hasRetiredSymptomBook = caseData?.selectedSymptoms?.some(
+    (symptom: any) => Array.isArray(symptom?.books) && symptom.books.some((book: unknown) => !isSearchBookId(book)),
+  );
+
+  if (
+    !isNonEmptyString(caseData?.id) ||
+    (caseData.bookId != null && !isSearchBookId(caseData.bookId)) ||
+    hasRetiredSymptomBook
+  ) {
     return null;
   }
 
@@ -39,6 +48,7 @@ type CaseUpdates = {
 export interface CasesState {
   cases: Case[];
   selectedCase: Case | null;
+  retiredCaseCount: number;
   loading: boolean;
   error: string | null;
   
@@ -70,12 +80,14 @@ export function createCasesStore(config: CasesStoreConfig) {
   return create<CasesState>((set, get) => ({
     cases: [],
     selectedCase: null,
+    retiredCaseCount: 0,
     loading: false,
     error: null,
     
     clearCases: () => set({
       cases: [],
       selectedCase: null,
+      retiredCaseCount: 0,
       loading: false,
       error: null,
     }),
@@ -85,7 +97,7 @@ export function createCasesStore(config: CasesStoreConfig) {
       try {
         const token = await getToken();
         if (!token) {
-          set({ loading: false, error: 'User not authenticated' });
+          set({ loading: false, error: 'User not authenticated', retiredCaseCount: 0 });
           return;
         }
         apiClient.setAuthToken(token);
@@ -97,7 +109,11 @@ export function createCasesStore(config: CasesStoreConfig) {
               .filter((item: Case | null): item is Case => Boolean(item))
           : [];
         
-        set({ cases, loading: false });
+        set({
+          cases,
+          retiredCaseCount: data.retiredCaseCount ?? 0,
+          loading: false,
+        });
       } catch (error: any) {
         console.error('Error loading cases:', error);
         set({ loading: false, error: error.message || 'Failed to load cases' });

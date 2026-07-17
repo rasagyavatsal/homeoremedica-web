@@ -102,7 +102,7 @@ describe('GET /api/cases', () => {
     expect(data.code).toBe('AUTH_REQUIRED');
   });
 
-  it('returns serialized cases array', async () => {
+  it('returns supported cases and counts cases that use retired book identifiers', async () => {
     mockRequireAuth.mockResolvedValue({ uid: 'user-1', email: 'test@test.com' });
 
     const now = { toDate: () => new Date('2024-01-15T10:00:00.000Z') };
@@ -114,10 +114,34 @@ describe('GET /api/cases', () => {
             title: 'My Case',
             name: 'My Case',
             note: 'Some note',
-            bookId: 'boericke',
+            bookId: 'boericke-MM',
             symptoms: ['headache'],
             selectedSymptoms: [],
             results: [],
+            userId: 'user-1',
+            createdAt: now,
+            updatedAt: now,
+            timestamp: now,
+          }),
+        },
+        {
+          id: 'legacy-case',
+          data: () => ({
+            name: 'Legacy Case',
+            bookId: 'boericke',
+            selectedSymptoms: [],
+            userId: 'user-1',
+            createdAt: now,
+            updatedAt: now,
+            timestamp: now,
+          }),
+        },
+        {
+          id: 'legacy-symptom-case',
+          data: () => ({
+            name: 'Legacy Symptom Case',
+            bookId: 'boericke-MM',
+            selectedSymptoms: [{ id: 's1', name: 'Headache', books: ['boericke'] }],
             userId: 'user-1',
             createdAt: now,
             updatedAt: now,
@@ -136,6 +160,7 @@ describe('GET /api/cases', () => {
     expect(data.cases[0].id).toBe('case-1');
     expect(data.cases[0].title).toBe('My Case');
     expect(data.cases[0].createdAt).toBe('2024-01-15T10:00:00.000Z');
+    expect(data.retiredCaseCount).toBe(2);
   });
 });
 
@@ -170,7 +195,7 @@ describe('POST /api/cases', () => {
     const req = createPostRequest({
       name: 'Symptom Case',
       selectedSymptoms: [{ id: 's1', name: 'headache' }],
-      bookId: 'boericke',
+      bookId: 'boericke-MM',
     });
     const res = await POST(req);
 

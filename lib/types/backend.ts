@@ -1,4 +1,5 @@
 import { Timestamp } from 'firebase-admin/firestore';
+import type { SearchBookId } from '@/lib/seo/book-data';
 
 // User document in Firestore - simplified (app is free)
 export interface UserDoc {
@@ -14,7 +15,7 @@ export interface CaseSymptomData {
   id: string;
   name: string;
   synonyms?: string[];
-  books?: ('boericke' | 'clarke' | 'kent' | 'allen')[];
+  books?: SearchBookId[];
   category?: string;
 }
 
@@ -28,7 +29,7 @@ export interface CaseDoc {
   title?: string;
   name?: string;
   note?: string;
-  bookId?: string;
+  bookId?: SearchBookId;
   symptoms?: string[];
   selectedSymptoms?: CaseSymptomData[];
   results?: CaseResultData[];
@@ -43,7 +44,7 @@ export interface SerializedCase {
   title: string;
   name: string;
   note: string;
-  bookId?: string | null;
+  bookId?: SearchBookId | null;
   symptoms: string[];
   selectedSymptoms: CaseSymptomData[];
   results: CaseResultData[];
@@ -62,7 +63,7 @@ export interface AuthSessionResponse {
 }
 
 export interface FindRemedyRequest {
-  bookId: 'boericke' | 'clarke' | 'kent' | 'allen';
+  bookId: SearchBookId;
   symptoms: string[];
 }
 

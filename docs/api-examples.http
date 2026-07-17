@@ -29,7 +29,7 @@ Authorization: Bearer {{authToken}}
 Content-Type: application/json
 
 {
-  "bookId": "boericke",
+  "bookId": "boericke-MM",
   "symptoms": ["thirst", "restlessness"]
 }
 
@@ -45,7 +45,7 @@ Content-Type: application/json
 {
   "title": "Patient with fever and anxiety",
   "note": "Acute onset, very restless",
-  "bookId": "boericke",
+  "bookId": "boericke-MM",
   "symptoms": ["fever", "anxiety", "restlessness"],
   "results": [
     {

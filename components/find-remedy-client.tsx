@@ -8,6 +8,8 @@ import { useRouter } from 'next/navigation';
 import {
   BookOpen,
   Check,
+  Info,
+  X,
 } from 'lucide-react';
 import type { Case } from '@/types';
 
@@ -18,6 +20,7 @@ import { Header } from '@/components/header';
 import { SaveCaseDialog } from '@/components/save-case-dialog';
 import { UnifiedSymptomSearch } from '@/components/unified-symptom-search';
 import { Button } from '@/components/ui/button';
+import { Callout } from '@/components/ui/callout';
 import {
   Dialog,
   DialogContent,
@@ -27,60 +30,38 @@ import { overlayRecipes } from '@/lib/overlay/system';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/lib/contexts/auth-context';
 import { useUserCases } from '@/lib/hooks/use-user-cases';
-import { getBookInfo, getBookOptions, type BookInfo } from '@/lib/seo/book-data';
+import { getBookName, SEARCH_BOOKS, type BookInfo } from '@/lib/seo/book-data';
 import { useCasesStore } from '@/lib/stores/cases-store';
 import { useSearchStore } from '@/lib/stores/search-store';
 
-function prettyBook(bookId: string) {
-  return bookId.charAt(0).toUpperCase() + bookId.slice(1);
+const SAVED_CASE_NOTICE_ID = 'book-identifiers-v1';
+
+function savedCaseNoticeKey(userId: string) {
+  return `homeoremedica:saved-case-update:${SAVED_CASE_NOTICE_ID}:${userId}`;
 }
 
-const SOURCE_SHORT_LABELS: Record<BookInfo['id'], string> = {
-  boericke: 'Boericke',
-  clarke: 'Clarke',
-  kent: 'Kent',
-  allen: 'Allen',
-};
-
-const SOURCE_COVER_IMAGES: Record<BookInfo['id'], { src: string; width: number; height: number }> = {
-  boericke: { src: '/source-covers/boericke.jpg', width: 301, height: 371 },
-  clarke: { src: '/source-covers/clarke.jpg', width: 298, height: 411 },
-  kent: { src: '/source-covers/kent.jpg', width: 366, height: 543 },
-  allen: { src: '/source-covers/allen.jpg', width: 223, height: 275 },
-};
-
-const SOURCE_COVER_FALLBACK_ACCENTS: Record<BookInfo['id'], string> = {
-  boericke: 'bg-surface-container-low',
-  clarke: 'bg-surface-container-low',
-  kent: 'bg-surface-container-low',
-  allen: 'bg-surface-container-low',
-};
-
 function SourceCover({
-  bookId,
+  book,
   className,
   children,
 }: Readonly<{
-  bookId: BookInfo['id'];
+  book: BookInfo;
   className?: string;
   children?: React.ReactNode;
 }>) {
-  const cover = SOURCE_COVER_IMAGES[bookId];
-
   return (
     <span
       aria-hidden="true"
       className={cn(
-        'relative block overflow-hidden rounded-sm border border-border',
-        SOURCE_COVER_FALLBACK_ACCENTS[bookId],
+        'relative block overflow-hidden rounded-sm border border-border bg-surface-container-low',
         className,
       )}
     >
       <Image
-        src={cover.src}
+        src={book.cover.src}
         alt=""
-        width={cover.width}
-        height={cover.height}
+        width={book.cover.width}
+        height={book.cover.height}
         sizes="96px"
         className="block h-auto w-full"
         loading="lazy"
@@ -119,7 +100,7 @@ function SourceDialog({
               key={book.id}
               type="button"
               onClick={() => onSelectBook(book.id)}
-              aria-label={`Select source: ${book.name}`}
+              aria-label={`Select source: ${book.fullName}`}
               aria-pressed={activeBookId === book.id}
               className={cn(
                 `w-full rounded-lg border p-2 text-left ${motionClassNames.surface} ${motionClassNames.press}`,
@@ -129,7 +110,7 @@ function SourceDialog({
               )}
             >
               <div className="space-y-1.5">
-                <SourceCover bookId={book.id} className="mx-auto w-20 sm:w-24">
+                <SourceCover book={book} className="mx-auto w-20 sm:w-24">
                   {activeBookId === book.id ? (
                     <div className="absolute right-1.5 top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-primary-foreground">
                       <Check className="h-3.5 w-3.5" />
@@ -139,10 +120,10 @@ function SourceDialog({
 
                 <div className="space-y-1 px-0.5 pb-0.5">
                   <p className="index-label leading-tight text-foreground">
-                    {SOURCE_SHORT_LABELS[book.id]}
+                    {book.shortName}
                   </p>
-                  <p className="text-xs leading-snug text-on-surface-variant">
-                    {book.name}
+                  <p className="whitespace-pre-line text-xs leading-snug text-on-surface-variant">
+                    {book.fullName}
                   </p>
                 </div>
               </div>
@@ -164,6 +145,10 @@ export default function FindRemedyClient() {
   const [saveCaseError, setSaveCaseError] = useState('');
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [searchResetSignal, setSearchResetSignal] = useState(0);
+  const [savedCaseNotice, setSavedCaseNotice] = useState<{
+    userId: string;
+    dismissed: boolean;
+  } | null>(null);
 
   const {
     selectedSymptoms,
@@ -177,13 +162,30 @@ export default function FindRemedyClient() {
   } = useSearchStore();
 
   const { user } = useAuth();
-  const { cases, addCase, selectCase, selectedCase, deleteCase } = useCasesStore();
+  const {
+    cases,
+    retiredCaseCount,
+    addCase,
+    selectCase,
+    selectedCase,
+    deleteCase,
+  } = useCasesStore();
 
   useUserCases();
 
-  const bookOptions = getBookOptions();
-  const activeBookInfo = getBookInfo(activeBook);
-  const activeBookName = activeBookInfo?.name ?? prettyBook(activeBook);
+  useEffect(() => {
+    if (!user?.uid) {
+      setSavedCaseNotice(null);
+      return;
+    }
+
+    setSavedCaseNotice({
+      userId: user.uid,
+      dismissed: globalThis.localStorage.getItem(savedCaseNoticeKey(user.uid)) === 'dismissed',
+    });
+  }, [user?.uid]);
+
+  const activeBookName = getBookName(activeBook);
   const currentSearchHasContent = isSearchActive || selectedSymptoms.length > 0 || results.length > 0;
 
   useEffect(() => {
@@ -197,6 +199,19 @@ export default function FindRemedyClient() {
   );
 
   const canManageCases = Boolean(user?.uid);
+  const showSavedCaseNotice = Boolean(
+    user?.uid &&
+    retiredCaseCount > 0 &&
+    savedCaseNotice?.userId === user.uid &&
+    !savedCaseNotice.dismissed,
+  );
+
+  const dismissSavedCaseNotice = () => {
+    if (!user?.uid) return;
+
+    globalThis.localStorage.setItem(savedCaseNoticeKey(user.uid), 'dismissed');
+    setSavedCaseNotice({ userId: user.uid, dismissed: true });
+  };
 
   const resetCurrentSearch = () => {
     setSearchResetSignal((current) => current + 1);
@@ -284,6 +299,28 @@ export default function FindRemedyClient() {
       <Header />
 
       <FinderWorkspace
+        notice={showSavedCaseNotice ? (
+          <Callout variant="info" icon={<Info className="h-4 w-4" />}>
+            <div className="flex items-start gap-3">
+              <div className="flex-1 space-y-1">
+                <p className="font-medium text-foreground">Saved-case update</p>
+                <p>
+                  {retiredCaseCount} older saved {retiredCaseCount === 1 ? 'case' : 'cases'} may no longer appear because we updated the source books used by HomeoRemedica. New cases will continue to save normally.
+                </p>
+              </div>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="-mr-2 -mt-2 shrink-0"
+                onClick={dismissSavedCaseNotice}
+                aria-label="Dismiss saved-case update"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+          </Callout>
+        ) : null}
         search={(
           <UnifiedSymptomSearch
             selectedSymptoms={selectedSymptoms}
@@ -340,7 +377,7 @@ export default function FindRemedyClient() {
         open={booksModalOpen}
         onOpenChange={setBooksModalOpen}
         activeBookId={activeBook}
-        books={bookOptions}
+        books={SEARCH_BOOKS}
         onSelectBook={(bookId) => {
           if (bookId === activeBook) {
             setBooksModalOpen(false);

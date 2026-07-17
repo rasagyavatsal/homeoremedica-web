@@ -32,7 +32,7 @@ describe('POST /api/find', () => {
   });
 
   it('rejects empty symptoms with 400', async () => {
-    const req = createRequest({ bookId: 'boericke', symptoms: [] });
+    const req = createRequest({ bookId: 'boericke-MM', symptoms: [] });
     const res = await POST(req);
 
     expect(res.status).toBe(400);
@@ -41,7 +41,7 @@ describe('POST /api/find', () => {
   });
 
   it('rejects missing symptoms field with 400', async () => {
-    const req = createRequest({ bookId: 'boericke' });
+    const req = createRequest({ bookId: 'boericke-MM' });
     const res = await POST(req);
 
     expect(res.status).toBe(400);
@@ -53,12 +53,12 @@ describe('POST /api/find', () => {
     const mockResponse = {
       remedies: [
         {
-          id: 'belladonna-boericke',
+          id: 'belladonna-boericke-MM',
           name: 'Belladonna',
           description: 'A common remedy',
           score: 3,
           matchedSymptoms: ['headache', 'fever', 'throbbing'],
-          sourceBooks: ['boericke'],
+          sourceBooks: ['boericke-MM'],
         }
       ],
       totalMatches: 1
@@ -66,7 +66,7 @@ describe('POST /api/find', () => {
     mockFindRemedyResponseForApi.mockResolvedValue(mockResponse);
 
     const req = createRequest({
-      bookId: 'boericke',
+      bookId: 'boericke-MM',
       symptoms: ['headache', 'fever', 'throbbing'],
     });
     const res = await POST(req);
@@ -74,13 +74,13 @@ describe('POST /api/find', () => {
 
     expect(res.status).toBe(200);
     expect(data).toEqual(mockResponse);
-    expect(mockFindRemedyResponseForApi).toHaveBeenCalledWith('boericke', ['headache', 'fever', 'throbbing']);
+    expect(mockFindRemedyResponseForApi).toHaveBeenCalledWith('boericke-MM', ['headache', 'fever', 'throbbing']);
   });
 
   it('returns 500 on internal error', async () => {
     mockFindRemedyResponseForApi.mockRejectedValue(new Error('DB error'));
 
-    const req = createRequest({ bookId: 'boericke', symptoms: ['headache'] });
+    const req = createRequest({ bookId: 'boericke-MM', symptoms: ['headache'] });
     const res = await POST(req);
 
     expect(res.status).toBe(500);

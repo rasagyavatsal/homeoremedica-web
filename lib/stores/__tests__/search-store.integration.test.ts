@@ -16,7 +16,7 @@ describe('SearchStore Integration with ApiClient', () => {
 
   it('should call the API and update results when findRemedies is called', async () => {
     const mockResults = [
-      { remedyId: 'arnica', score: 10, matchedSymptoms: ['bruise'], sourceBooks: ['boericke'] },
+      { remedyId: 'arnica', score: 10, matchedSymptoms: ['bruise'], sourceBooks: ['boericke-MM'] },
     ];
 
     vi.mocked(globalThis.fetch).mockResolvedValueOnce(new Response(JSON.stringify(mockResults)));

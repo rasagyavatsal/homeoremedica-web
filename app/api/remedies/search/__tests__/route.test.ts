@@ -23,7 +23,7 @@ describe('POST /api/remedies/search', () => {
   });
 
   it('returns empty array for empty symptoms array', async () => {
-    const req = createRequest({ symptoms: [], book: 'boericke' });
+    const req = createRequest({ symptoms: [], book: 'boericke-MM' });
     const res = await POST(req);
     const data = await res.json();
 
@@ -33,7 +33,7 @@ describe('POST /api/remedies/search', () => {
   });
 
   it('returns empty array for missing symptoms', async () => {
-    const req = createRequest({ book: 'boericke' });
+    const req = createRequest({ book: 'boericke-MM' });
     const res = await POST(req);
     const data = await res.json();
 
@@ -49,6 +49,14 @@ describe('POST /api/remedies/search', () => {
     expect(data.error).toBe('Book is required');
   });
 
+  it('returns 400 for a retired book identifier', async () => {
+    const res = await POST(createRequest({ symptoms: ['headache'], book: 'boericke' }));
+
+    expect(res.status).toBe(400);
+    expect(await res.json()).toEqual({ error: 'Invalid book' });
+    expect(mockSearchRemediesForApi).not.toHaveBeenCalled();
+  });
+
   it('returns results from service', async () => {
     const mockResponse = [
       {
@@ -57,7 +65,7 @@ describe('POST /api/remedies/search', () => {
           name: 'Belladonna',
           description: 'Desc',
           symptoms: ['headache', 'fever'],
-          book: 'boericke'
+          book: 'boericke-MM'
         },
         score: 2,
         matchedSymptoms: ['headache', 'fever']
@@ -65,19 +73,19 @@ describe('POST /api/remedies/search', () => {
     ];
     mockSearchRemediesForApi.mockResolvedValueOnce(mockResponse);
 
-    const req = createRequest({ symptoms: ['headache', 'fever'], book: 'boericke' });
+    const req = createRequest({ symptoms: ['headache', 'fever'], book: 'boericke-MM' });
     const res = await POST(req);
     const data = await res.json();
 
     expect(res.status).toBe(200);
     expect(data).toEqual(mockResponse);
-    expect(mockSearchRemediesForApi).toHaveBeenCalledWith('boericke', ['headache', 'fever']);
+    expect(mockSearchRemediesForApi).toHaveBeenCalledWith('boericke-MM', ['headache', 'fever']);
   });
 
   it('handles errors gracefully (returns 500)', async () => {
     mockSearchRemediesForApi.mockRejectedValue(new Error('Service failure'));
 
-    const req = createRequest({ symptoms: ['headache'], book: 'boericke' });
+    const req = createRequest({ symptoms: ['headache'], book: 'boericke-MM' });
     const res = await POST(req);
 
     expect(res.status).toBe(500);
