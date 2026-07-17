@@ -23,6 +23,7 @@ export function CasesDialog({
   onLoadCase,
   onDeleteCase,
   onLogin,
+  manageFocus = true,
 }: Readonly<{
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -32,6 +33,7 @@ export function CasesDialog({
   onLoadCase: (caseItem: Case) => void;
   onDeleteCase: (caseId: string) => void;
   onLogin: () => void;
+  manageFocus?: boolean;
 }>) {
   let content;
 
@@ -108,7 +110,12 @@ export function CasesDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent variant="responsiveDialog" className="sm:max-w-2xl">
+      <DialogContent
+        variant="responsiveDialog"
+        className="sm:max-w-2xl"
+        onOpenAutoFocus={manageFocus ? undefined : (event) => event.preventDefault()}
+        onCloseAutoFocus={manageFocus ? undefined : (event) => event.preventDefault()}
+      >
         <DialogMasthead
           icon={<FileText className="h-5 w-5" />}
           title="Saved cases"

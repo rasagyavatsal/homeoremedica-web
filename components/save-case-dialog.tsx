@@ -18,6 +18,7 @@ export function SaveCaseDialog({
   error,
   onSubmit,
   onCancel,
+  manageFocus = true,
 }: Readonly<{
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -27,10 +28,16 @@ export function SaveCaseDialog({
   error: string;
   onSubmit: (event?: React.FormEvent) => void;
   onCancel: () => void;
+  manageFocus?: boolean;
 }>) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent variant="responsiveDialog" className="sm:max-w-xl">
+      <DialogContent
+        variant="responsiveDialog"
+        className="sm:max-w-xl"
+        onOpenAutoFocus={manageFocus ? undefined : (event) => event.preventDefault()}
+        onCloseAutoFocus={manageFocus ? undefined : (event) => event.preventDefault()}
+      >
         <DialogMasthead
           icon={<Save className="h-5 w-5" />}
           title="Save case"
@@ -42,7 +49,7 @@ export function SaveCaseDialog({
             <FieldLabel htmlFor="caseName">Case name</FieldLabel>
             <Input
               id="caseName"
-              autoFocus
+              autoFocus={manageFocus}
               placeholder="e.g. Patient A symptoms"
               value={caseName}
               onChange={(event) => onCaseNameChange(event.target.value)}
