@@ -11,7 +11,7 @@ export const searchService = createRepertorySearchService({
   }
 });
 
-export async function searchSymptomsForApi(book: string, query: string, limit: number, offset: number) {
+export async function searchSymptomsForApi(book: BookId, query: string, limit: number, offset: number) {
   if (!query || query.length < 2) {
     return { results: [], total: 0 };
   }
@@ -44,7 +44,7 @@ export async function searchSymptomsForApi(book: string, query: string, limit: n
   return { results, total };
 }
 
-export async function searchRemediesForApi(book: string, symptoms: string[]): Promise<SearchResult[]> {
+export async function searchRemediesForApi(book: BookId, symptoms: string[]): Promise<SearchResult[]> {
   if (!symptoms || !Array.isArray(symptoms) || symptoms.length === 0) {
     return [];
   }
@@ -52,14 +52,14 @@ export async function searchRemediesForApi(book: string, symptoms: string[]): Pr
   const matches = await searchService.findRemedies(book, symptoms);
 
   const searchResults: SearchResult[] = await Promise.all(matches.slice(0, 20).map(async (match: any) => {
-    const details = await searchService.getRemedyDetails(`${match.slug}-${book}`);
+    const details = await searchService.getRemedyDetails(match.slug, book);
     
     const remedy: Remedy = {
       id: match.slug,
       name: match.remedy,
       description: details?.description || '',
       symptoms: details?.symptoms || [],
-      book: book as BookId
+      book
     };
 
     return {
@@ -72,11 +72,11 @@ export async function searchRemediesForApi(book: string, symptoms: string[]): Pr
   return searchResults;
 }
 
-export async function findRemedyResponseForApi(bookId: string, symptoms: string[]): Promise<FindRemedyResponse> {
+export async function findRemedyResponseForApi(bookId: BookId, symptoms: string[]): Promise<FindRemedyResponse> {
   const rawMatches = await searchService.findRemedies(bookId, symptoms);
   
   const remedies = await Promise.all(rawMatches.slice(0, 20).map(async (match: any) => {
-    const details = await searchService.getRemedyDetails(`${match.slug}-${bookId}`);
+    const details = await searchService.getRemedyDetails(match.slug, bookId);
     return {
       id: `${match.slug}-${bookId}`,
       name: details?.name || match.remedy || 'Unknown',

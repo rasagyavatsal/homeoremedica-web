@@ -11,12 +11,13 @@ import {
   type FinderResult,
 } from '@/components/remedy-finder-view';
 import { SaveCaseDialog } from '@/components/save-case-dialog';
+import { getBookName } from '@/lib/seo/book-data';
 import type { BookId, Case } from '@/types';
 
 const PREVIEW_CASE_DETAILS = [
-  ['night-time-burning-pain', 'Night-time burning pain', 'boericke', '2026-07-12T00:00:00.000Z'],
-  ['dry-cough-follow-up', 'Dry cough follow-up', 'clarke', '2026-07-08T00:00:00.000Z'],
-  ['sunlight-headache', 'Sunlight headache', 'kent', '2026-06-29T00:00:00.000Z'],
+  ['night-time-burning-pain', 'Night-time burning pain', 'boericke-MM', '2026-07-12T00:00:00.000Z'],
+  ['dry-cough-follow-up', 'Dry cough follow-up', 'clarke-MM', '2026-07-08T00:00:00.000Z'],
+  ['sunlight-headache', 'Sunlight headache', 'kent-lectures', '2026-06-29T00:00:00.000Z'],
 ] as const satisfies ReadonlyArray<readonly [string, string, BookId, string]>;
 
 const PREVIEW_CASE_SYMPTOMS = [
@@ -32,22 +33,22 @@ const PREVIEW_CASE_SYMPTOMS = [
 ] as const;
 
 const PREVIEW_RESULTS = {
-  boericke: [
+  'boericke-MM': [
     ['arsenicum-album', 'Arsenicum album', 3, ['Burning pains', 'Restlessness', 'Thirst']],
     ['phosphorus', 'Phosphorus', 2, ['Burning pains', 'Thirst']],
     ['sulphur', 'Sulphur', 2, ['Burning pains', 'Worse at night']],
   ],
-  clarke: [
+  'clarke-MM': [
     ['drosera-rotundifolia', 'Drosera rotundifolia', 3, ['Dry cough', 'After midnight', 'Laryngeal tickling']],
     ['bryonia-alba', 'Bryonia alba', 2, ['Dry cough', 'Cold air']],
     ['phosphorus', 'Phosphorus', 2, ['Dry cough', 'Laryngeal tickling']],
   ],
-  kent: [
+  'kent-lectures': [
     ['belladonna', 'Belladonna', 3, ['Throbbing pain', 'Bright light', 'Heat of head']],
     ['glonoinum', 'Glonoinum', 2, ['Throbbing pain', 'Sun exposure']],
     ['natrum-muriaticum', 'Natrum muriaticum', 2, ['Headache', 'Bright light']],
   ],
-  allen: [],
+  'allen-nosodes': [],
 } as const satisfies Record<BookId, ReadonlyArray<readonly [string, string, number, readonly string[]]>>;
 
 const PREVIEW_CASES: Case[] = PREVIEW_CASE_DETAILS.map(
@@ -79,10 +80,6 @@ const DEMO_TIMING = {
 
 type DemoStage = 'workspace' | 'naming' | 'saved' | 'restored' | 'cases';
 
-function prettyBook(bookId: BookId) {
-  return bookId.charAt(0).toUpperCase() + bookId.slice(1);
-}
-
 function resultsFor(bookId: BookId): FinderResult[] {
   return PREVIEW_RESULTS[bookId].map(([id, name, score, matchedSymptoms]) => ({
     remedy: { id, name, book: bookId },
@@ -100,7 +97,7 @@ export function PreviewCasesScene() {
   const [currentCase, setCurrentCase] = useState<Case>(DRAFT_CASE);
   const [selectedCaseId, setSelectedCaseId] = useState<string | null>(null);
 
-  const activeBook = currentCase.bookId ?? 'boericke';
+  const activeBook = currentCase.bookId ?? 'boericke-MM';
   const results = useMemo(() => resultsFor(activeBook), [activeBook]);
 
   const openSaveDialog = useCallback(() => {
@@ -214,7 +211,7 @@ export function PreviewCasesScene() {
         )}
         symptoms={currentCase.selectedSymptoms}
         results={results}
-        activeBookName={prettyBook(activeBook)}
+        activeBookName={getBookName(activeBook)}
         onSaveCase={openSaveDialog}
         onClear={() => undefined}
         onRemove={() => undefined}

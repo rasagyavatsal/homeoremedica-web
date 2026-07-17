@@ -13,6 +13,17 @@ npm run dev
 
 When `REMEDIES_DB_PATH`, `REMEDIES_BUCKET`, and `REMEDIES_OBJECT` are unset, the server uses the generated synthetic database at `server-data/demo-remedies.db`.
 
+## Book identifiers
+
+The application and remedies database use these canonical book identifiers everywhere:
+
+- `clarke-MM`
+- `boericke-MM`
+- `kent-lectures`
+- `allen-nosodes`
+
+The retired identifiers `clarke`, `boericke`, `kent`, and `allen` are intentionally unsupported. Browser-persisted searches that used them are discarded, and the web client omits saved cases containing them rather than migrating them.
+
 ## Production database
 
 Firebase App Hosting should set these runtime-only values:

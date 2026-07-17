@@ -11,10 +11,10 @@ const FINDER_HERO_DESCRIPTION =
   'Search plain symptom keywords to find homeopathic remedy matches from classical materia medica sources, including Boericke, Clarke, Kent, and Allen. Choose one source book, select exact symptom entries, and compare ranked remedy matches in the same workflow, with saved cases available for organized study, repertory research, and follow-up reference.';
 
 const SOURCE_COVER_DIMENSIONS = {
-  '/source-covers/allen.jpg': { width: '223', height: '275' },
-  '/source-covers/boericke.jpg': { width: '301', height: '371' },
-  '/source-covers/clarke.jpg': { width: '298', height: '411' },
-  '/source-covers/kent.jpg': { width: '366', height: '543' },
+  '/source-covers/allen-nosodes.jpg': { width: '223', height: '275' },
+  '/source-covers/boericke-MM.jpg': { width: '301', height: '371' },
+  '/source-covers/clarke-MM.jpg': { width: '298', height: '411' },
+  '/source-covers/kent-lectures.jpg': { width: '366', height: '543' },
 } as const;
 
 type MockLinkProps = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'href'> & {
@@ -56,7 +56,7 @@ vi.mock('@/lib/hooks/use-user-cases', () => ({
 const baseSearchStatus = {
   isSearching: false,
   currentBook: undefined,
-  completedBooks: [] as Array<'boericke' | 'clarke' | 'kent' | 'allen'>,
+  completedBooks: [] as Array<'boericke-MM' | 'clarke-MM' | 'kent-lectures' | 'allen-nosodes'>,
   progress: 0,
   totalBooks: 4,
 };
@@ -67,7 +67,7 @@ const oldCase = {
   id: 'case-old',
   name: 'Old case',
   timestamp: new Date('2026-04-01T00:00:00Z'),
-  bookId: 'boericke' as const,
+  bookId: 'boericke-MM' as const,
   selectedSymptoms: [{ id: 'symptom-old', name: 'Old symptom' }],
   userId: 'user-1',
 };
@@ -76,14 +76,14 @@ const newCase = {
   id: 'case-new',
   name: 'New case',
   timestamp: new Date('2026-04-02T00:00:00Z'),
-  bookId: 'kent' as const,
+  bookId: 'kent-lectures' as const,
   selectedSymptoms: [{ id: 'symptom-new', name: 'New symptom' }],
   userId: 'user-1',
 };
 
 function resetStores() {
   useSearchStore.setState({
-    activeBook: 'boericke',
+    activeBook: 'boericke-MM',
     selectedSymptoms: [],
     results: [],
     searchQuery: '',
@@ -133,7 +133,7 @@ describe('FindRemedyClient current search behavior', () => {
     );
 
     expect(confirmSpy).toHaveBeenCalledWith('Change source and clear the current search?');
-    expect(useSearchStore.getState().activeBook).toBe('boericke');
+    expect(useSearchStore.getState().activeBook).toBe('boericke-MM');
     expect(useCasesStore.getState().selectedCase?.id).toBe('case-old');
     expect(input).toHaveValue('h');
   });
@@ -158,14 +158,14 @@ describe('FindRemedyClient current search behavior', () => {
 
     expect(confirmSpy).not.toHaveBeenCalled();
     await waitFor(() => {
-      expect(useSearchStore.getState().activeBook).toBe('clarke');
+      expect(useSearchStore.getState().activeBook).toBe('clarke-MM');
     });
     expect(useCasesStore.getState().selectedCase).toBeNull();
   });
 
   it('loads a saved case only after confirmation and resets the current search first', async () => {
     useSearchStore.setState({
-      activeBook: 'boericke',
+      activeBook: 'boericke-MM',
       selectedSymptoms: [{ id: 'legacy', name: 'Legacy symptom' }],
       results: [],
       searchStatus: baseSearchStatus,
@@ -194,7 +194,7 @@ describe('FindRemedyClient current search behavior', () => {
     expect(confirmSpy).toHaveBeenCalledWith('Load this saved case and replace the current search?');
 
     await waitFor(() => {
-      expect(useSearchStore.getState().activeBook).toBe('kent');
+      expect(useSearchStore.getState().activeBook).toBe('kent-lectures');
       expect(useSearchStore.getState().selectedSymptoms).toEqual(newCase.selectedSymptoms);
       expect(useSearchStore.getState().results).toEqual([]);
       expect(useCasesStore.getState().selectedCase?.id).toBe('case-new');
@@ -224,7 +224,7 @@ describe('FindRemedyClient current search behavior', () => {
     fireEvent.click(loadNewCaseButton);
 
     expect(confirmSpy).toHaveBeenCalledWith('Load this saved case and replace the current search?');
-    expect(useSearchStore.getState().activeBook).toBe('boericke');
+    expect(useSearchStore.getState().activeBook).toBe('boericke-MM');
     expect(useCasesStore.getState().selectedCase?.id).toBe('case-old');
     expect(input).toHaveValue('h');
   });
@@ -356,14 +356,19 @@ describe('FindRemedyClient current search behavior', () => {
       within(sourceDialog).queryByText(/Concise clinical materia medica with practical bedside indications./i),
     ).toBeNull();
 
-    const expectedSourceLabels = ['Boericke', 'Clarke', 'Kent', 'Allen'];
+    const expectedSourceLabels = [
+      'clarke materia medica',
+      'boericke materia medica',
+      'kent lectures',
+      'allen nosodes',
+    ];
     expectedSourceLabels.forEach((label) => {
       expect(within(sourceDialog).getByText(label)).toBeInTheDocument();
     });
 
 
     const boerickeCard = within(sourceDialog).getByRole('button', {
-      name: /Select source: Boericke's Materia Medica/i,
+      name: /Select source: HOMEOPATHIC MATERIA MEDICA\s+by William BOERICKE, M\.D\./i,
     });
     const sourceGrid = boerickeCard.parentElement;
     if (!sourceGrid) {
@@ -397,7 +402,7 @@ describe('FindRemedyClient current search behavior', () => {
     const sourceDialog = await screen.findByRole('dialog');
 
     const selectedCard = within(sourceDialog).getByRole('button', {
-      name: /Select source: Boericke's Materia Medica/i,
+      name: /Select source: HOMEOPATHIC MATERIA MEDICA\s+by William BOERICKE, M\.D\./i,
     });
     expect(selectedCard).toHaveAttribute('aria-pressed', 'true');
     expect(selectedCard).toHaveClass('border-primary');
@@ -444,7 +449,7 @@ describe('FindRemedyClient current search behavior', () => {
         },
       ],
       searchQuery: '',
-      activeBook: 'boericke',
+      activeBook: 'boericke-MM',
     });
 
     render(<FindRemedyClient />);
@@ -482,7 +487,7 @@ describe('FindRemedyClient current search behavior', () => {
     useSearchStore.setState({
       selectedSymptoms: [{ id: 'symptom-1', name: 'Burning pain' }],
       results: [{
-        remedy: { id: 'remedy-1', name: 'Sulphur', book: 'boericke' },
+        remedy: { id: 'remedy-1', name: 'Sulphur', book: 'boericke-MM' },
         score: 1,
         matchedSymptoms: ['Burning pain'],
       }],

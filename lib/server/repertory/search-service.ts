@@ -24,7 +24,7 @@ export interface RepertorySearchService {
   suggestSymptoms(book: string, search: string, limit?: number, offset?: number): Promise<string[]>;
   countSymptomSuggestions(book: string, search: string): Promise<number>;
   findRemedies(book: string, symptoms: string[]): Promise<RemedyMatch[]>;
-  getRemedyDetails(remedyId: string): Promise<RemedyDetails | null>;
+  getRemedyDetails(remedySlug: string, book: string): Promise<RemedyDetails | null>;
 }
 
 export function createRepertorySearchService(executor: RepertoryQueryExecutor): RepertorySearchService {
@@ -186,17 +186,14 @@ export function createRepertorySearchService(executor: RepertoryQueryExecutor): 
         .sort((a, b) => b.matchedSymptoms.length - a.matchedSymptoms.length);
     },
 
-    async getRemedyDetails(remedyId) {
-      const parts = remedyId.split('-');
-      const book = parts.pop()!;
-      
+    async getRemedyDetails(remedySlug, book) {
       const query = `
         SELECT id, name, book
         FROM remedies
         WHERE book = ? AND slug = ?
       `;
 
-      const row = await executor.get<{ id: number; name: string; book: string }>(query, [book, parts.join('-')]);
+      const row = await executor.get<{ id: number; name: string; book: string }>(query, [book, remedySlug]);
       if (!row) return null;
 
       const allSymptomsQuery = `

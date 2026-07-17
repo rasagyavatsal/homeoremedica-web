@@ -23,7 +23,7 @@ export const FIND_REMEDY_FEATURE_SECTIONS = [
   {
     heading: 'Source-specific matching',
     body:
-      "The source button controls which book is used for both symptom suggestions and remedy matching. The available choices are Boericke's Materia Medica, Clarke's Dictionary of Practical Materia Medica, Kent's Lectures on Homoeopathic Materia Medica, and Allen's Keynotes. Keeping one source active gives the search a single context: symptom results come from that source, selected symptoms are attached to that source, and remedy matching is requested against that same source. Changing source clears current selections and results after confirmation when work is active.",
+      'The source button controls which book is used for both symptom suggestions and remedy matching. The available choices are A DICTIONARY OF PRACTICAL MATERIA MEDICA by John Henry CLARKE, M.D.; HOMEOPATHIC MATERIA MEDICA by William BOERICKE, M.D.; LECTURES ON HOMEOPATHIC MATERIA MEDICAL by JAMES TYLER KENT, A.M., M.D.; and The Materia Medica of the Nosodes. by Henry Clay ALLEN, M. D. Keeping one source active gives the search a single context: symptom results come from that source, selected symptoms are attached to that source, and remedy matching is requested against that same source. Changing source clears current selections and results after confirmation when work is active.',
   },
   {
     heading: 'Selected symptom workspace',
@@ -45,7 +45,7 @@ export const FIND_REMEDY_FEATURE_SECTIONS = [
 export const FIND_REMEDY_SOURCE_OVERVIEW = {
   heading: 'Example searches and source overview',
   body:
-    "The example searches shown on the home page are itching night, burning pains, headache morning, and fear of death. Each example fills the search field so you can start from the same workflow used for typed queries. The source selector offers four books already named in the interface: Boericke's Materia Medica, Clarke's Dictionary of Practical Materia Medica, Kent's Lectures on Homoeopathic Materia Medica, and Allen's Keynotes. The source cards also show the short descriptions used by the app: practical bedside reference, expanded clinical reference, classical lecture-based source, and fast keynote reference.",
+    'The example searches shown on the home page are itching night, burning pains, headache morning, and fear of death. Each example fills the search field so you can start from the same workflow used for typed queries. The source selector offers clarke materia medica, boericke materia medica, kent lectures, and allen nosodes. The source cards also show the full title and author for each book.',
 } as const;
 
 export const FIND_REMEDY_FAQ_ITEMS = [

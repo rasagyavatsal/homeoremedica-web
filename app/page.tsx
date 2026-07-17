@@ -16,13 +16,6 @@ import { SEARCH_BOOKS } from '@/lib/seo/book-data';
 const HOME_DESCRIPTION =
   'A calm, focused homoeopathic remedy finder for searching classical materia medica by symptom and comparing matching remedies.';
 
-const SOURCE_COVERS = {
-  boericke: { src: '/source-covers/boericke.jpg', width: 301, height: 371 },
-  clarke: { src: '/source-covers/clarke.jpg', width: 298, height: 411 },
-  kent: { src: '/source-covers/kent.jpg', width: 366, height: 543 },
-  allen: { src: '/source-covers/allen.jpg', width: 223, height: 275 },
-} as const;
-
 export const metadata: Metadata = {
   title: 'HomeoRemedica — A calmer homoeopathic remedy finder',
   description: HOME_DESCRIPTION,
@@ -86,7 +79,7 @@ export default function HomePage() {
             </div>
             <div className="grid gap-px overflow-hidden rounded-xl border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
               {SEARCH_BOOKS.map((book, index) => {
-                const cover = SOURCE_COVERS[book.id];
+                const cover = book.cover;
                 return (
                   <article key={book.id} className="bg-card p-5 md:p-6">
                     <div className="mb-8 flex items-start justify-between gap-4">
@@ -100,7 +93,9 @@ export default function HomePage() {
                       />
                       <span className="index-label text-primary">0{index + 1}</span>
                     </div>
-                    <h3 className="text-lg font-medium leading-title">{book.name}</h3>
+                    <h3 className="whitespace-pre-line text-lg font-medium leading-title">
+                      {book.fullName}
+                    </h3>
                   </article>
                 );
               })}

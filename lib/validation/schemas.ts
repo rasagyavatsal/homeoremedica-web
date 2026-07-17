@@ -1,8 +1,9 @@
 import { z } from 'zod';
+import { SEARCH_BOOK_IDS } from '@/lib/seo/book-data';
 
 // Request validation schemas
 export const findRemedySchema = z.object({
-  bookId: z.enum(['boericke', 'clarke', 'kent', 'allen']),
+  bookId: z.enum(SEARCH_BOOK_IDS),
   symptoms: z.array(z.string().min(1)).min(1).max(20)
 });
 
@@ -10,7 +11,7 @@ export const selectedSymptomSchema = z.object({
   id: z.string().min(1),
   name: z.string().min(1),
   synonyms: z.array(z.string().min(1)).optional(),
-  books: z.array(z.enum(['boericke', 'clarke', 'kent', 'allen'])).optional(),
+  books: z.array(z.enum(SEARCH_BOOK_IDS)).optional(),
   category: z.string().min(1).optional(),
 });
 
@@ -23,7 +24,7 @@ export const baseCaseSchema = z.object({
   title: z.string().min(1).max(200).optional(),
   name: z.string().min(1).max(200).optional(),
   note: z.string().max(2000).optional(),
-  bookId: z.string().min(1).optional(),
+  bookId: z.enum(SEARCH_BOOK_IDS).optional(),
   symptoms: z.array(z.string().min(1)).optional(),
   selectedSymptoms: z.array(selectedSymptomSchema).optional(),
   results: z.array(caseResultSchema).optional()
@@ -50,7 +51,7 @@ export const updateCaseSchema = baseCaseSchema.superRefine((data, ctx) => {
 
 export const aiMatchSymptomsSchema = z.object({
   query: z.string().min(1),
-  selectedBooks: z.array(z.enum(['boericke', 'clarke', 'kent', 'allen'])).optional(),
+  selectedBooks: z.array(z.enum(SEARCH_BOOK_IDS)).optional(),
 });
 
 // Response validation schemas

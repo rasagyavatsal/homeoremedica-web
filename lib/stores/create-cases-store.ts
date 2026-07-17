@@ -1,13 +1,22 @@
 import { create } from 'zustand';
 import type { BookId, Case, Symptom } from '@/types';
 import type { ApiClient } from '@/lib/api/base-client';
+import { isSearchBookId } from '@/lib/seo/book-data';
 
 export function isNonEmptyString(value: unknown): value is string {
   return typeof value === 'string' && value.trim().length > 0;
 }
 
 export function normalizeCaseFromApi(caseData: any): Case | null {
-  if (!isNonEmptyString(caseData?.id)) {
+  const hasRetiredSymptomBook = caseData?.selectedSymptoms?.some(
+    (symptom: any) => Array.isArray(symptom?.books) && symptom.books.some((book: unknown) => !isSearchBookId(book)),
+  );
+
+  if (
+    !isNonEmptyString(caseData?.id) ||
+    (caseData.bookId != null && !isSearchBookId(caseData.bookId)) ||
+    hasRetiredSymptomBook
+  ) {
     return null;
   }
 

@@ -10,6 +10,7 @@ import {
   type FinderResult,
   type FinderSymptom,
 } from '@/components/remedy-finder-view';
+import { getBookName } from '@/lib/seo/book-data';
 
 const DEMOS = [
   {
@@ -121,16 +122,16 @@ export function PreviewRemedyScene() {
   const dropdownOpen = queryLength === demo.query.length && selectedCount < demo.symptoms.length && !isDropdownDismissed;
 
   const indications = useMemo<FinderIndication[]>(
-    () => demo.symptoms.slice(0, visibleMatches).map((name) => ({ name, books: ['boericke'] })),
+    () => demo.symptoms.slice(0, visibleMatches).map((name) => ({ name, books: ['boericke-MM'] })),
     [demo.symptoms, visibleMatches],
   );
   const selectedSymptoms = useMemo<FinderSymptom[]>(
-    () => demo.symptoms.slice(0, selectedCount).map((name) => ({ id: symptomId(name), name, books: ['boericke'] })),
+    () => demo.symptoms.slice(0, selectedCount).map((name) => ({ id: symptomId(name), name, books: ['boericke-MM'] })),
     [demo.symptoms, selectedCount],
   );
   const results = useMemo<FinderResult[]>(
     () => demo.remedies.slice(0, visibleRemedies).map(([name, score, summary]) => ({
-      remedy: { id: symptomId(name), name, book: 'boericke' },
+      remedy: { id: symptomId(name), name, book: 'boericke-MM' },
       score: Number(score),
       matchedSymptoms: summary.split(' · '),
     })),
@@ -148,7 +149,7 @@ export function PreviewRemedyScene() {
       <FinderWorkspace
         search={(
           <SymptomSearchView
-            activeBook="boericke"
+            activeBook="boericke-MM"
             query={query}
             selectedSymptoms={selectedSymptoms}
             results={indications}
@@ -174,7 +175,7 @@ export function PreviewRemedyScene() {
         )}
         symptoms={selectedSymptoms}
         results={results}
-        activeBookName="Boericke"
+        activeBookName={getBookName('boericke-MM')}
         onSaveCase={() => undefined}
         onClear={replay}
         onRemove={() => undefined}

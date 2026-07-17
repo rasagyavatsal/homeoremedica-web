@@ -18,7 +18,7 @@ vi.mock('@/lib/stores/search-store', () => ({
     clearSymptoms: vi.fn(),
     addSymptom: vi.fn(),
     removeSymptom: vi.fn(),
-    activeBook: 'boericke',
+    activeBook: 'boericke-MM',
     setActiveBook: vi.fn(),
   }),
 }));

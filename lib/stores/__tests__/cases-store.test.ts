@@ -22,12 +22,21 @@ describe('cases-store utilities', () => {
   });
 
   describe('normalizeCaseFromApi', () => {
+    it('discards cases that use retired book identifiers', () => {
+      expect(normalizeCaseFromApi({ id: 'legacy', name: 'Legacy', bookId: 'boericke' })).toBeNull();
+      expect(normalizeCaseFromApi({
+        id: 'legacy-symptom',
+        name: 'Legacy symptom',
+        selectedSymptoms: [{ id: 's1', name: 'Headache', books: ['boericke'] }],
+      })).toBeNull();
+    });
+
     it('should normalize valid API data', () => {
       const now = new Date().toISOString();
       const apiData = {
         id: '1',
         name: 'Case 1',
-        bookId: 'boericke',
+        bookId: 'boericke-MM',
         selectedSymptoms: [{ id: 's1', name: 'Symptom 1' }],
         userId: 'u1',
         createdAt: now
@@ -37,7 +46,7 @@ describe('cases-store utilities', () => {
       expect(result).toEqual({
         id: '1',
         name: 'Case 1',
-        bookId: 'boericke',
+        bookId: 'boericke-MM',
         selectedSymptoms: [{ id: 's1', name: 'Symptom 1' }],
         userId: 'u1',
         timestamp: new Date(now)

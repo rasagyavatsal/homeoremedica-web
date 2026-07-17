@@ -27,7 +27,7 @@ describe('Server Repertory Service', () => {
 
   describe('searchSymptomsForApi', () => {
     it('should return empty results when query is too short', async () => {
-      const result = await searchSymptomsForApi('book', 'a', 50, 0);
+      const result = await searchSymptomsForApi('kent-lectures', 'a', 50, 0);
       expect(result).toEqual({ results: [], total: 0 });
     });
 
@@ -35,19 +35,19 @@ describe('Server Repertory Service', () => {
       mockSearchService.suggestSymptoms.mockResolvedValue(['head pain', 'headache']);
       mockSearchService.countSymptomSuggestions.mockResolvedValue(2);
 
-      const result = await searchSymptomsForApi('book', 'head', 50, 0);
+      const result = await searchSymptomsForApi('kent-lectures', 'head', 50, 0);
       
       expect(result.total).toBe(2);
       expect(result.results).toEqual([
         {
           name: 'head pain',
-          books: ['book'],
+          books: ['kent-lectures'],
           matchType: 'partial',
           relevanceScore: 2
         },
         {
           name: 'headache',
-          books: ['book'],
+          books: ['kent-lectures'],
           matchType: 'partial',
           relevanceScore: 1
         }
@@ -58,7 +58,7 @@ describe('Server Repertory Service', () => {
       mockSearchService.suggestSymptoms.mockResolvedValue(['headache']);
       mockSearchService.countSymptomSuggestions.mockResolvedValue(1);
 
-      const result = await searchSymptomsForApi('book', 'headache', 50, 0);
+      const result = await searchSymptomsForApi('kent-lectures', 'headache', 50, 0);
       
       expect(result.results[0].matchType).toBe('exact');
     });
@@ -74,7 +74,7 @@ describe('Server Repertory Service', () => {
         symptoms: ['s1', 's2']
       });
 
-      const result = await searchRemediesForApi('book', ['s1']);
+      const result = await searchRemediesForApi('kent-lectures', ['s1']);
 
       expect(result).toEqual([{
         remedy: {
@@ -82,7 +82,7 @@ describe('Server Repertory Service', () => {
           name: 'Belladonna',
           description: 'Desc',
           symptoms: ['s1', 's2'],
-          book: 'book'
+          book: 'kent-lectures'
         },
         score: 1,
         matchedSymptoms: ['s1']
@@ -98,7 +98,7 @@ describe('Server Repertory Service', () => {
       mockSearchService.findRemedies.mockResolvedValue(mockMatches);
       mockSearchService.getRemedyDetails.mockResolvedValue({});
 
-      const result = await searchRemediesForApi('book', ['s1']);
+      const result = await searchRemediesForApi('kent-lectures', ['s1']);
 
       expect(result.length).toBe(20);
     });
@@ -117,17 +117,17 @@ describe('Server Repertory Service', () => {
         name: 'Detailed Name'
       });
 
-      const result = await findRemedyResponseForApi('book', ['s1']);
+      const result = await findRemedyResponseForApi('kent-lectures', ['s1']);
 
       expect(result.totalMatches).toBe(25);
       expect(result.remedies.length).toBe(20);
       expect(result.remedies[0]).toEqual({
-        id: 'rem0-book',
+        id: 'rem0-kent-lectures',
         name: 'Detailed Name',
         description: 'Desc',
         score: 1,
         matchedSymptoms: ['s1'],
-        sourceBooks: ['book']
+        sourceBooks: ['kent-lectures']
       });
     });
   });

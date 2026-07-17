@@ -35,7 +35,7 @@ describe('PreviewCasesScene', () => {
     act(() => vi.advanceTimersByTime(2_000));
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
     expect(screen.getByText('Dry cough, worse after midnight')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Source Clarke' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Source clarke materia medica' })).toBeInTheDocument();
 
     act(() => vi.advanceTimersByTime(3_000));
     const reopenedCases = screen.getByRole('dialog', { name: 'Saved cases' });
@@ -92,6 +92,6 @@ describe('PreviewCasesScene', () => {
     fireEvent.click(within(casesDialog).getByText('Sunlight headache'));
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
     expect(screen.getByText('Throbbing pain in the temples')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Source Kent' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Source kent lectures' })).toBeInTheDocument();
   });
 });

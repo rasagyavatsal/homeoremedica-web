@@ -1,9 +1,9 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { Book, SearchResult, Symptom } from '@/types';
+import type { BookId, SearchResult, Symptom } from '@/types';
 import { apiClient } from '@/lib/api/client';
 
-type SearchBookId = Book['id'];
+type SearchBookId = BookId;
 
 interface SearchState {
   activeBook: SearchBookId;
@@ -46,7 +46,7 @@ export const useSearchStore = create<SearchState>()(
       };
 
       return {
-        activeBook: 'boericke',
+        activeBook: 'boericke-MM',
         selectedSymptoms: [],
         results: [],
         searchQuery: '',
@@ -165,15 +165,7 @@ export const useSearchStore = create<SearchState>()(
       };
     },
     {
-      name: 'search-storage',
-      version: 2,
-      migrate: (persistedState: any, version) => {
-        // Coerce legacy 'all' to a specific default book
-        if (persistedState?.activeBook === 'all') {
-          persistedState.activeBook = 'boericke';
-        }
-        return persistedState;
-      }
+      name: 'search-storage-v3',
     }
   )
 );

@@ -21,7 +21,7 @@ describe('GET /api/symptoms/search', () => {
   });
 
   it('returns empty results for short query (< 2 chars)', async () => {
-    const req = createRequest({ query: 'a', book: 'boericke' });
+    const req = createRequest({ query: 'a', book: 'boericke-MM' });
     const res = await GET(req);
     const data = await res.json();
 
@@ -31,7 +31,7 @@ describe('GET /api/symptoms/search', () => {
   });
 
   it('returns empty results for missing query', async () => {
-    const req = createRequest({ book: 'boericke' });
+    const req = createRequest({ book: 'boericke-MM' });
     const res = await GET(req);
     const data = await res.json();
 
@@ -47,38 +47,46 @@ describe('GET /api/symptoms/search', () => {
     expect(data.error).toBe('Book is required');
   });
 
+  it('returns 400 for a retired book identifier', async () => {
+    const res = await GET(createRequest({ query: 'headache', book: 'boericke' }));
+
+    expect(res.status).toBe(400);
+    expect(await res.json()).toEqual({ error: 'Invalid book' });
+    expect(mockSearchSymptomsForApi).not.toHaveBeenCalled();
+  });
+
   it('returns results from service', async () => {
     const mockResponse = {
       total: 2,
       results: [
-        { name: 'Itching of skin', books: ['boericke'], matchType: 'exact', relevanceScore: 2 },
-        { name: 'Pruritus ani', books: ['boericke'], matchType: 'mapping', relevanceScore: 1 }
+        { name: 'Itching of skin', books: ['boericke-MM'], matchType: 'exact', relevanceScore: 2 },
+        { name: 'Pruritus ani', books: ['boericke-MM'], matchType: 'mapping', relevanceScore: 1 }
       ]
     };
     mockSearchSymptomsForApi.mockResolvedValue(mockResponse);
 
-    const req = createRequest({ query: 'itching', book: 'boericke' });
+    const req = createRequest({ query: 'itching', book: 'boericke-MM' });
     const res = await GET(req);
     const data = await res.json();
 
     expect(res.status).toBe(200);
     expect(data).toEqual(mockResponse);
-    expect(mockSearchSymptomsForApi).toHaveBeenCalledWith('boericke', 'itching', 50, 0);
+    expect(mockSearchSymptomsForApi).toHaveBeenCalledWith('boericke-MM', 'itching', 50, 0);
   });
 
   it('pagination: limit/offset params work correctly', async () => {
     mockSearchSymptomsForApi.mockResolvedValue({ results: [], total: 0 });
 
-    const req = createRequest({ query: 'head', book: 'clarke', limit: '1', offset: '10' });
+    const req = createRequest({ query: 'head', book: 'clarke-MM', limit: '1', offset: '10' });
     await GET(req);
     
-    expect(mockSearchSymptomsForApi).toHaveBeenCalledWith('clarke', 'head', 1, 10);
+    expect(mockSearchSymptomsForApi).toHaveBeenCalledWith('clarke-MM', 'head', 1, 10);
   });
 
   it('returns 500 on service error', async () => {
     mockSearchSymptomsForApi.mockRejectedValue(new Error('Service failed'));
 
-    const req = createRequest({ query: 'head', book: 'boericke' });
+    const req = createRequest({ query: 'head', book: 'boericke-MM' });
     const res = await GET(req);
 
     expect(res.status).toBe(500);

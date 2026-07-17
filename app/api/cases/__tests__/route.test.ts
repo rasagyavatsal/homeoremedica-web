@@ -114,7 +114,7 @@ describe('GET /api/cases', () => {
             title: 'My Case',
             name: 'My Case',
             note: 'Some note',
-            bookId: 'boericke',
+            bookId: 'boericke-MM',
             symptoms: ['headache'],
             selectedSymptoms: [],
             results: [],
@@ -170,7 +170,7 @@ describe('POST /api/cases', () => {
     const req = createPostRequest({
       name: 'Symptom Case',
       selectedSymptoms: [{ id: 's1', name: 'headache' }],
-      bookId: 'boericke',
+      bookId: 'boericke-MM',
     });
     const res = await POST(req);
 

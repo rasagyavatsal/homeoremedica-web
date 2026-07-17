@@ -1,45 +1,60 @@
-export type SearchBookId = 'boericke' | 'clarke' | 'kent' | 'allen';
+export const SEARCH_BOOK_IDS = [
+  'clarke-MM',
+  'boericke-MM',
+  'kent-lectures',
+  'allen-nosodes',
+] as const;
+
+export type SearchBookId = (typeof SEARCH_BOOK_IDS)[number];
 
 export interface BookInfo {
   id: SearchBookId;
-  name: string;
-  shortDescription: string;
-  description: string;
+  fullName: string;
+  shortName: string;
+  cover: {
+    src: string;
+    width: number;
+    height: number;
+  };
 }
 
 export const SEARCH_BOOKS: BookInfo[] = [
   {
-    id: 'boericke',
-    name: "Boericke's Materia Medica",
-    shortDescription: 'Practical bedside reference',
-    description: 'Concise clinical materia medica with practical bedside indications.',
+    id: 'clarke-MM',
+    fullName: 'A DICTIONARY OF PRACTICAL\nMATERIA MEDICA\nBy John Henry CLARKE, M.D.',
+    shortName: 'clarke materia medica',
+    cover: { src: '/source-covers/clarke-MM.jpg', width: 298, height: 411 },
   },
   {
-    id: 'clarke',
-    name: "Clarke's Dictionary of Practical Materia Medica",
-    shortDescription: 'Expanded clinical reference',
-    description: 'Expanded repertory-style reference with practical remedy detail.',
+    id: 'boericke-MM',
+    fullName: 'HOMEOPATHIC MATERIA MEDICA\nby William BOERICKE, M.D.',
+    shortName: 'boericke materia medica',
+    cover: { src: '/source-covers/boericke-MM.jpg', width: 301, height: 371 },
   },
   {
-    id: 'kent',
-    name: "Kent's Lectures on Homoeopathic Materia Medica",
-    shortDescription: 'Classical lecture-based source',
-    description: 'Classical lecture-based remedy source with broader clinical framing.',
+    id: 'kent-lectures',
+    fullName: 'LECTURES ON HOMEOPATHIC MATERIA MEDICAL\nby JAMES TYLER KENT, A.M., M.D.',
+    shortName: 'kent lectures',
+    cover: { src: '/source-covers/kent-lectures.jpg', width: 366, height: 543 },
   },
   {
-    id: 'allen',
-    name: "Allen's Keynotes",
-    shortDescription: 'Fast keynote reference',
-    description: 'Concise keynote-style reference for fast clinical scanning.',
+    id: 'allen-nosodes',
+    fullName: 'The Materia Medica of the Nosodes.\nBy Henry Clay ALLEN, M. D.',
+    shortName: 'allen nosodes',
+    cover: { src: '/source-covers/allen-nosodes.jpg', width: 223, height: 275 },
   },
 ];
-
-export const BOOKS = SEARCH_BOOKS;
 
 export function getBookInfo(bookId: string) {
   return SEARCH_BOOKS.find((book) => book.id === bookId);
 }
 
-export function getBookOptions() {
-  return SEARCH_BOOKS;
+export function isSearchBookId(bookId: unknown): bookId is SearchBookId {
+  return typeof bookId === 'string' && SEARCH_BOOK_IDS.some((candidate) => candidate === bookId);
+}
+
+export function getBookName(bookId: string, variant: 'full' | 'short' = 'short') {
+  const book = getBookInfo(bookId);
+  if (!book) return bookId;
+  return variant === 'full' ? book.fullName : book.shortName;
 }

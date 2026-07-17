@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { MotionGroup, MotionItem, MotionSection } from '@/components/ui/motion';
 import { motionClassNames } from '@/lib/motion/system';
 import { overlayBackdrop, overlayRecipes } from '@/lib/overlay/system';
+import { getBookName } from '@/lib/seo/book-data';
 import { cn, formatRemedyDisplayName } from '@/lib/utils';
 
 export type FinderSymptom = {
@@ -36,10 +37,6 @@ export type FinderResult = {
   score: number;
   matchedSymptoms: string[];
 };
-
-function prettyBook(bookId: string) {
-  return bookId.charAt(0).toUpperCase() + bookId.slice(1);
-}
 
 function summarizeMatches(matches: string[]) {
   if (matches.length === 0) return null;
@@ -112,7 +109,7 @@ export function SymptomSearchView({
   onSymptomSelect: (symptom: string) => void;
   onResultsScroll: (event: UIEvent<HTMLDivElement>) => void;
 }>) {
-  const activeBookLabel = prettyBook(activeBook);
+  const activeBookLabel = getBookName(activeBook);
 
   return (
     <div className={cn('space-y-4', !containedOverlay && 'relative')}>
@@ -197,7 +194,7 @@ export function SymptomSearchView({
                 <div>
                   {results.map((result, index) => {
                     const isSelected = selectedSymptoms.some((symptom) => symptom.name === result.name);
-                    const sourceBook = prettyBook(result.books[0] ?? activeBook);
+                    const sourceBook = getBookName(result.books[0] ?? activeBook);
 
                     return (
                       <button
@@ -344,7 +341,7 @@ export function ResultsPanel({
 
           <MotionGroup stagger={0.03}>
             {results.map((result) => {
-              const sourceBook = result.remedy.book ? prettyBook(result.remedy.book) : activeBookName;
+              const sourceBook = result.remedy.book ? getBookName(result.remedy.book) : activeBookName;
               const summary = summarizeMatches(result.matchedSymptoms);
               const matchLabel = selectedCount > 0
                 ? `Matches ${result.score} of ${selectedCount}`

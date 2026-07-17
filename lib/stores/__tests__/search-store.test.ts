@@ -14,13 +14,13 @@ describe('useSearchStore unit tests', () => {
     vi.clearAllMocks();
     useSearchStore.getState().clearSymptoms();
     useSearchStore.getState().clearResults();
-    useSearchStore.getState().setActiveBook('boericke');
+    useSearchStore.getState().setActiveBook('boericke-MM');
     useSearchStore.getState().setSearchQuery('');
   });
 
   it('should initialize with default state', () => {
     const state = useSearchStore.getState();
-    expect(state.activeBook).toBe('boericke');
+    expect(state.activeBook).toBe('boericke-MM');
     expect(state.selectedSymptoms).toEqual([]);
     expect(state.results).toEqual([]);
     expect(state.searchQuery).toBe('');
@@ -30,10 +30,10 @@ describe('useSearchStore unit tests', () => {
   it('should set active book and clear results', () => {
     const store = useSearchStore.getState();
     store.addSymptom({ id: 's1', name: 'S1' });
-    store.setActiveBook('clarke');
+    store.setActiveBook('clarke-MM');
     
     const state = useSearchStore.getState();
-    expect(state.activeBook).toBe('clarke');
+    expect(state.activeBook).toBe('clarke-MM');
     expect(state.selectedSymptoms).toEqual([]);
     expect(state.results).toEqual([]);
   });
@@ -116,7 +116,7 @@ describe('useSearchStore unit tests', () => {
       await store.findRemedies();
       
       const state = useSearchStore.getState();
-      expect(apiClient.searchRemedies).toHaveBeenCalledWith(['S1'], 'boericke');
+      expect(apiClient.searchRemedies).toHaveBeenCalledWith(['S1'], 'boericke-MM');
       expect(state.results).toEqual(mockResults);
       expect(state.searchStatus.isSearching).toBe(false);
       expect(state.searchStatus.progress).toBe(100);
@@ -183,30 +183,12 @@ describe('useSearchStore unit tests', () => {
     });
   });
 
-  describe('migration', () => {
-    it('should migrate legacy activeBook "all" to "boericke"', () => {
-      // Find the persist config to access the migrate function
+  describe('persistence', () => {
+    it('uses a new storage key instead of migrating retired book identifiers', () => {
       const persistOptions = useSearchStore.persist.getOptions();
-      const migrate = persistOptions.migrate;
-      
-      if (!migrate) throw new Error('Migrate function not found');
-      
-      const oldState = { activeBook: 'all', selectedSymptoms: [] };
-      const migrated = migrate(oldState, 1);
-      
-      expect((migrated as any).activeBook).toBe('boericke');
-    });
 
-    it('should not change valid activeBook', () => {
-      const persistOptions = useSearchStore.persist.getOptions();
-      const migrate = persistOptions.migrate;
-      
-      if (!migrate) throw new Error('Migrate function not found');
-      
-      const validState = { activeBook: 'clarke', selectedSymptoms: [] };
-      const migrated = migrate(validState, 1);
-      
-      expect((migrated as any).activeBook).toBe('clarke');
+      expect(persistOptions.name).toBe('search-storage-v3');
+      expect(persistOptions.migrate).toBeUndefined();
     });
   });
 });

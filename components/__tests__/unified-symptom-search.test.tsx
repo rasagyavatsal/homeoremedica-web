@@ -5,7 +5,7 @@ import { getSearchInput, typeSearchQuery } from './search-test-helper';
 
 // Mock search store
 const mockSetActiveBook = vi.fn();
-const mockActiveBook = { current: 'boericke' as 'boericke' | 'clarke' | 'kent' };
+const mockActiveBook = { current: 'boericke-MM' as 'boericke-MM' | 'clarke-MM' | 'kent-lectures' };
 
 vi.mock('@/lib/stores/search-store', () => ({
   useSearchStore: (selector?: any) => {
@@ -44,7 +44,7 @@ describe('UnifiedSymptomSearch', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.useFakeTimers({ shouldAdvanceTime: true });
-    mockActiveBook.current = 'boericke';
+    mockActiveBook.current = 'boericke-MM';
     mockSearchSymptoms.mockResolvedValue({ results: [], total: 0 });
   });
 
@@ -73,7 +73,7 @@ describe('UnifiedSymptomSearch', () => {
 
   it('opens the shared blurred backdrop and dismisses it with an icon-only close button', async () => {
     mockSearchSymptoms.mockResolvedValue({
-      results: [{ name: 'Headache frontal', books: ['boericke'], matchType: 'partial' }],
+      results: [{ name: 'Headache frontal', books: ['boericke-MM'], matchType: 'partial' }],
       total: 1,
     });
 
@@ -108,7 +108,7 @@ describe('UnifiedSymptomSearch', () => {
     );
 
     // The books button should show the current book value
-    expect(screen.getByText('Boericke')).toBeInTheDocument();
+    expect(screen.getByText('boericke materia medica')).toBeInTheDocument();
   });
 
   it('calls onOpenBooks when Books button is clicked', () => {
@@ -126,7 +126,7 @@ describe('UnifiedSymptomSearch', () => {
 
   it('typing triggers debounced API call', async () => {
     mockSearchSymptoms.mockResolvedValue({
-      results: [{ name: 'Headache', books: ['boericke'], matchType: 'partial' }],
+      results: [{ name: 'Headache', books: ['boericke-MM'], matchType: 'partial' }],
       total: 1,
     });
 
@@ -145,7 +145,7 @@ describe('UnifiedSymptomSearch', () => {
     });
 
     await waitFor(() => {
-      expect(mockSearchSymptoms).toHaveBeenCalledWith('head', 'boericke', 50, 0);
+      expect(mockSearchSymptoms).toHaveBeenCalledWith('head', 'boericke-MM', 50, 0);
     });
   });
 
@@ -162,8 +162,8 @@ describe('UnifiedSymptomSearch', () => {
   it('results dropdown shows after 2+ chars typed and results returned', async () => {
     mockSearchSymptoms.mockResolvedValue({
       results: [
-        { name: 'Headache frontal', books: ['boericke'], matchType: 'partial' },
-        { name: 'Headache vertex', books: ['boericke'], matchType: 'partial' },
+        { name: 'Headache frontal', books: ['boericke-MM'], matchType: 'partial' },
+        { name: 'Headache vertex', books: ['boericke-MM'], matchType: 'partial' },
       ],
       total: 2,
     });
@@ -183,7 +183,7 @@ describe('UnifiedSymptomSearch', () => {
   it('clicking a symptom calls onSymptomSelect', async () => {
     mockSearchSymptoms.mockResolvedValue({
       results: [
-        { name: 'Headache frontal', books: ['boericke'], matchType: 'partial' },
+        { name: 'Headache frontal', books: ['boericke-MM'], matchType: 'partial' },
       ],
       total: 1,
     });
@@ -205,7 +205,7 @@ describe('UnifiedSymptomSearch', () => {
   it('selected symptoms show check mark', async () => {
     mockSearchSymptoms.mockResolvedValue({
       results: [
-        { name: 'Headache frontal', books: ['boericke'], matchType: 'partial' },
+        { name: 'Headache frontal', books: ['boericke-MM'], matchType: 'partial' },
       ],
       total: 1,
     });
@@ -230,7 +230,7 @@ describe('UnifiedSymptomSearch', () => {
   it('Escape dismisses dropdown', async () => {
     mockSearchSymptoms.mockResolvedValue({
       results: [
-        { name: 'Headache', books: ['boericke'], matchType: 'partial' },
+        { name: 'Headache', books: ['boericke-MM'], matchType: 'partial' },
       ],
       total: 1,
     });

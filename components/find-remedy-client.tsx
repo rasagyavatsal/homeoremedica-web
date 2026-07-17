@@ -27,60 +27,32 @@ import { overlayRecipes } from '@/lib/overlay/system';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/lib/contexts/auth-context';
 import { useUserCases } from '@/lib/hooks/use-user-cases';
-import { getBookInfo, getBookOptions, type BookInfo } from '@/lib/seo/book-data';
+import { getBookName, SEARCH_BOOKS, type BookInfo } from '@/lib/seo/book-data';
 import { useCasesStore } from '@/lib/stores/cases-store';
 import { useSearchStore } from '@/lib/stores/search-store';
 
-function prettyBook(bookId: string) {
-  return bookId.charAt(0).toUpperCase() + bookId.slice(1);
-}
-
-const SOURCE_SHORT_LABELS: Record<BookInfo['id'], string> = {
-  boericke: 'Boericke',
-  clarke: 'Clarke',
-  kent: 'Kent',
-  allen: 'Allen',
-};
-
-const SOURCE_COVER_IMAGES: Record<BookInfo['id'], { src: string; width: number; height: number }> = {
-  boericke: { src: '/source-covers/boericke.jpg', width: 301, height: 371 },
-  clarke: { src: '/source-covers/clarke.jpg', width: 298, height: 411 },
-  kent: { src: '/source-covers/kent.jpg', width: 366, height: 543 },
-  allen: { src: '/source-covers/allen.jpg', width: 223, height: 275 },
-};
-
-const SOURCE_COVER_FALLBACK_ACCENTS: Record<BookInfo['id'], string> = {
-  boericke: 'bg-surface-container-low',
-  clarke: 'bg-surface-container-low',
-  kent: 'bg-surface-container-low',
-  allen: 'bg-surface-container-low',
-};
-
 function SourceCover({
-  bookId,
+  book,
   className,
   children,
 }: Readonly<{
-  bookId: BookInfo['id'];
+  book: BookInfo;
   className?: string;
   children?: React.ReactNode;
 }>) {
-  const cover = SOURCE_COVER_IMAGES[bookId];
-
   return (
     <span
       aria-hidden="true"
       className={cn(
-        'relative block overflow-hidden rounded-sm border border-border',
-        SOURCE_COVER_FALLBACK_ACCENTS[bookId],
+        'relative block overflow-hidden rounded-sm border border-border bg-surface-container-low',
         className,
       )}
     >
       <Image
-        src={cover.src}
+        src={book.cover.src}
         alt=""
-        width={cover.width}
-        height={cover.height}
+        width={book.cover.width}
+        height={book.cover.height}
         sizes="96px"
         className="block h-auto w-full"
         loading="lazy"
@@ -119,7 +91,7 @@ function SourceDialog({
               key={book.id}
               type="button"
               onClick={() => onSelectBook(book.id)}
-              aria-label={`Select source: ${book.name}`}
+              aria-label={`Select source: ${book.fullName}`}
               aria-pressed={activeBookId === book.id}
               className={cn(
                 `w-full rounded-lg border p-2 text-left ${motionClassNames.surface} ${motionClassNames.press}`,
@@ -129,7 +101,7 @@ function SourceDialog({
               )}
             >
               <div className="space-y-1.5">
-                <SourceCover bookId={book.id} className="mx-auto w-20 sm:w-24">
+                <SourceCover book={book} className="mx-auto w-20 sm:w-24">
                   {activeBookId === book.id ? (
                     <div className="absolute right-1.5 top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-primary-foreground">
                       <Check className="h-3.5 w-3.5" />
@@ -139,10 +111,10 @@ function SourceDialog({
 
                 <div className="space-y-1 px-0.5 pb-0.5">
                   <p className="index-label leading-tight text-foreground">
-                    {SOURCE_SHORT_LABELS[book.id]}
+                    {book.shortName}
                   </p>
-                  <p className="text-xs leading-snug text-on-surface-variant">
-                    {book.name}
+                  <p className="whitespace-pre-line text-xs leading-snug text-on-surface-variant">
+                    {book.fullName}
                   </p>
                 </div>
               </div>
@@ -181,9 +153,7 @@ export default function FindRemedyClient() {
 
   useUserCases();
 
-  const bookOptions = getBookOptions();
-  const activeBookInfo = getBookInfo(activeBook);
-  const activeBookName = activeBookInfo?.name ?? prettyBook(activeBook);
+  const activeBookName = getBookName(activeBook);
   const currentSearchHasContent = isSearchActive || selectedSymptoms.length > 0 || results.length > 0;
 
   useEffect(() => {
@@ -340,7 +310,7 @@ export default function FindRemedyClient() {
         open={booksModalOpen}
         onOpenChange={setBooksModalOpen}
         activeBookId={activeBook}
-        books={bookOptions}
+        books={SEARCH_BOOKS}
         onSelectBook={(bookId) => {
           if (bookId === activeBook) {
             setBooksModalOpen(false);

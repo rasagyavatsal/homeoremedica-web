@@ -7,12 +7,9 @@ import { Button } from '@/components/ui/button';
 import { Callout } from '@/components/ui/callout';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { motionClassNames } from '@/lib/motion/system';
+import { getBookName } from '@/lib/seo/book-data';
 import { cn } from '@/lib/utils';
 import type { Case } from '@/types';
-
-function prettyBook(bookId: string) {
-  return bookId.charAt(0).toUpperCase() + bookId.slice(1);
-}
 
 export function CasesDialog({
   open,
@@ -60,7 +57,7 @@ export function CasesDialog({
                 <div className="index-label flex flex-wrap items-center gap-2">
                   <span>{caseItem.timestamp.toLocaleDateString()}</span>
                   <span aria-hidden="true">·</span>
-                  <span>{prettyBook(caseItem.bookId ?? 'all')}</span>
+                  <span>{caseItem.bookId ? getBookName(caseItem.bookId) : 'all sources'}</span>
                   <span aria-hidden="true">·</span>
                   <span>{caseItem.selectedSymptoms?.length ?? 0} symptoms</span>
                 </div>
