@@ -82,6 +82,20 @@ export const themePolicy = {
     return noop
   },
 
+  subscribeToPreference(callback: (preference: ThemePreference) => void): () => void {
+    if (globalThis.window === undefined) return noop
+
+    const syncPreference = (event: StorageEvent) => {
+      if (event.storageArea !== globalThis.localStorage) return
+      if (event.key !== null && event.key !== THEME_STORAGE_KEY) return
+
+      callback(themePolicy.getPreference())
+    }
+
+    globalThis.addEventListener('storage', syncPreference)
+    return () => globalThis.removeEventListener('storage', syncPreference)
+  },
+
   createBootstrapScript(): string {
     return `(() => {
   try {
