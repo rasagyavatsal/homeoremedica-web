@@ -22,7 +22,7 @@ The application and remedies database use these canonical book identifiers every
 - `kent-lectures`
 - `allen-nosodes`
 
-The retired identifiers `clarke`, `boericke`, `kent`, and `allen` are intentionally unsupported. Browser-persisted searches that used them are discarded, and the web client omits saved cases containing them rather than migrating them.
+The retired identifiers `clarke`, `boericke`, `kent`, and `allen` are intentionally unsupported. Browser-persisted searches that used them are discarded, and the web client omits saved cases containing them rather than migrating them. Signed-in users with affected saved cases receive a dismissible in-app notice.
 
 ## Production database
 

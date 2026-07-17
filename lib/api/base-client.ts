@@ -86,8 +86,8 @@ export class ApiClient {
   }
 
   // Cases endpoints
-  async getCases(): Promise<{ cases: any[] }> {
-    return this.request<{ cases: any[] }>('/cases');
+  async getCases(): Promise<{ cases: any[]; retiredCaseCount: number }> {
+    return this.request<{ cases: any[]; retiredCaseCount: number }>('/cases');
   }
 
   async createCase(caseData: any): Promise<any> {

@@ -8,6 +8,8 @@ import { useRouter } from 'next/navigation';
 import {
   BookOpen,
   Check,
+  Info,
+  X,
 } from 'lucide-react';
 import type { Case } from '@/types';
 
@@ -18,6 +20,7 @@ import { Header } from '@/components/header';
 import { SaveCaseDialog } from '@/components/save-case-dialog';
 import { UnifiedSymptomSearch } from '@/components/unified-symptom-search';
 import { Button } from '@/components/ui/button';
+import { Callout } from '@/components/ui/callout';
 import {
   Dialog,
   DialogContent,
@@ -30,6 +33,12 @@ import { useUserCases } from '@/lib/hooks/use-user-cases';
 import { getBookName, SEARCH_BOOKS, type BookInfo } from '@/lib/seo/book-data';
 import { useCasesStore } from '@/lib/stores/cases-store';
 import { useSearchStore } from '@/lib/stores/search-store';
+
+const SAVED_CASE_NOTICE_ID = 'book-identifiers-v1';
+
+function savedCaseNoticeKey(userId: string) {
+  return `homeoremedica:saved-case-update:${SAVED_CASE_NOTICE_ID}:${userId}`;
+}
 
 function SourceCover({
   book,
@@ -136,6 +145,10 @@ export default function FindRemedyClient() {
   const [saveCaseError, setSaveCaseError] = useState('');
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [searchResetSignal, setSearchResetSignal] = useState(0);
+  const [savedCaseNotice, setSavedCaseNotice] = useState<{
+    userId: string;
+    dismissed: boolean;
+  } | null>(null);
 
   const {
     selectedSymptoms,
@@ -149,9 +162,28 @@ export default function FindRemedyClient() {
   } = useSearchStore();
 
   const { user } = useAuth();
-  const { cases, addCase, selectCase, selectedCase, deleteCase } = useCasesStore();
+  const {
+    cases,
+    retiredCaseCount,
+    addCase,
+    selectCase,
+    selectedCase,
+    deleteCase,
+  } = useCasesStore();
 
   useUserCases();
+
+  useEffect(() => {
+    if (!user?.uid) {
+      setSavedCaseNotice(null);
+      return;
+    }
+
+    setSavedCaseNotice({
+      userId: user.uid,
+      dismissed: globalThis.localStorage.getItem(savedCaseNoticeKey(user.uid)) === 'dismissed',
+    });
+  }, [user?.uid]);
 
   const activeBookName = getBookName(activeBook);
   const currentSearchHasContent = isSearchActive || selectedSymptoms.length > 0 || results.length > 0;
@@ -167,6 +199,19 @@ export default function FindRemedyClient() {
   );
 
   const canManageCases = Boolean(user?.uid);
+  const showSavedCaseNotice = Boolean(
+    user?.uid &&
+    retiredCaseCount > 0 &&
+    savedCaseNotice?.userId === user.uid &&
+    !savedCaseNotice.dismissed,
+  );
+
+  const dismissSavedCaseNotice = () => {
+    if (!user?.uid) return;
+
+    globalThis.localStorage.setItem(savedCaseNoticeKey(user.uid), 'dismissed');
+    setSavedCaseNotice({ userId: user.uid, dismissed: true });
+  };
 
   const resetCurrentSearch = () => {
     setSearchResetSignal((current) => current + 1);
@@ -254,6 +299,28 @@ export default function FindRemedyClient() {
       <Header />
 
       <FinderWorkspace
+        notice={showSavedCaseNotice ? (
+          <Callout variant="info" icon={<Info className="h-4 w-4" />}>
+            <div className="flex items-start gap-3">
+              <div className="flex-1 space-y-1">
+                <p className="font-medium text-foreground">Saved-case update</p>
+                <p>
+                  {retiredCaseCount} older saved {retiredCaseCount === 1 ? 'case' : 'cases'} may no longer appear because we updated the source books used by HomeoRemedica. New cases will continue to save normally.
+                </p>
+              </div>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="-mr-2 -mt-2 shrink-0"
+                onClick={dismissSavedCaseNotice}
+                aria-label="Dismiss saved-case update"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+          </Callout>
+        ) : null}
         search={(
           <UnifiedSymptomSearch
             selectedSymptoms={selectedSymptoms}

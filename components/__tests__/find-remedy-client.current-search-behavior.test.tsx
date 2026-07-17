@@ -94,6 +94,7 @@ function resetStores() {
   useCasesStore.setState({
     cases: [],
     selectedCase: null,
+    retiredCaseCount: 0,
     loading: false,
     error: null,
   });
@@ -136,6 +137,27 @@ describe('FindRemedyClient current search behavior', () => {
     expect(useSearchStore.getState().activeBook).toBe('boericke-MM');
     expect(useCasesStore.getState().selectedCase?.id).toBe('case-old');
     expect(input).toHaveValue('h');
+  });
+
+  it('shows an affected saved-case notice once per user and device', async () => {
+    useCasesStore.setState({ retiredCaseCount: 2 });
+
+    const firstRender = render(<FindRemedyClient />);
+
+    expect(await screen.findByText('Saved-case update')).toBeInTheDocument();
+    expect(screen.getByText(
+      '2 older saved cases may no longer appear because we updated the source books used by HomeoRemedica. New cases will continue to save normally.',
+    )).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Dismiss saved-case update' }));
+    expect(screen.queryByText('Saved-case update')).not.toBeInTheDocument();
+
+    firstRender.unmount();
+    render(<FindRemedyClient />);
+
+    await waitFor(() => {
+      expect(screen.queryByText('Saved-case update')).not.toBeInTheDocument();
+    });
   });
 
   it('does not ask for confirmation when only saved-case highlight exists and clears selection on source change', async () => {

@@ -110,7 +110,7 @@ describe('cases-store', () => {
       { id: '1', name: 'Case 1', userId: 'user1', createdAt: new Date().toISOString() },
       { id: '2', title: 'Case 2', userId: 'user1', timestamp: new Date().toISOString() },
     ];
-    mockApiClient.getCases.mockResolvedValue({ cases: mockCases });
+    mockApiClient.getCases.mockResolvedValue({ cases: mockCases, retiredCaseCount: 2 });
 
     const useCasesStore = createCasesStore({
       apiClient: mockApiClient,
@@ -126,6 +126,7 @@ describe('cases-store', () => {
     expect(state.cases[1].id).toBe('2');
     expect(state.cases[1].name).toBe('Case 2');
     expect(state.loading).toBe(false);
+    expect(state.retiredCaseCount).toBe(2);
     expect(mockApiClient.setAuthToken).toHaveBeenCalledWith('test-token');
   });
 

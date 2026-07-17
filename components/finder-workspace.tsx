@@ -11,6 +11,7 @@ import { cn } from '@/lib/utils';
 
 export function FinderWorkspace({
   search,
+  notice,
   symptoms,
   results,
   activeBookName,
@@ -19,6 +20,7 @@ export function FinderWorkspace({
   onRemove,
 }: Readonly<{
   search: React.ReactNode;
+  notice?: React.ReactNode;
   symptoms: FinderSymptom[];
   results: FinderResult[];
   activeBookName: string;
@@ -31,7 +33,10 @@ export function FinderWorkspace({
       <h1 className="sr-only">Find a homoeopathic remedy</h1>
       <MotionSafeShell className="min-h-viewport-below-header flex flex-col gap-5 py-5 lg:py-8">
         <section aria-label="Symptom search" className="mx-auto w-full max-w-3xl px-4 sm:px-6">
-          <MotionSection>{search}</MotionSection>
+          <MotionSection className="space-y-4">
+            {notice}
+            {search}
+          </MotionSection>
         </section>
 
         <section

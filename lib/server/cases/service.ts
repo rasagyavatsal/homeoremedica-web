@@ -3,6 +3,26 @@ import { Timestamp } from 'firebase-admin/firestore';
 import { createCaseSchema, updateCaseSchema } from '@/lib/validation/schemas';
 import type { UpdateCaseRequest } from '@/lib/validation/schemas';
 import { CaseDoc, SerializedCase, ApiError } from '@/lib/types/backend';
+import { isSearchBookId } from '@/lib/seo/book-data';
+
+function usesUnsupportedBookIdentifiers(data: Record<string, unknown>) {
+  if (data.bookId != null && !isSearchBookId(data.bookId)) {
+    return true;
+  }
+
+  if (!Array.isArray(data.selectedSymptoms)) {
+    return false;
+  }
+
+  return data.selectedSymptoms.some((symptom: unknown) => {
+    if (!symptom || typeof symptom !== 'object' || !('books' in symptom)) {
+      return false;
+    }
+
+    const { books } = symptom as { books?: unknown };
+    return Array.isArray(books) && books.some((book) => !isSearchBookId(book));
+  });
+}
 
 export function serializeCase(id: string, data: Partial<CaseDoc>): SerializedCase {
   const title = data.title || data.name || 'Untitled Case';
@@ -35,12 +55,28 @@ function getCasesCollection(userId: string) {
   return getAdminDb().collection('cases').doc(userId).collection('items');
 }
 
-export async function listCases(userId: string): Promise<SerializedCase[]> {
+export async function listCases(userId: string): Promise<{
+  cases: SerializedCase[];
+  retiredCaseCount: number;
+}> {
   const casesSnapshot = await getCasesCollection(userId)
     .orderBy('createdAt', 'desc')
     .get();
-  
-  return casesSnapshot.docs.map((doc) => serializeCase(doc.id, doc.data() as Partial<CaseDoc>));
+
+  const cases: SerializedCase[] = [];
+  let retiredCaseCount = 0;
+
+  for (const doc of casesSnapshot.docs) {
+    const data = doc.data();
+    if (usesUnsupportedBookIdentifiers(data)) {
+      retiredCaseCount += 1;
+      continue;
+    }
+
+    cases.push(serializeCase(doc.id, data as Partial<CaseDoc>));
+  }
+
+  return { cases, retiredCaseCount };
 }
 
 export async function createCase(userId: string, body: unknown): Promise<SerializedCase> {
