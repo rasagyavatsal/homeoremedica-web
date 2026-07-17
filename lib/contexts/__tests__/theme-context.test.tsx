@@ -1,13 +1,18 @@
 import React from 'react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, fireEvent, screen } from '@testing-library/react'
+import { render, fireEvent, screen, waitFor } from '@testing-library/react'
 
 import { ThemeProvider, useTheme } from '../theme-context'
-import { themePolicy } from '@/lib/theme'
+import { THEME_STORAGE_KEY, themePolicy } from '@/lib/theme'
 
 function ThemeConsumer() {
-  const { toggleTheme } = useTheme()
-  return <button onClick={toggleTheme}>Toggle</button>
+  const { resolvedTheme, toggleTheme } = useTheme()
+  return (
+    <>
+      <output>{resolvedTheme}</output>
+      <button onClick={toggleTheme}>Toggle</button>
+    </>
+  )
 }
 
 function setMatchMedia(matches: boolean) {
@@ -23,6 +28,9 @@ function setMatchMedia(matches: boolean) {
 
 describe('ThemeProvider', () => {
   beforeEach(() => {
+    localStorage.clear()
+    document.documentElement.className = ''
+    document.documentElement.style.colorScheme = ''
     vi.spyOn(themePolicy, 'disableTransitionsTemporarily')
     setMatchMedia(false)
   })
@@ -40,5 +48,24 @@ describe('ThemeProvider', () => {
     fireEvent.click(screen.getByRole('button'))
 
     expect(themePolicy.disableTransitionsTemporarily).toHaveBeenCalledTimes(1)
+  })
+
+  it('syncs the theme when another document changes the stored preference', async () => {
+    render(
+      <ThemeProvider>
+        <ThemeConsumer />
+      </ThemeProvider>
+    )
+
+    localStorage.setItem(THEME_STORAGE_KEY, 'dark')
+    fireEvent(window, new StorageEvent('storage', {
+      key: THEME_STORAGE_KEY,
+      newValue: 'dark',
+    }))
+
+    await waitFor(() => {
+      expect(screen.getByText('dark')).toBeInTheDocument()
+      expect(document.documentElement).toHaveClass('dark')
+    })
   })
 })

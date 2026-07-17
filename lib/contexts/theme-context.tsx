@@ -42,6 +42,8 @@ export function ThemeProvider({ children }: Readonly<{ children: React.ReactNode
     })
   }, [preference])
 
+  useEffect(() => themePolicy.subscribeToPreference(setPreference), [])
+
   const toggleTheme = useCallback(() => {
     const newPreference = resolvedTheme === 'dark' ? 'light' : 'dark'
     themePolicy.setPreference(newPreference)
