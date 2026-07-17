@@ -14,8 +14,8 @@ export default function manifest(): MetadataRoute.Manifest {
     scope: '/',
     icons: [
       {
-        src: '/mark.png',
-        sizes: '128x128',
+        src: '/logo/logo-light.png',
+        sizes: '860x860',
         type: 'image/png',
         purpose: 'any',
       },

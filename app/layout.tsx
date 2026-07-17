@@ -49,8 +49,21 @@ export const metadata: Metadata = {
     google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || undefined,
   },
   icons: {
-    icon: [{ url: '/mark.png', type: 'image/png', sizes: '128x128' }],
-    apple: [{ url: '/mark.png', type: 'image/png', sizes: '128x128' }],
+    icon: [
+      {
+        url: '/logo/logo-light.png',
+        type: 'image/png',
+        sizes: '860x860',
+        media: '(prefers-color-scheme: light)',
+      },
+      {
+        url: '/logo/logo-dark.png',
+        type: 'image/png',
+        sizes: '860x860',
+        media: '(prefers-color-scheme: dark)',
+      },
+    ],
+    apple: [{ url: '/logo/logo-light.png', type: 'image/png', sizes: '860x860' }],
   },
 }
 
@@ -86,7 +99,7 @@ export default function RootLayout({
     '@type': 'Organization',
     name: SITE_NAME,
     url: `${SITE_URL.origin}/find-remedy`,
-    logo: `${SITE_URL.origin}/mark.png`,
+    logo: `${SITE_URL.origin}/logo/logo-light.png`,
   }
 
   const softwareAppJsonLd = {
