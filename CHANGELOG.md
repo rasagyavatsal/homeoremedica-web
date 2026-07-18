@@ -1,5 +1,39 @@
 # Changelog
 
+## [5.0.0](https://github.com/rasagyavatsal/homeoremedica-web/compare/homeoremedica-web-v4.1.0...homeoremedica-web-v5.0.0) (2026-07-18)
+
+
+### ⚠ BREAKING CHANGES
+
+* **books:** use canonical book identifiers
+
+### Features
+
+* **books:** use canonical book identifiers ([4f53ce4](https://github.com/rasagyavatsal/homeoremedica-web/commit/4f53ce4ec9f3afd060071a364511d107fdf21f07))
+* **branding:** adopt theme-aware logo assets ([4f62767](https://github.com/rasagyavatsal/homeoremedica-web/commit/4f62767d2e9eb84d9c408d3a9ca86768a038be7e))
+* **branding:** adopt theme-aware logo assets ([f0fd5fb](https://github.com/rasagyavatsal/homeoremedica-web/commit/f0fd5fbe4f38f9836056f34618c73afa192474bf))
+* **cases:** notify users about retired saved cases ([1d3ea23](https://github.com/rasagyavatsal/homeoremedica-web/commit/1d3ea235ba22d5a908b48127f98c97f70da263ca))
+* **home:** add how it works section ([ba81150](https://github.com/rasagyavatsal/homeoremedica-web/commit/ba81150b6df301648765c7e02924f663bb957456))
+* **home:** add how it works section ([43835bd](https://github.com/rasagyavatsal/homeoremedica-web/commit/43835bd1cfb1cd980cc4335e65d2d8959760dfd2))
+
+
+### Bug Fixes
+
+* **branding:** address review feedback ([6c065ab](https://github.com/rasagyavatsal/homeoremedica-web/commit/6c065ab73ec6813140add74259f0df3d08171f8e))
+* **branding:** balance header lockup ([8ae3f0b](https://github.com/rasagyavatsal/homeoremedica-web/commit/8ae3f0b9c2a12089096192958fba365d56b24456))
+* **home:** address how it works review feedback ([52b7231](https://github.com/rasagyavatsal/homeoremedica-web/commit/52b7231cff87d6858103d68a14a7e09fc9c44594))
+* **home:** clarify hero subcopy ([5cd5235](https://github.com/rasagyavatsal/homeoremedica-web/commit/5cd5235364fa0aa79635de2a5a425ab95fddfe62))
+* **home:** clarify hero subcopy ([0a9f870](https://github.com/rasagyavatsal/homeoremedica-web/commit/0a9f8703494c09066ce422c7c0b784d266f1700d))
+* **home:** remove saved cases subcopy ([d9967ea](https://github.com/rasagyavatsal/homeoremedica-web/commit/d9967ea999b0b082cf38e280af740a75a6049b1c))
+* **home:** remove saved cases subcopy ([3d76f52](https://github.com/rasagyavatsal/homeoremedica-web/commit/3d76f5259c520f0f9690c8bb294af9683fd8904b))
+* preserve focus during preview autoplay ([cb58ffd](https://github.com/rasagyavatsal/homeoremedica-web/commit/cb58ffdb6e04fac33d533c920dfe4a88ea7786b4))
+* preserve focus during preview autoplay ([41323d7](https://github.com/rasagyavatsal/homeoremedica-web/commit/41323d74108d00a035a2d76ed4da80054350e7b9))
+* **previews:** remove duplicated headers ([bb18fd7](https://github.com/rasagyavatsal/homeoremedica-web/commit/bb18fd7c0b558478163ed137d284bb0d739a330b))
+* **previews:** remove duplicated headers ([ce3e758](https://github.com/rasagyavatsal/homeoremedica-web/commit/ce3e758a1023d3c6043f879168fb1e8713fcee64))
+* sync preview themes without reload ([2a471c1](https://github.com/rasagyavatsal/homeoremedica-web/commit/2a471c1878fbfdb79602fe313643f2749edd85a1))
+* sync preview themes without reload ([d73f10c](https://github.com/rasagyavatsal/homeoremedica-web/commit/d73f10c84afd9531c5b940cf26679dceed355830))
+* sync theme after local storage clear ([edbd945](https://github.com/rasagyavatsal/homeoremedica-web/commit/edbd9455bfa473097a2180f6c0ca3bcacfaf87a8))
+
 ## [4.1.0](https://github.com/rasagyavatsal/homeoremedica-web/compare/homeoremedica-web-v4.0.3...homeoremedica-web-v4.1.0) (2026-07-16)
 
 
