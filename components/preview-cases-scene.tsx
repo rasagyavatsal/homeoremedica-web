@@ -5,7 +5,6 @@ import { useReducedMotion } from 'framer-motion';
 
 import { CasesDialog } from '@/components/cases-dialog';
 import { FinderWorkspace } from '@/components/finder-workspace';
-import { Header } from '@/components/header';
 import {
   SymptomSearchView,
   type FinderResult,
@@ -181,7 +180,6 @@ export function PreviewCasesScene() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
-      <Header />
       <FinderWorkspace
         search={(
           <SymptomSearchView

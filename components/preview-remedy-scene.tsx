@@ -3,7 +3,6 @@
 import { useEffect, useMemo, useState } from 'react';
 
 import { FinderWorkspace } from '@/components/finder-workspace';
-import { Header } from '@/components/header';
 import {
   SymptomSearchView,
   type FinderIndication,
@@ -145,7 +144,6 @@ export function PreviewRemedyScene() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
-      <Header />
       <FinderWorkspace
         search={(
           <SymptomSearchView
