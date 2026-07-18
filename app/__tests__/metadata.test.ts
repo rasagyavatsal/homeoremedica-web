@@ -30,13 +30,13 @@ describe('metadata positioning copy', () => {
     expect(rootMetadata.icons).toEqual({
       icon: [
         {
-          url: '/logo/logo-light.png',
+          url: '/logo/logo-light-transparent.png',
           type: 'image/png',
           sizes: '860x860',
           media: '(prefers-color-scheme: light)',
         },
         {
-          url: '/logo/logo-dark.png',
+          url: '/logo/logo-dark-transparent.png',
           type: 'image/png',
           sizes: '860x860',
           media: '(prefers-color-scheme: dark)',
