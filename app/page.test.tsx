@@ -126,6 +126,8 @@ describe('HomePage', () => {
 
     expect(heading.nextElementSibling).toBe(supportingCopy);
     expect(heading.parentElement).not.toHaveClass('grid');
+    expect(howToSearch).toHaveClass('border-y');
+    expect(heading).not.toHaveClass('max-w-2xl');
     expect(supportingCopy).toHaveClass('mt-5');
     expect(howToSearch).toHaveTextContent('itching at night in bed');
     expect(howToSearch).toHaveTextContent('itching bed night');

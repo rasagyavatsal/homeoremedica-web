@@ -72,10 +72,10 @@ export default function HomePage() {
           </MotionRouteShell>
         </section>
 
-        <section aria-labelledby="how-to-search-heading" className="border-b border-border bg-card">
+        <section aria-labelledby="how-to-search-heading" className="border-y border-border bg-card">
           <div className="page-shell py-24 lg:py-32">
             <div className="max-w-2xl">
-              <h2 id="how-to-search-heading" className="display-md max-w-2xl">
+              <h2 id="how-to-search-heading" className="display-md">
                 How it works
               </h2>
               <p className="mt-5 text-lg leading-relaxed text-on-surface-variant">
