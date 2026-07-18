@@ -43,6 +43,9 @@ describe('HomePage', () => {
     expect(screen.queryByRole('link', { name: 'See how it works' })).not.toBeInTheDocument();
     expect(screen.getByRole('region', { name: 'Classical sources' })).toBeInTheDocument();
     expect(screen.queryByTestId('symptom-search')).not.toBeInTheDocument();
+    expect(
+      screen.getByText('Search by symptom. Choose the closest matches. Compare the remedies.'),
+    ).toBeInTheDocument();
 
     const hero = screen.getByRole('heading', { level: 1 }).parentElement;
     expect(hero).toHaveClass('text-center');

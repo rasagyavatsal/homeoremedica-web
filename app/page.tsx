@@ -45,8 +45,7 @@ export default function HomePage() {
             <div className="mx-auto max-w-5xl text-center">
               <HeroHeading />
               <p className="mx-auto mt-8 max-w-2xl text-lg leading-relaxed text-on-surface-variant md:text-xl">
-                Search symptoms across trusted classical sources, hold the important indications in view,
-                and compare the remedies that meet them.
+                Search by symptom. Choose the closest matches. Compare the remedies.
               </p>
               <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
                 <Button asChild size="lg" className="gap-3">
