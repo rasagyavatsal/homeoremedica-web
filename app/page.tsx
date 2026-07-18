@@ -177,12 +177,7 @@ export default function HomePage() {
         <section aria-label="Saved cases" className="dilution-field border-t border-border">
           <div className="page-shell py-24 lg:py-32">
             <div className="mb-12">
-              <div>
-                <h2 className="display-md max-w-3xl">Save cases. Pick up where you left off.</h2>
-                <p className="mt-5 max-w-2xl text-on-surface-variant">
-                  Save the source and selected symptoms together, then return to the case without rebuilding your research.
-                </p>
-              </div>
+              <h2 className="display-md max-w-3xl">Save cases. Pick up where you left off.</h2>
             </div>
 
             <CasesPreview />
