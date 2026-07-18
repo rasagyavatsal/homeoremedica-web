@@ -14,7 +14,7 @@ interface AuthPageShellProps {
 
 export function AuthPageShell({ children, showBrand = true }: AuthPageShellProps) {
   return (
-    <div className="dilution-field min-h-screen bg-background px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
+    <div className="min-h-screen bg-background px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
       <main className="mx-auto flex min-h-screen max-w-content items-center justify-center">
         <MotionRouteShell className="w-full max-w-dialog space-y-6">
           {showBrand && (
