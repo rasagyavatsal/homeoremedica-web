@@ -12,6 +12,12 @@ describe('PreviewCasesScene', () => {
     vi.useRealTimers();
   });
 
+  it('omits global navigation from the embedded preview', () => {
+    render(<PreviewCasesScene />);
+
+    expect(screen.queryByTestId('header')).not.toBeInTheDocument();
+  });
+
   it('demonstrates saving a current search and restoring another saved case', () => {
     vi.useFakeTimers();
     render(<PreviewCasesScene />);
