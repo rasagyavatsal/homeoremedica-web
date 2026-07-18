@@ -17,7 +17,7 @@ const HOME_DESCRIPTION =
   'A calm, focused homoeopathic remedy finder for searching classical materia medica by symptom and comparing matching remedies.';
 
 export const metadata: Metadata = {
-  title: 'HomeoRemedica — A calmer homoeopathic remedy finder',
+  title: 'HomeoRemedica - Homeopathic Remedy Finder',
   description: HOME_DESCRIPTION,
   alternates: { canonical: '/' },
   openGraph: {

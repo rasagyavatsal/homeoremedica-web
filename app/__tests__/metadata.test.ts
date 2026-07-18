@@ -21,7 +21,7 @@ describe('metadata positioning copy', () => {
 
   it('gives the landing page and finder distinct canonical URLs', () => {
     expect(homeMetadata.alternates?.canonical).toBe('/');
-    expect(homeMetadata.title).toBe('HomeoRemedica — A calmer homoeopathic remedy finder');
+    expect(homeMetadata.title).toBe('HomeoRemedica - Homeopathic Remedy Finder');
     expect(finderMetadata.alternates?.canonical).toBe('/find-remedy');
     expect(finderMetadata.title).toBe('Find a homoeopathic remedy');
   });
