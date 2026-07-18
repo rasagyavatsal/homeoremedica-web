@@ -40,7 +40,7 @@ export default function HomePage() {
       <Header />
 
       <main>
-        <section className="dilution-field border-b border-border">
+        <section className="border-b border-border">
           <MotionRouteShell className="page-shell flex flex-col items-center py-20 lg:py-28">
             <div className="mx-auto max-w-5xl text-center">
               <HeroHeading />
@@ -173,7 +173,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section aria-label="Saved cases" className="dilution-field border-t border-border">
+        <section aria-label="Saved cases" className="border-t border-border">
           <div className="page-shell py-24 lg:py-32">
             <div className="mb-12">
               <h2 className="display-md max-w-3xl">Save cases. Pick up where you left off.</h2>

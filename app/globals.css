@@ -362,36 +362,6 @@
     @apply rounded-xl border border-border bg-card text-card-foreground shadow-soft;
   }
 
-  .dilution-field {
-    position: relative;
-    isolation: isolate;
-    overflow: hidden;
-  }
-
-  .dilution-field::before,
-  .dilution-field::after {
-    content: "";
-    position: absolute;
-    z-index: -1;
-    border: var(--stroke-hairline) solid hsl(var(--primary) / var(--state-selected));
-    border-radius: var(--radius-full);
-    pointer-events: none;
-  }
-
-  .dilution-field::before {
-    width: min(42rem, 80vw);
-    aspect-ratio: 1;
-    right: -18rem;
-    top: -15rem;
-  }
-
-  .dilution-field::after {
-    width: min(28rem, 60vw);
-    aspect-ratio: 1;
-    right: -9rem;
-    top: -8rem;
-  }
-
   .motion-surface {
     transition-property: background-color, border-color, color, opacity, box-shadow;
     transition-duration: var(--motion-duration-item);
