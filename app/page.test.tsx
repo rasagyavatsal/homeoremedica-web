@@ -109,6 +109,37 @@ describe('HomePage', () => {
     });
   });
 
+  it('explains keyword searching between the hero and classical sources', () => {
+    render(<HomePage />);
+
+    const howToSearch = screen.getByRole('region', {
+      name: 'How it works',
+    });
+    const classicalSources = screen.getByRole('region', { name: 'Classical sources' });
+    const heroHeading = screen.getByRole('heading', { level: 1 });
+
+    expect(howToSearch).toContainElement(
+      screen.getByRole('heading', { level: 2, name: 'How it works' }),
+    );
+    const heading = screen.getByRole('heading', { level: 2, name: 'How it works' });
+    const supportingCopy = screen.getByText('Type only keywords, not full sentences.');
+
+    expect(heading.nextElementSibling).toBe(supportingCopy);
+    expect(heading.parentElement).not.toHaveClass('grid');
+    expect(supportingCopy).toHaveClass('mt-5');
+    expect(howToSearch).toHaveTextContent('itching at night in bed');
+    expect(howToSearch).toHaveTextContent('itching bed night');
+    expect(howToSearch).toHaveTextContent('pain in the molar tooth aggravated by touching the cheek');
+    expect(howToSearch).toHaveTextContent('toothache cheeks');
+    expect(howToSearch).toHaveTextContent('Order doesn’t matter');
+    expect(howToSearch).toHaveTextContent('Select every close match');
+    expect(howToSearch).toHaveTextContent('Choose all similar symptoms from the results.');
+    expect(howToSearch).not.toHaveTextContent('to build the full picture');
+    expect(howToSearch).toHaveTextContent('Break complex symptoms apart');
+    expect(heroHeading.compareDocumentPosition(howToSearch)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(howToSearch.compareDocumentPosition(classicalSources)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+  });
+
   it('replaces the generic closing callout with a saved-cases section', () => {
     render(<HomePage />);
 

@@ -72,6 +72,77 @@ export default function HomePage() {
           </MotionRouteShell>
         </section>
 
+        <section aria-labelledby="how-to-search-heading" className="border-b border-border bg-card">
+          <div className="page-shell py-24 lg:py-32">
+            <div className="max-w-2xl">
+              <h2 id="how-to-search-heading" className="display-md max-w-2xl">
+                How it works
+              </h2>
+              <p className="mt-5 text-lg leading-relaxed text-on-surface-variant">
+                Type only keywords, not full sentences.
+              </p>
+            </div>
+
+            <div className="mt-12 grid gap-px overflow-hidden rounded-xl border border-border bg-border md:grid-cols-2">
+              <article className="bg-background p-5 md:p-6">
+                <p className="index-label mb-6 text-primary">Example 01</p>
+                <div className="space-y-5">
+                  <div>
+                    <p className="index-label mb-2 text-destructive">Wrong</p>
+                    <p className="text-on-surface-variant line-through decoration-destructive/60">
+                      itching at night in bed
+                    </p>
+                  </div>
+                  <div className="border-t border-border pt-5">
+                    <p className="index-label mb-2 text-primary">Right</p>
+                    <p className="font-code text-lg font-medium text-foreground">itching bed night</p>
+                  </div>
+                </div>
+              </article>
+
+              <article className="bg-background p-5 md:p-6">
+                <p className="index-label mb-6 text-primary">Example 02</p>
+                <div className="space-y-5">
+                  <div>
+                    <p className="index-label mb-2 text-destructive">Wrong</p>
+                    <p className="text-on-surface-variant line-through decoration-destructive/60">
+                      pain in the molar tooth aggravated by touching the cheek
+                    </p>
+                  </div>
+                  <div className="border-t border-border pt-5">
+                    <p className="index-label mb-2 text-primary">Right</p>
+                    <p className="font-code text-lg font-medium text-foreground">toothache cheeks</p>
+                  </div>
+                </div>
+              </article>
+            </div>
+
+            <ol className="mt-10 grid gap-8 md:grid-cols-3">
+              <li className="border-t border-border pt-5">
+                <span className="index-label text-primary">01</span>
+                <h3 className="mt-4 text-xl font-medium">Order doesn’t matter</h3>
+                <p className="mt-3 text-on-surface-variant">
+                  Enter the keywords in whichever order comes naturally.
+                </p>
+              </li>
+              <li className="border-t border-border pt-5">
+                <span className="index-label text-primary">02</span>
+                <h3 className="mt-4 text-xl font-medium">Select every close match</h3>
+                <p className="mt-3 text-on-surface-variant">
+                  Choose all similar symptoms from the results.
+                </p>
+              </li>
+              <li className="border-t border-border pt-5">
+                <span className="index-label text-primary">03</span>
+                <h3 className="mt-4 text-xl font-medium">Break complex symptoms apart</h3>
+                <p className="mt-3 text-on-surface-variant">
+                  If a symptom doesn’t appear, split it into smaller symptoms and search for each one separately.
+                </p>
+              </li>
+            </ol>
+          </div>
+        </section>
+
         <section aria-label="Classical sources" className="border-y border-border bg-surface-container-low">
           <div className="page-shell py-24 lg:py-32">
             <div className="mb-12 max-w-2xl">
