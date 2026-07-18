@@ -35,4 +35,10 @@ describe('BrandLockup', () => {
 
     expect(screen.getByText('HomeoRemedica')).toHaveClass('text-xl');
   });
+
+  it('hides the wordmark at the smallest supported viewport', () => {
+    render(<BrandLockup />);
+
+    expect(screen.getByText('HomeoRemedica')).toHaveClass('max-[359px]:hidden');
+  });
 });
