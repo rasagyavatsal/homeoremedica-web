@@ -14,10 +14,22 @@ export default function manifest(): MetadataRoute.Manifest {
     scope: '/',
     icons: [
       {
-        src: '/mark.png',
-        sizes: '128x128',
+        src: '/logo/pwa-192.png',
+        sizes: '192x192',
         type: 'image/png',
         purpose: 'any',
+      },
+      {
+        src: '/logo/pwa-512.png',
+        sizes: '512x512',
+        type: 'image/png',
+        purpose: 'any',
+      },
+      {
+        src: '/logo/pwa-maskable-512.png',
+        sizes: '512x512',
+        type: 'image/png',
+        purpose: 'maskable',
       },
     ],
     // id: 'homeoremedica', // Next.js types might not natively support all PWA fields yet, cast if necessary

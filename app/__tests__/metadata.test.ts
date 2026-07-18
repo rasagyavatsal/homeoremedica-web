@@ -25,4 +25,24 @@ describe('metadata positioning copy', () => {
     expect(finderMetadata.alternates?.canonical).toBe('/find-remedy');
     expect(finderMetadata.title).toBe('Find a homoeopathic remedy');
   });
+
+  it('provides theme-aware browser icons from the new logo set', () => {
+    expect(rootMetadata.icons).toEqual({
+      icon: [
+        {
+          url: '/logo/logo-light.png',
+          type: 'image/png',
+          sizes: '860x860',
+          media: '(prefers-color-scheme: light)',
+        },
+        {
+          url: '/logo/logo-dark.png',
+          type: 'image/png',
+          sizes: '860x860',
+          media: '(prefers-color-scheme: dark)',
+        },
+      ],
+      apple: [{ url: '/logo/logo-light.png', type: 'image/png', sizes: '860x860' }],
+    });
+  });
 });

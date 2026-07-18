@@ -362,32 +362,6 @@
     @apply rounded-xl border border-border bg-card text-card-foreground shadow-soft;
   }
 
-  .brand-mark {
-    position: relative;
-    display: grid;
-    width: var(--space-8);
-    height: var(--space-8);
-    place-items: center;
-    border: var(--stroke-hairline) solid hsl(var(--foreground) / var(--border-alpha));
-    border-radius: var(--radius-full);
-  }
-
-  .brand-mark::before,
-  .brand-mark::after {
-    content: "";
-    position: absolute;
-    border: var(--stroke-hairline) solid hsl(var(--primary));
-    border-radius: var(--radius-full);
-  }
-
-  .brand-mark::before { inset: var(--space-1); }
-  .brand-mark::after {
-    width: var(--space-1);
-    height: var(--space-1);
-    border: 0;
-    background: hsl(var(--primary));
-  }
-
   .dilution-field {
     position: relative;
     isolation: isolate;

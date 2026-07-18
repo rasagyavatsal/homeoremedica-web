@@ -65,7 +65,7 @@ export function Header() {
       <div className="page-shell">
         <div className="overflow-hidden rounded-xl border border-border bg-background/90 shadow-soft backdrop-blur-lg">
           <div className="flex h-header items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
-            <Link href="/" aria-label="HomeoRemedica home" className="min-h-touch">
+            <Link href="/" aria-label="HomeoRemedica home" className="inline-flex min-h-touch items-center">
               <BrandLockup />
             </Link>
 
