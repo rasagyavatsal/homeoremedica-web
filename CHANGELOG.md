@@ -1,5 +1,27 @@
 # Changelog
 
+## [5.1.0](https://github.com/rasagyavatsal/homeoremedica-web/compare/homeoremedica-web-v5.0.1...homeoremedica-web-v5.1.0) (2026-07-19)
+
+
+### Features
+
+* **home:** expand books, cases, and search guidance ([3c56ac8](https://github.com/rasagyavatsal/homeoremedica-web/commit/3c56ac82a19165a7a34584d1ec2c4aab6654c9d6))
+* **home:** expand books, cases, and search guidance ([ba9fa3e](https://github.com/rasagyavatsal/homeoremedica-web/commit/ba9fa3e89596ae3560aebd1fdb9287872f89d300))
+
+
+### Bug Fixes
+
+* **home:** clarify section guidance ([6ab0f13](https://github.com/rasagyavatsal/homeoremedica-web/commit/6ab0f13749b9050e76ed6450c160eee3831291cc))
+* **home:** clarify section guidance ([fbf717f](https://github.com/rasagyavatsal/homeoremedica-web/commit/fbf717f53b2d0a0dbff78608f79afca5851ab296))
+* **home:** update hero heading spelling ([dfdf950](https://github.com/rasagyavatsal/homeoremedica-web/commit/dfdf9508afeeb20d47374a1b4d682ceda565167b))
+* **home:** update hero heading spelling ([0bdc020](https://github.com/rasagyavatsal/homeoremedica-web/commit/0bdc02004b0954a2a5b8a5bf605aca5209bbf218))
+* **previews:** align demo inputs and case labels ([15ffeed](https://github.com/rasagyavatsal/homeoremedica-web/commit/15ffeeda16e61de0be3a9f200ac0d80e3a17ed64))
+* **previews:** align demo inputs and case labels ([c971fcf](https://github.com/rasagyavatsal/homeoremedica-web/commit/c971fcf0b5aeaf8b1665e98f87d1b794887571ba))
+* **previews:** match saved case workflow ([30a0fc0](https://github.com/rasagyavatsal/homeoremedica-web/commit/30a0fc0eeb9ed37f3230f614a522b72440ba9ebe))
+* **previews:** match saved case workflow ([a88f4ff](https://github.com/rasagyavatsal/homeoremedica-web/commit/a88f4ff34862474259ca43f5d27c37e052a2d524))
+* show hero preview results with symptoms ([73f32b6](https://github.com/rasagyavatsal/homeoremedica-web/commit/73f32b68d041817296bca7ce1537cf8660f7c25f))
+* show hero preview results with symptoms ([1220837](https://github.com/rasagyavatsal/homeoremedica-web/commit/1220837bd58055d798278533e0b15cf41eca8978))
+
 ## [5.0.1](https://github.com/rasagyavatsal/homeoremedica-web/compare/homeoremedica-web-v5.0.0...homeoremedica-web-v5.0.1) (2026-07-18)
 
 
