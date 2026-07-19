@@ -1,5 +1,17 @@
 # Changelog
 
+## [5.0.1](https://github.com/rasagyavatsal/homeoremedica-web/compare/homeoremedica-web-v5.0.0...homeoremedica-web-v5.0.1) (2026-07-18)
+
+
+### Bug Fixes
+
+* remove decorative curved lines ([9b3fedb](https://github.com/rasagyavatsal/homeoremedica-web/commit/9b3fedbef7b428f1143b42b01458848d804a5a5a))
+* remove decorative curved lines ([c751a0a](https://github.com/rasagyavatsal/homeoremedica-web/commit/c751a0a7055a73a35a550b5521cbce51e55564f2))
+* update homepage browser title ([0b0b85f](https://github.com/rasagyavatsal/homeoremedica-web/commit/0b0b85f739fa8751cfdb86a1823f964fe0777268))
+* update homepage browser title ([df65e43](https://github.com/rasagyavatsal/homeoremedica-web/commit/df65e431482d7bc53a45f3b485a54e73a83eea18))
+* use transparent browser favicons ([b678a67](https://github.com/rasagyavatsal/homeoremedica-web/commit/b678a678c1499d5246fe8cfdf5c9ddb06d334afe))
+* use transparent browser favicons ([1b95dc3](https://github.com/rasagyavatsal/homeoremedica-web/commit/1b95dc36d186056e27a27637d877ac216f9b2265))
+
 ## [5.0.0](https://github.com/rasagyavatsal/homeoremedica-web/compare/homeoremedica-web-v4.1.0...homeoremedica-web-v5.0.0) (2026-07-18)
 
 
