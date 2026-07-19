@@ -1,5 +1,13 @@
 # Changelog
 
+## [5.2.0](https://github.com/rasagyavatsal/homeoremedica-web/compare/homeoremedica-web-v5.1.0...homeoremedica-web-v5.2.0) (2026-07-19)
+
+
+### Features
+
+* **legal:** add terms and update privacy policy ([98d2cab](https://github.com/rasagyavatsal/homeoremedica-web/commit/98d2cab8741fa9b26b2a732720c9980dff8d7065))
+* **legal:** add terms and update privacy policy ([d79f310](https://github.com/rasagyavatsal/homeoremedica-web/commit/d79f31010835e05cb2cb75757f783f0b987fbaad))
+
 ## [5.1.0](https://github.com/rasagyavatsal/homeoremedica-web/compare/homeoremedica-web-v5.0.1...homeoremedica-web-v5.1.0) (2026-07-19)
 
 
