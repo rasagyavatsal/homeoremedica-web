@@ -59,8 +59,6 @@ const DEMO_TIMING = {
   match: 100,
   firstSelection: 420,
   selection: 260,
-  firstRemedy: 520,
-  remedy: 360,
   hold: 3_600,
 } as const;
 
@@ -100,11 +98,15 @@ export function PreviewRemedyScene() {
       callback = () => setVisibleMatches((count) => count + 1);
       delay = nextDelay(visibleMatches, DEMO_TIMING.firstMatch, DEMO_TIMING.match);
     } else if (selectedCount < demo.symptoms.length) {
-      callback = () => setSelectedCount((count) => count + 1);
+      callback = () => {
+        const nextCount = selectedCount + 1;
+        setSelectedCount(nextCount);
+
+        if (nextCount === demo.symptoms.length) {
+          setVisibleRemedies(demo.remedies.length);
+        }
+      };
       delay = nextDelay(selectedCount, DEMO_TIMING.firstSelection, DEMO_TIMING.selection);
-    } else if (visibleRemedies < demo.remedies.length) {
-      callback = () => setVisibleRemedies((count) => count + 1);
-      delay = nextDelay(visibleRemedies, DEMO_TIMING.firstRemedy, DEMO_TIMING.remedy);
     } else {
       callback = () => {
         setDemoIndex((index) => (index + 1) % DEMOS.length);
@@ -166,7 +168,14 @@ export function PreviewRemedyScene() {
             onClearQuery={replay}
             onSymptomSelect={(name) => {
               const index = demo.symptoms.map(String).indexOf(name);
-              if (index >= 0) setSelectedCount((count) => Math.max(count, index + 1));
+              if (index < 0) return;
+
+              const nextCount = Math.max(selectedCount, index + 1);
+              setSelectedCount(nextCount);
+
+              if (nextCount === demo.symptoms.length) {
+                setVisibleRemedies(demo.remedies.length);
+              }
             }}
             onResultsScroll={() => undefined}
           />
