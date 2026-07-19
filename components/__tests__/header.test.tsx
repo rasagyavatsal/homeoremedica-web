@@ -73,6 +73,7 @@ describe('Header', () => {
     fireEvent.click(screen.getByRole('button', { name: /open menu/i }));
 
     expect(surface).toContainElement(screen.getByRole('navigation', { name: /primary mobile/i }));
+    expect(screen.getByRole('link', { name: 'Terms' })).toHaveAttribute('href', '/terms');
   });
 
   it('uses named control and touch-target tokens for header actions', () => {

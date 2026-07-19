@@ -21,4 +21,11 @@ describe('sitemap', () => {
 
     expect(urls).toContain('https://homeoremedica.com/find-remedy');
   });
+
+  it('includes both legal pages', () => {
+    const urls = sitemap().map((entry) => entry.url);
+
+    expect(urls).toContain('https://homeoremedica.com/privacy');
+    expect(urls).toContain('https://homeoremedica.com/terms');
+  });
 });

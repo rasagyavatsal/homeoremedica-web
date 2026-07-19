@@ -26,6 +26,7 @@ describe('Footer', () => {
     expect(screen.queryByRole('link', { name: 'Remedies' })).toBeNull();
     expect(screen.getByRole('link', { name: 'Android App' })).toBeDefined();
     expect(screen.getByRole('link', { name: 'Privacy' })).toBeDefined();
+    expect(screen.getByRole('link', { name: 'Terms' })).toBeDefined();
     expect(screen.getByRole('link', { name: 'Contact' })).toBeDefined();
     expect(screen.queryByText('Product')).toBeNull();
     expect(screen.queryByText('Utility')).toBeNull();

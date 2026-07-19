@@ -134,6 +134,7 @@ export function Header() {
                 <nav className="grid" aria-label="Primary mobile">
                   <MenuLink href="/find-remedy">Find remedy</MenuLink>
                   <MenuLink href={PLAY_STORE_URL} external>Android app</MenuLink>
+                  <MenuLink href="/terms">Terms</MenuLink>
                   <MenuLink href="/privacy">Privacy</MenuLink>
                   <MenuLink href="/contact">Contact</MenuLink>
                 </nav>
