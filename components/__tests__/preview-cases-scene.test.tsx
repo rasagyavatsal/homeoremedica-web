@@ -30,17 +30,19 @@ describe('PreviewCasesScene', () => {
     const saveDialog = screen.getByRole('dialog', { name: 'Save case' });
     const caseName = within(saveDialog).getByLabelText('Case name');
 
-    for (const _character of 'Night-time burning pain') {
+    for (const _character of 'Priya, 40 F') {
       act(() => vi.advanceTimersByTime(45));
     }
-    expect(caseName).toHaveValue('Night-time burning pain');
+    expect(caseName).toHaveValue('Priya, 40 F');
 
     act(() => vi.advanceTimersByTime(1_000));
     expect(within(saveDialog).getByRole('button', { name: 'Saving...' })).toBeDisabled();
 
     act(() => vi.advanceTimersByTime(600));
     const casesDialog = screen.getByRole('dialog', { name: 'Saved cases' });
-    expect(within(casesDialog).getByText('Night-time burning pain')).toBeInTheDocument();
+    expect(within(casesDialog).getByText('Priya, 40 F')).toBeInTheDocument();
+    expect(within(casesDialog).getByText('Ethan, 26 M')).toBeInTheDocument();
+    expect(within(casesDialog).getByText('Meera, 34 F')).toBeInTheDocument();
 
     act(() => vi.advanceTimersByTime(1_800));
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
@@ -49,7 +51,7 @@ describe('PreviewCasesScene', () => {
 
     act(() => vi.advanceTimersByTime(1_000));
     const reopenedCases = screen.getByRole('dialog', { name: 'Saved cases' });
-    const createdCase = within(reopenedCases).getByRole('button', { name: /^Night-time burning pain/ });
+    const createdCase = within(reopenedCases).getByRole('button', { name: /^Priya, 40 F/ });
     expect(createdCase.parentElement).not.toHaveClass('bg-accent');
 
     act(() => vi.advanceTimersByTime(1_500));
@@ -78,7 +80,7 @@ describe('PreviewCasesScene', () => {
     expect(screen.getByRole('dialog', { name: 'Save case' })).toBeInTheDocument();
     expect(document.activeElement).toBe(outsidePreview);
 
-    for (const _character of 'Night-time burning pain') {
+    for (const _character of 'Priya, 40 F') {
       act(() => vi.advanceTimersByTime(45));
     }
     act(() => vi.advanceTimersByTime(1_000));
@@ -115,7 +117,7 @@ describe('PreviewCasesScene', () => {
     expect(within(casesDialog).getByText('Manual preview case')).toBeInTheDocument();
 
     vi.spyOn(globalThis, 'confirm').mockReturnValue(true);
-    fireEvent.click(within(casesDialog).getByText('Sunlight headache'));
+    fireEvent.click(within(casesDialog).getByText('Meera, 34 F'));
     expect(globalThis.confirm).toHaveBeenCalledWith('Load this saved case and replace the current search?');
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
     expect(screen.getByText('Throbbing pain in the temples')).toBeInTheDocument();
@@ -129,7 +131,7 @@ describe('PreviewCasesScene', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Saved cases' }));
     const casesDialog = screen.getByRole('dialog', { name: 'Saved cases' });
-    fireEvent.click(within(casesDialog).getByText('Sunlight headache'));
+    fireEvent.click(within(casesDialog).getByText('Meera, 34 F'));
 
     expect(globalThis.confirm).toHaveBeenCalledWith('Load this saved case and replace the current search?');
     expect(casesDialog).toBeInTheDocument();
@@ -144,10 +146,10 @@ describe('PreviewCasesScene', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Saved cases' }));
     const casesDialog = screen.getByRole('dialog', { name: 'Saved cases' });
-    fireEvent.click(within(casesDialog).getByRole('button', { name: 'Delete Sunlight headache' }));
+    fireEvent.click(within(casesDialog).getByRole('button', { name: 'Delete Meera, 34 F' }));
 
     expect(globalThis.confirm).toHaveBeenCalledWith('Delete this case?');
-    expect(within(casesDialog).getByText('Sunlight headache')).toBeInTheDocument();
+    expect(within(casesDialog).getByText('Meera, 34 F')).toBeInTheDocument();
   });
 
   it('supports the displayed search, symptom, and source controls', () => {

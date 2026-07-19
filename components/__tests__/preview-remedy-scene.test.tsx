@@ -18,11 +18,36 @@ describe('PreviewRemedyScene', () => {
     expect(screen.queryByTestId('header')).not.toBeInTheDocument();
   });
 
+  it('types symptom keywords instead of sentences', async () => {
+    vi.useFakeTimers();
+    render(<PreviewRemedyScene />);
+
+    const queries = ['burning pain night', 'dry cough night', 'throbbing headache sunlight'];
+
+    for (const [index, query] of queries.entries()) {
+      for (const _character of query) {
+        await act(async () => {
+          vi.runOnlyPendingTimers();
+        });
+      }
+
+      expect(screen.getByRole('textbox', { name: 'Search symptom keywords' })).toHaveValue(query);
+
+      if (index < queries.length - 1) {
+        for (let step = 0; step < 7; step += 1) {
+          await act(async () => {
+            vi.runOnlyPendingTimers();
+          });
+        }
+      }
+    }
+  });
+
   it('shows selected symptoms and remedy results together after selection', async () => {
     vi.useFakeTimers();
     render(<PreviewRemedyScene />);
 
-    for (let step = 0; step < 'burning pain at night'.length + 3; step += 1) {
+    for (let step = 0; step < 'burning pain night'.length + 3; step += 1) {
       await act(async () => {
         vi.runOnlyPendingTimers();
       });
