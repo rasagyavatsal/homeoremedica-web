@@ -104,7 +104,7 @@ describe('HomePage', () => {
       name: 'Four books. One place to search.',
     });
     const booksCopy = screen.getByText(
-      'Search one book at a time. The symptoms and remedies you see come from the selected book, which keeps each author’s wording intact.',
+      'Choose a book before you search. The results will only include symptoms and remedies from that book. Each book uses different wording. If a search does not return a useful result, try the same symptom in another book.',
     );
 
     expect(booksHeading.nextElementSibling).toBe(booksCopy);
@@ -149,7 +149,7 @@ describe('HomePage', () => {
     );
     const heading = screen.getByRole('heading', { level: 2, name: 'How it works' });
     const supportingCopy = screen.getByText(
-      'Use a few distinct words rather than a full sentence. Start with the symptom, then add where or when it happens.',
+      'Use a few distinct keywords rather than a full sentence.',
     );
 
     expect(heading.nextElementSibling).toBe(supportingCopy);
@@ -194,13 +194,10 @@ describe('HomePage', () => {
     expect(casesHeading.parentElement).not.toHaveClass('grid');
     expect(casesCopy).toHaveClass('mt-5');
     expect(casesCopy).toHaveTextContent(
-      'Give the case a name once you have selected the symptoms you want to keep.',
+      'Select the symptoms you want to keep, give the case a name, and save it.',
     );
     expect(casesSection).toHaveTextContent(
-      'Give the case a name once you have selected the symptoms you want to keep. It will appear in Saved cases with its date, source book, and symptom count.',
-    );
-    expect(casesSection).toHaveTextContent(
-      'Open it again and HomeoRemedica switches back to that source and restores the selected symptoms. You can review them as they were or carry on searching.',
+      'Select the symptoms you want to keep, give the case a name, and save it. You can open it again from Saved cases.',
     );
     expect(casesSection).not.toHaveTextContent('Save the working set');
     expect(casesSection).not.toHaveTextContent('Review the record');

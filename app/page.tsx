@@ -78,8 +78,7 @@ export default function HomePage() {
                 How it works
               </h2>
               <p className="mt-5 text-lg leading-relaxed text-on-surface-variant">
-                Use a few distinct words rather than a full sentence. Start with the symptom, then add where or when it
-                happens.
+                Use a few distinct keywords rather than a full sentence.
               </p>
             </div>
 
@@ -137,8 +136,9 @@ export default function HomePage() {
             <div className="mb-12 max-w-3xl">
               <h2 className="display-md">Four books. One place to search.</h2>
               <p className="mt-5 max-w-2xl text-lg leading-relaxed text-on-surface-variant">
-                Search one book at a time. The symptoms and remedies you see come from the selected book, which keeps
-                each author’s wording intact.
+                Choose a book before you search. The results will only include symptoms and remedies from that book.
+                Each book uses different wording. If a search does not return a useful result, try the same symptom in
+                another book.
               </p>
             </div>
             <div className="grid gap-px overflow-hidden rounded-xl border border-border bg-border lg:grid-cols-2">
@@ -178,16 +178,10 @@ export default function HomePage() {
           <div className="page-shell py-24 lg:py-32">
             <div className="mb-12 max-w-3xl">
               <h2 className="display-md max-w-3xl">Save cases. Pick up where you left off.</h2>
-              <div className="mt-5 max-w-2xl space-y-5 text-lg leading-relaxed text-on-surface-variant">
-                <p>
-                  Give the case a name once you have selected the symptoms you want to keep. It will appear in Saved
-                  cases with its date, source book, and symptom count.
-                </p>
-                <p>
-                  Open it again and HomeoRemedica switches back to that source and restores the selected symptoms. You
-                  can review them as they were or carry on searching.
-                </p>
-              </div>
+              <p className="mt-5 max-w-2xl text-lg leading-relaxed text-on-surface-variant">
+                Select the symptoms you want to keep, give the case a name, and save it. You can open it again from
+                Saved cases.
+              </p>
             </div>
 
             <CasesPreview />
