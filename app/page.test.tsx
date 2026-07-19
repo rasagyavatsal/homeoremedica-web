@@ -170,7 +170,7 @@ describe('HomePage', () => {
       'A book may describe the same symptom in more than one way. Select each result that matches what you mean.',
     );
     expect(howToSearch).toHaveTextContent(
-      'If a long symptom does not appear, search its parts separately and add the useful entries one by one.',
+      'If a symptom does not appear, break it into smaller symptoms and search them separately.',
     );
     expect(howToSearch).not.toHaveTextContent('Order doesn’t matter');
     expect(howToSearch).not.toHaveTextContent('Select every close match');
