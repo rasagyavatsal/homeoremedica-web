@@ -125,7 +125,7 @@ export default function HomePage() {
                 mean.
               </p>
               <p className="border-t border-border pt-5 leading-relaxed">
-                If a long symptom does not appear, search its parts separately and add the useful entries one by one.
+                If a symptom does not appear, break it into smaller symptoms and search them separately.
               </p>
             </div>
           </div>
