@@ -27,11 +27,11 @@ export function HeroHeading() {
 
   return (
     <h1
-      aria-label={`Homoeopathic Remedy Finder for ${audience}`}
+      aria-label={`Homeopathic Remedy Finder for ${audience}`}
       className="display-lg font-medium"
     >
       <span aria-hidden="true">
-        Homoeopathic Remedy Finder
+        Homeopathic Remedy Finder
         <span className="mt-2 block md:mt-3">
           <motion.span
             layout={!reducedMotion}
