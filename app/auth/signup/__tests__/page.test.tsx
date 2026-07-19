@@ -69,6 +69,19 @@ describe('SignupPage Header Copy Cleanup (Issue #43)', () => {
     expect(screen.getByText('Save cases across devices.')).toBeInTheDocument();
     expect(screen.queryByText('Create your account to save your cases.')).not.toBeInTheDocument();
   });
+
+  it('links to the terms and privacy policy', () => {
+    render(<SignupPage />);
+
+    expect(screen.getByRole('link', { name: 'Terms and Conditions' })).toHaveAttribute(
+      'href',
+      '/terms',
+    );
+    expect(screen.getByRole('link', { name: 'Privacy Policy' })).toHaveAttribute(
+      'href',
+      '/privacy',
+    );
+  });
 });
 
 describe('SignupPage Strict Password Rules', () => {

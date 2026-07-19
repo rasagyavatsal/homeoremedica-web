@@ -24,6 +24,7 @@ export function Footer() {
         <nav className="flex flex-wrap items-center gap-x-5 gap-y-2" aria-label="Footer">
           <InlineLink href="/find-remedy" className="-mx-1.5 text-sm text-on-surface-variant">Find Remedy</InlineLink>
           <InlineLink href={PLAY_STORE_URL} external className="-mx-1.5 text-sm text-on-surface-variant">Android App</InlineLink>
+          <InlineLink href="/terms" className="-mx-1.5 text-sm text-on-surface-variant">Terms</InlineLink>
           <InlineLink href="/privacy" className="-mx-1.5 text-sm text-on-surface-variant">Privacy</InlineLink>
           <InlineLink href="/contact" className="-mx-1.5 text-sm text-on-surface-variant">Contact</InlineLink>
         </nav>

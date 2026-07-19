@@ -24,22 +24,26 @@ describe('PrivacyClient', () => {
     expect(screen.queryByText('Your information')).not.toBeInTheDocument();
   });
 
-  it('renders the "Information We Collect" section', () => {
+  it('renders the information processing section', () => {
     render(<PrivacyClient />);
-    const sectionTitle = screen.getByRole('heading', { name: 'Information We Collect' });
+    const sectionTitle = screen.getByRole('heading', { name: 'Information We Process' });
     expect(sectionTitle).toBeInTheDocument();
     expect(sectionTitle.tagName).toBe('H2');
   });
 
   it('renders the last updated date', () => {
     render(<PrivacyClient />);
-    const lastUpdated = screen.getByText(/Last updated: January 21, 2025/i);
+    const lastUpdated = screen.getByText(/Last updated: July 19, 2026/i);
     expect(lastUpdated).toBeInTheDocument();
   });
 
-  it('renders the medical disclaimer', () => {
+  it('covers the website, API, and Android app', () => {
     render(<PrivacyClient />);
-    const disclaimer = screen.getByText(/HomeoRemedica is an educational tool/i);
-    expect(disclaimer).toBeInTheDocument();
+    expect(screen.getByText(/website, server API, and Android app/i)).toBeInTheDocument();
+  });
+
+  it('provides account deletion instructions', () => {
+    render(<PrivacyClient />);
+    expect(screen.getByText(/Delete HomeoRemedica account/i)).toBeInTheDocument();
   });
 });

@@ -154,6 +154,10 @@ export default function SignupPage() {
 
         <p className="text-center text-xs leading-relaxed text-on-surface-variant">
           By signing up, you agree to our{' '}
+          <Link href="/terms" className="underline decoration-tertiary/40 underline-offset-4 hover:text-tertiary">
+            Terms and Conditions
+          </Link>{' '}
+          and acknowledge our{' '}
           <Link href="/privacy" className="underline decoration-tertiary/40 underline-offset-4 hover:text-tertiary">
             Privacy Policy
           </Link>
