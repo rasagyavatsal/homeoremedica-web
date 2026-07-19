@@ -94,15 +94,38 @@ describe('HomePage', () => {
     ].forEach((label) => expect(screen.queryByText(label)).not.toBeInTheDocument());
   });
 
-  it('keeps the classical sources section focused on large book covers and names', () => {
+  it('introduces each classical source with its character and use', () => {
     render(<HomePage />);
 
     expect(screen.queryByText('Less interface. More attention.')).not.toBeInTheDocument();
     expect(screen.queryByText('Search')).not.toBeInTheDocument();
-    expect(
-      screen.getByRole('heading', { level: 2, name: 'Four books. One place to search.' }),
-    ).toBeInTheDocument();
-    expect(screen.queryByText('Practical bedside reference')).not.toBeInTheDocument();
+    const booksHeading = screen.getByRole('heading', {
+      level: 2,
+      name: 'Four books. One place to search.',
+    });
+    const booksCopy = screen.getByText(
+      'Search one book at a time. The symptoms and remedies you see come from the selected book, which keeps each author’s wording intact.',
+    );
+
+    expect(booksHeading.nextElementSibling).toBe(booksCopy);
+    expect(booksHeading.parentElement).not.toHaveClass('grid');
+    expect(booksCopy).toHaveClass('mt-5');
+
+    [
+      'Clarke set out to make this a complete dictionary rather than another abridged materia medica. It includes every remedy he could trace to recorded homoeopathic use.',
+      'Boericke wrote this as a compact reference for everyday use. It summarises characteristic symptoms and points readers to larger works for further study.',
+      'These chapters began as lectures for postgraduate students. Kent kept the conversational style to make the character of each remedy easier to grasp.',
+      'Allen devoted this book to the nosodes. It brings together material he had studied and revised over many years.',
+    ].forEach((description) => expect(screen.getByText(description)).toBeInTheDocument());
+
+    const sourceGrid = screen
+      .getByRole('heading', {
+        level: 3,
+        name: (name) => name.startsWith('A DICTIONARY OF PRACTICAL'),
+      })
+      .closest('article')
+      ?.parentElement;
+    expect(sourceGrid).toHaveClass('lg:grid-cols-2');
 
     screen.getAllByTestId('next-image').forEach((cover) => {
       expect(cover).toHaveClass('h-48');
@@ -125,7 +148,9 @@ describe('HomePage', () => {
       screen.getByRole('heading', { level: 2, name: 'How it works' }),
     );
     const heading = screen.getByRole('heading', { level: 2, name: 'How it works' });
-    const supportingCopy = screen.getByText('Type only keywords, not full sentences.');
+    const supportingCopy = screen.getByText(
+      'Use a few distinct words rather than a full sentence. Start with the symptom, then add where or when it happens.',
+    );
 
     expect(heading.nextElementSibling).toBe(supportingCopy);
     expect(heading.parentElement).not.toHaveClass('grid');
@@ -136,11 +161,20 @@ describe('HomePage', () => {
     expect(howToSearch).toHaveTextContent('itching bed night');
     expect(howToSearch).toHaveTextContent('pain in the molar tooth aggravated by touching the cheek');
     expect(howToSearch).toHaveTextContent('toothache cheeks');
-    expect(howToSearch).toHaveTextContent('Order doesn’t matter');
-    expect(howToSearch).toHaveTextContent('Select every close match');
-    expect(howToSearch).toHaveTextContent('Choose all similar symptoms from the results.');
-    expect(howToSearch).not.toHaveTextContent('to build the full picture');
-    expect(howToSearch).toHaveTextContent('Break complex symptoms apart');
+    expect(screen.getAllByText('Full sentence')).toHaveLength(2);
+    expect(screen.getAllByText('Search words')).toHaveLength(2);
+    expect(howToSearch).toHaveTextContent(
+      'The order of the words is not important. Type them in whichever order they come to mind.',
+    );
+    expect(howToSearch).toHaveTextContent(
+      'A book may describe the same symptom in more than one way. Select each result that matches what you mean.',
+    );
+    expect(howToSearch).toHaveTextContent(
+      'If a long symptom does not appear, search its parts separately and add the useful entries one by one.',
+    );
+    expect(howToSearch).not.toHaveTextContent('Order doesn’t matter');
+    expect(howToSearch).not.toHaveTextContent('Select every close match');
+    expect(howToSearch).not.toHaveTextContent('Break complex symptoms apart');
     expect(heroHeading.compareDocumentPosition(howToSearch)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
     expect(howToSearch.compareDocumentPosition(classicalSources)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
   });
@@ -150,12 +184,27 @@ describe('HomePage', () => {
 
     const casesSection = screen.getByRole('region', { name: 'Saved cases' });
 
-    expect(casesSection).toContainElement(
-      screen.getByRole('heading', { level: 2, name: 'Save cases. Pick up where you left off.' }),
+    const casesHeading = screen.getByRole('heading', {
+      level: 2,
+      name: 'Save cases. Pick up where you left off.',
+    });
+    const casesCopy = casesHeading.nextElementSibling;
+
+    expect(casesSection).toContainElement(casesHeading);
+    expect(casesHeading.parentElement).not.toHaveClass('grid');
+    expect(casesCopy).toHaveClass('mt-5');
+    expect(casesCopy).toHaveTextContent(
+      'Give the case a name once you have selected the symptoms you want to keep.',
     );
-    expect(casesSection).not.toHaveTextContent(
-      'Save the source and selected symptoms together, then return to the case without rebuilding your research.',
+    expect(casesSection).toHaveTextContent(
+      'Give the case a name once you have selected the symptoms you want to keep. It will appear in Saved cases with its date, source book, and symptom count.',
     );
+    expect(casesSection).toHaveTextContent(
+      'Open it again and HomeoRemedica switches back to that source and restores the selected symptoms. You can review them as they were or carry on searching.',
+    );
+    expect(casesSection).not.toHaveTextContent('Save the working set');
+    expect(casesSection).not.toHaveTextContent('Review the record');
+    expect(casesSection).not.toHaveTextContent('Resume with context');
     expect(casesSection).toContainElement(screen.getByRole('region', { name: 'Saved cases preview' }));
     expect(casesSection).not.toContainElement(screen.getByText(/Results are a reference for study/));
     expect(screen.queryByText('Give the case your full attention.')).not.toBeInTheDocument();

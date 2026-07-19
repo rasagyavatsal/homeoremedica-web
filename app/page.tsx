@@ -78,7 +78,8 @@ export default function HomePage() {
                 How it works
               </h2>
               <p className="mt-5 text-lg leading-relaxed text-on-surface-variant">
-                Type only keywords, not full sentences.
+                Use a few distinct words rather than a full sentence. Start with the symptom, then add where or when it
+                happens.
               </p>
             </div>
 
@@ -87,13 +88,13 @@ export default function HomePage() {
                 <p className="index-label mb-6 text-primary">Example 01</p>
                 <div className="space-y-5">
                   <div>
-                    <p className="index-label mb-2 text-destructive">Wrong</p>
+                    <p className="index-label mb-2 text-destructive">Full sentence</p>
                     <p className="text-on-surface-variant line-through decoration-destructive/60">
                       itching at night in bed
                     </p>
                   </div>
                   <div className="border-t border-border pt-5">
-                    <p className="index-label mb-2 text-primary">Right</p>
+                    <p className="index-label mb-2 text-primary">Search words</p>
                     <p className="font-code text-lg font-medium text-foreground">itching bed night</p>
                   </div>
                 </div>
@@ -103,69 +104,69 @@ export default function HomePage() {
                 <p className="index-label mb-6 text-primary">Example 02</p>
                 <div className="space-y-5">
                   <div>
-                    <p className="index-label mb-2 text-destructive">Wrong</p>
+                    <p className="index-label mb-2 text-destructive">Full sentence</p>
                     <p className="text-on-surface-variant line-through decoration-destructive/60">
                       pain in the molar tooth aggravated by touching the cheek
                     </p>
                   </div>
                   <div className="border-t border-border pt-5">
-                    <p className="index-label mb-2 text-primary">Right</p>
+                    <p className="index-label mb-2 text-primary">Search words</p>
                     <p className="font-code text-lg font-medium text-foreground">toothache cheeks</p>
                   </div>
                 </div>
               </article>
             </div>
 
-            <ol className="mt-10 grid gap-8 md:grid-cols-3">
-              <li className="border-t border-border pt-5">
-                <span className="index-label text-primary">01</span>
-                <h3 className="mt-4 text-xl font-medium">Order doesn’t matter</h3>
-                <p className="mt-3 text-on-surface-variant">
-                  Enter the keywords in whichever order comes naturally.
-                </p>
-              </li>
-              <li className="border-t border-border pt-5">
-                <span className="index-label text-primary">02</span>
-                <h3 className="mt-4 text-xl font-medium">Select every close match</h3>
-                <p className="mt-3 text-on-surface-variant">
-                  Choose all similar symptoms from the results.
-                </p>
-              </li>
-              <li className="border-t border-border pt-5">
-                <span className="index-label text-primary">03</span>
-                <h3 className="mt-4 text-xl font-medium">Break complex symptoms apart</h3>
-                <p className="mt-3 text-on-surface-variant">
-                  If a symptom doesn’t appear, split it into smaller symptoms and search for each one separately.
-                </p>
-              </li>
-            </ol>
+            <div className="mt-10 grid gap-8 text-on-surface-variant md:grid-cols-3">
+              <p className="border-t border-border pt-5 leading-relaxed">
+                The order of the words is not important. Type them in whichever order they come to mind.
+              </p>
+              <p className="border-t border-border pt-5 leading-relaxed">
+                A book may describe the same symptom in more than one way. Select each result that matches what you
+                mean.
+              </p>
+              <p className="border-t border-border pt-5 leading-relaxed">
+                If a long symptom does not appear, search its parts separately and add the useful entries one by one.
+              </p>
+            </div>
           </div>
         </section>
 
         <section aria-label="Classical sources" className="border-y border-border bg-surface-container-low">
           <div className="page-shell py-24 lg:py-32">
-            <div className="mb-12 max-w-2xl">
+            <div className="mb-12 max-w-3xl">
               <h2 className="display-md">Four books. One place to search.</h2>
+              <p className="mt-5 max-w-2xl text-lg leading-relaxed text-on-surface-variant">
+                Search one book at a time. The symptoms and remedies you see come from the selected book, which keeps
+                each author’s wording intact.
+              </p>
             </div>
-            <div className="grid gap-px overflow-hidden rounded-xl border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-px overflow-hidden rounded-xl border border-border bg-border lg:grid-cols-2">
               {SEARCH_BOOKS.map((book, index) => {
                 const cover = book.cover;
                 return (
                   <article key={book.id} className="bg-card p-5 md:p-6">
-                    <div className="mb-8 flex items-start justify-between gap-4">
-                      <Image
-                        src={cover.src}
-                        alt=""
-                        width={cover.width}
-                        height={cover.height}
-                        sizes="9rem"
-                        className="h-48 w-36 rounded-sm object-cover"
-                      />
-                      <span className="index-label text-primary">0{index + 1}</span>
+                    <div className="grid gap-6 sm:grid-cols-3">
+                      <div>
+                        <Image
+                          src={cover.src}
+                          alt=""
+                          width={cover.width}
+                          height={cover.height}
+                          sizes="9rem"
+                          className="h-48 w-36 rounded-sm object-cover"
+                        />
+                        <span className="index-label mt-4 block text-primary">Source 0{index + 1}</span>
+                      </div>
+                      <div className="sm:col-span-2">
+                        <h3 className="whitespace-pre-line text-lg font-medium leading-title">
+                          {book.fullName}
+                        </h3>
+                        <p className="mt-5 leading-relaxed text-on-surface-variant">
+                          {book.description}
+                        </p>
+                      </div>
                     </div>
-                    <h3 className="whitespace-pre-line text-lg font-medium leading-title">
-                      {book.fullName}
-                    </h3>
                   </article>
                 );
               })}
@@ -175,8 +176,18 @@ export default function HomePage() {
 
         <section aria-label="Saved cases" className="border-t border-border">
           <div className="page-shell py-24 lg:py-32">
-            <div className="mb-12">
+            <div className="mb-12 max-w-3xl">
               <h2 className="display-md max-w-3xl">Save cases. Pick up where you left off.</h2>
+              <div className="mt-5 max-w-2xl space-y-5 text-lg leading-relaxed text-on-surface-variant">
+                <p>
+                  Give the case a name once you have selected the symptoms you want to keep. It will appear in Saved
+                  cases with its date, source book, and symptom count.
+                </p>
+                <p>
+                  Open it again and HomeoRemedica switches back to that source and restores the selected symptoms. You
+                  can review them as they were or carry on searching.
+                </p>
+              </div>
             </div>
 
             <CasesPreview />
