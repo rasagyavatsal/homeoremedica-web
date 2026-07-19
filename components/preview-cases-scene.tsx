@@ -16,9 +16,9 @@ import { getBookName, SEARCH_BOOKS } from '@/lib/seo/book-data';
 import type { BookId, Case } from '@/types';
 
 const PREVIEW_CASE_DETAILS = [
-  ['night-time-burning-pain', 'Night-time burning pain', 'boericke-MM', '2026-07-12T00:00:00.000Z'],
-  ['dry-cough-follow-up', 'Dry cough follow-up', 'clarke-MM', '2026-07-08T00:00:00.000Z'],
-  ['sunlight-headache', 'Sunlight headache', 'kent-lectures', '2026-06-29T00:00:00.000Z'],
+  ['night-time-burning-pain', 'Priya, 40 F', 'boericke-MM', '2026-07-12T00:00:00.000Z'],
+  ['dry-cough-follow-up', 'Ethan, 26 M', 'clarke-MM', '2026-07-08T00:00:00.000Z'],
+  ['sunlight-headache', 'Meera, 34 F', 'kent-lectures', '2026-06-29T00:00:00.000Z'],
 ] as const satisfies ReadonlyArray<readonly [string, string, BookId, string]>;
 
 const PREVIEW_CASE_SYMPTOMS = [

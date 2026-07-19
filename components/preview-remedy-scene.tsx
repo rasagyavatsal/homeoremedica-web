@@ -13,7 +13,7 @@ import { getBookName } from '@/lib/seo/book-data';
 
 const DEMOS = [
   {
-    query: 'burning pain at night',
+    query: 'burning pain night',
     symptoms: [
       'Burning pains, worse at night',
       'Restlessness after midnight',
@@ -26,7 +26,7 @@ const DEMOS = [
     ],
   },
   {
-    query: 'dry cough worse at night',
+    query: 'dry cough night',
     symptoms: [
       'Dry cough, worse after midnight',
       'Tickling in the larynx',
@@ -39,7 +39,7 @@ const DEMOS = [
     ],
   },
   {
-    query: 'throbbing headache from sunlight',
+    query: 'throbbing headache sunlight',
     symptoms: [
       'Throbbing pain in the temples',
       'Headache aggravated by bright light',
