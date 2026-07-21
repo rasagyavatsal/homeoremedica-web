@@ -38,6 +38,7 @@ Useful commands:
 | `npm run typecheck` | Type-check without emitting files. |
 | `npm run build` | Regenerate the demo database and create an optimized Next.js build. |
 | `npm run validate` | Run the database generator, lint, type-check, tests, and build. |
+| `npm run deploy-dev` | Deploy the configured resources to the development Firebase project. |
 
 ## Runtime boundaries
 

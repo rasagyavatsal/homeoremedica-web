@@ -5,16 +5,24 @@
   "engines": {
     "node": "24.x"
   },
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": "24.x",
+      "onFail": "error"
+    }
+  },
   "scripts": {
     "dev": "next dev",
     "build": "npm run generate-demo-db && next build --webpack",
     "start": "next start",
-    "lint": "ESLINT_USE_FLAT_CONFIG=false eslint .",
+    "lint": "eslint .",
     "generate-demo-db": "node scripts/generate-demo-db.js",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
+    "deploy-dev": "firebase deploy --project homeoremedica-dev",
     "validate": "npm run generate-demo-db && npm run lint && npm run typecheck && npm test && npm run build"
   },
   "dependencies": {
@@ -72,6 +80,7 @@
     "eslint": "^9.39.5",
     "eslint-config-next": "^16.2.10",
     "fast-glob": "^3.3.3",
+    "firebase-tools": "^15.24.0",
     "jsdom": "^29.1.1",
     "playwright": "^1.61.1",
     "tailwindcss": "^4.1.18",

@@ -57,6 +57,8 @@ ui-debug.log
 # Deployment
 windsurf_deployment.yaml
 
+# Personal interview notes
+/YAP.md
 
 #Ignore windsurf AI rules
 .windsurfrules
