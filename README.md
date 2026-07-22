@@ -38,7 +38,38 @@ Useful commands:
 | `npm run typecheck` | Type-check without emitting files. |
 | `npm run build` | Regenerate the demo database and create an optimized Next.js build. |
 | `npm run validate` | Run the database generator, lint, type-check, tests, and build. |
-| `npm run deploy-dev` | Deploy the configured resources to the development Firebase project. |
+| `npm run deploy-dev` | Deploy the app to the development App Hosting backend. |
+| `npm run deploy-prod` | Deploy the app to the production App Hosting backend. |
+| `npm run deploy-prod-preview` | Deploy the app to the isolated preview backend in the production Firebase project. |
+
+## Production rollout and security
+
+The production and preview backends both use `apphosting.production.yaml` and
+the production Firebase project, but they are separate App Hosting backends.
+Test changes at
+<https://homeoremedica-web-preview--homeoremedica.us-central1.hosted.app>
+before deploying the same source to the live backend. The custom domain is
+intentionally not connected to either backend during this testing phase.
+The preview hostname is authorized in the production Firebase Authentication
+project so Google sign-in can be tested there; authorized domains are managed
+as Firebase project state rather than through `firebase.json`.
+
+The production configuration file is committed intentionally. Firebase web
+configuration, the browser API key, and the reCAPTCHA Enterprise site key are
+public client identifiers rather than credentials. Access is controlled by the
+API key's referrer/API restrictions, Firebase Security Rules, IAM, App Check,
+and server-side credentials; never add an Admin private key or other secret to
+this file.
+
+App Check is currently set to `monitor`. The web client obtains a reCAPTCHA
+Enterprise App Check token and sends it with first-party API requests, while the
+server records missing or invalid tokens without rejecting users. Do not switch
+to `enforce` until browser flows have been observed on preview and production
+and the mobile client has been updated to send its own valid App Check token.
+
+The private remedy-data bucket uses uniform bucket-level access and Public
+Access Prevention. Its App Hosting service account has object-viewer access;
+anonymous users and general project viewers do not.
 
 ## Runtime boundaries
 

@@ -1,4 +1,5 @@
 import { ApiClient } from '@/lib/api/base-client';
+import { getAppCheckToken } from '@/lib/app-check/client';
 import type { BookId, SearchResult } from '@/types';
 
 class WebApiClient extends ApiClient {
@@ -16,4 +17,4 @@ class WebApiClient extends ApiClient {
   }
 }
 
-export const apiClient = new WebApiClient('/api');
+export const apiClient = new WebApiClient('/api', getAppCheckToken);

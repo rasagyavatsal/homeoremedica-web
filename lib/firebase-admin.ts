@@ -1,5 +1,6 @@
 import 'server-only';
 import * as adminSdk from 'firebase-admin';
+import { getAppCheck } from 'firebase-admin/app-check';
 
 function getFirebaseCredentialEnv() {
   return {
@@ -86,4 +87,8 @@ export function getAdminDb() {
 
 export function getAdminAuth() {
   return adminSdk.auth(getFirebaseAdminApp());
+}
+
+export function getAdminAppCheck() {
+  return getAppCheck(getFirebaseAdminApp());
 }

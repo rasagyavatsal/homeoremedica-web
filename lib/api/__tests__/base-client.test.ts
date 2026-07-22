@@ -50,6 +50,32 @@ describe('ApiClient', () => {
       const [, options] = fetchSpy.mock.calls[0];
       expect(options.headers.Authorization).toBeUndefined();
     });
+
+    it('adds an App Check token when a token provider is configured', async () => {
+      client = new ApiClient(
+        'http://localhost:3000/api',
+        async () => 'app-check-token'
+      );
+      mockFetchResponse({ cases: [] });
+
+      await client.getCases();
+
+      const [, options] = fetchSpy.mock.calls[0];
+      expect(options.headers['X-Firebase-AppCheck']).toBe('app-check-token');
+    });
+
+    it('omits the App Check header when no token is available', async () => {
+      client = new ApiClient(
+        'http://localhost:3000/api',
+        async () => null
+      );
+      mockFetchResponse({ cases: [] });
+
+      await client.getCases();
+
+      const [, options] = fetchSpy.mock.calls[0];
+      expect(options.headers['X-Firebase-AppCheck']).toBeUndefined();
+    });
   });
 
   describe('findRemedies()', () => {

@@ -22,7 +22,9 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "deploy-dev": "firebase deploy --project homeoremedica-dev",
+    "deploy-dev": "firebase deploy --project development --only apphosting:homeoremedica-web-dev",
+    "deploy-prod": "firebase deploy --project production --only apphosting:homeoremedica-web",
+    "deploy-prod-preview": "firebase deploy --project production --only apphosting:homeoremedica-web-preview",
     "validate": "npm run generate-demo-db && npm run lint && npm run typecheck && npm test && npm run build"
   },
   "dependencies": {

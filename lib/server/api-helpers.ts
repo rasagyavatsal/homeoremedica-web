@@ -9,6 +9,8 @@ export function isApiError(error: unknown): error is ApiError {
 
 export function getErrorStatus(error: ApiError): number {
   switch (error.code) {
+    case 'APP_CHECK_REQUIRED':
+      return 403;
     case 'AUTH_REQUIRED':
       return 401;
     case 'NOT_FOUND':
