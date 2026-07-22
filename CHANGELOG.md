@@ -1,5 +1,13 @@
 # Changelog
 
+## [5.3.0](https://github.com/rasagyavatsal/homeoremedica-web/compare/homeoremedica-web-v5.2.0...homeoremedica-web-v5.3.0) (2026-07-22)
+
+
+### Features
+
+* **deploy:** secure production App Hosting rollouts ([213090b](https://github.com/rasagyavatsal/homeoremedica-web/commit/213090b75358174e253a78eb974e79ed19c3da79))
+* **deploy:** secure production App Hosting rollouts ([8dbb65c](https://github.com/rasagyavatsal/homeoremedica-web/commit/8dbb65c76264bea7415ec2716a2d56748dd94aa4))
+
 ## [5.2.0](https://github.com/rasagyavatsal/homeoremedica-web/compare/homeoremedica-web-v5.1.0...homeoremedica-web-v5.2.0) (2026-07-19)
 
 
