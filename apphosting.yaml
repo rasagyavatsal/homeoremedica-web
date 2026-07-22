@@ -5,8 +5,8 @@ runConfig:
   concurrency: 40
 
 env:
-  # Development is the repository default. Production uses the owner-controlled
-  # configuration in deployment/apphosting.production.yaml.
+  # Development is the repository default. Production backends select the
+  # overrides in apphosting.production.yaml through their environment setting.
   - variable: NEXT_PUBLIC_FIREBASE_API_KEY
     value: AIzaSyCuzBi4pwZMc3gp7s9LViPKonX_FXzPg5A
     availability:

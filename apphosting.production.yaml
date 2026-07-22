@@ -23,15 +23,21 @@ env:
   - variable: NEXT_PUBLIC_FIREBASE_APP_ID
     value: 1:619837289655:web:c6858600cb9d5236710932
     availability: [BUILD, RUNTIME]
+  - variable: NEXT_PUBLIC_FIREBASE_APP_CHECK_SITE_KEY
+    value: 6Lc6no4sAAAAANGYbD2ntZItbPksIGo7UD-YRS2J
+    availability: [BUILD, RUNTIME]
+  - variable: APP_CHECK_ENFORCEMENT_MODE
+    value: monitor
+    availability: [RUNTIME]
   - variable: REMEDIES_BUCKET
     value: homeoremedica-private-remedies
     availability: [RUNTIME]
   - variable: REMEDIES_OBJECT
-    value: production/remedies-2026-07-12.db
+    value: production/remedies-2026-07-22.db
     availability: [RUNTIME]
   - variable: REMEDIES_DB_PATH
     value: /tmp/remedies.db
     availability: [RUNTIME]
   - variable: REMEDIES_DB_SHA256
-    value: 462a93966bbce8c66838bd78844aab107a8ffe7bdfa2cfd95a88ed8ea0273d7e
+    value: 8fb41ffecb67d2ae9bfd6e31ac3cf585d3f7cd537e8a209fd157467e6d979b86
     availability: [RUNTIME]

@@ -81,7 +81,7 @@ export interface FindRemedyResponse {
 
 // Error response types
 export interface ApiError {
-  code: 'AUTH_REQUIRED' | 'INVALID_INPUT' | 'INTERNAL_ERROR' | 'NOT_FOUND';
+  code: 'APP_CHECK_REQUIRED' | 'AUTH_REQUIRED' | 'INVALID_INPUT' | 'INTERNAL_ERROR' | 'NOT_FOUND';
   message: string;
   details?: any;
 }

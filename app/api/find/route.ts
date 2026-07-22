@@ -1,33 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { checkAppCheck } from '@/lib/app-check/server';
+import { handleApiError } from '@/lib/server/api-helpers';
 import { findRemedySchema } from '@/lib/validation/schemas';
-import { ApiError } from '@/lib/types/backend';
 import { findRemedyResponseForApi } from '@/lib/server/repertory/service';
 
 export const dynamic = 'force-dynamic';
 
-function isApiError(error: unknown): error is ApiError {
-  return Boolean(
-    error &&
-      typeof error === 'object' &&
-      'code' in error &&
-      'message' in error
-  );
-}
-
-function getErrorStatus(error: ApiError) {
-  if (error.code === 'AUTH_REQUIRED') {
-    return 401;
-  }
-
-  if (error.code === 'INVALID_INPUT') {
-    return 400;
-  }
-
-  return 500;
-}
-
 export async function POST(request: NextRequest) {
   try {
+    await checkAppCheck(request);
     const body = await request.json();
     
     // Validate request body
@@ -46,15 +27,6 @@ export async function POST(request: NextRequest) {
     
     return NextResponse.json(response);
   } catch (error) {
-    console.error('Find remedies error:', error);
-    
-    if (isApiError(error)) {
-      return NextResponse.json(error, { status: getErrorStatus(error) });
-    }
-    
-    return NextResponse.json({
-      code: 'INTERNAL_ERROR',
-      message: 'Internal server error'
-    }, { status: 500 });
+    return handleApiError(error, 'Find remedies');
   }
 }

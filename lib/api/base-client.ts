@@ -25,10 +25,15 @@ function createNonJsonError(status: number) {
 
 export class ApiClient {
   private readonly baseUrl: string;
+  private readonly getAppCheckToken: () => Promise<string | null>;
   private authToken: string | null = null;
 
-  constructor(baseUrl: string) {
+  constructor(
+    baseUrl: string,
+    getAppCheckToken: () => Promise<string | null> = async () => null
+  ) {
     this.baseUrl = baseUrl;
+    this.getAppCheckToken = getAppCheckToken;
   }
 
   setAuthToken(token: string | null) {
@@ -47,6 +52,11 @@ export class ApiClient {
 
     if (this.authToken) {
       headers.Authorization = `Bearer ${this.authToken}`;
+    }
+
+    const appCheckToken = await this.getAppCheckToken();
+    if (appCheckToken) {
+      headers['X-Firebase-AppCheck'] = appCheckToken;
     }
 
     const response = await fetch(url, {

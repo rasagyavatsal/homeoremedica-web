@@ -1,31 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { checkAppCheck } from '@/lib/app-check/server';
 import { requireAuth } from '@/lib/auth/middleware';
+import { handleApiError } from '@/lib/server/api-helpers';
 import { createOrUpdateUser } from '@/lib/services/user-service';
-import { ApiError } from '@/lib/types/backend';
 
 export const dynamic = 'force-dynamic';
 
-function isApiError(error: unknown): error is ApiError {
-  return Boolean(
-    error &&
-      typeof error === 'object' &&
-      'code' in error &&
-      'message' in error
-  );
-}
-
-function getErrorDetails(error: unknown) {
-  return {
-    type: typeof error,
-    hasCode: isApiError(error),
-    code: isApiError(error) ? error.code : 'no code',
-    message: error instanceof Error ? error.message : 'Internal server error',
-    stack: error instanceof Error ? error.stack : 'no stack'
-  };
-}
-
 export async function POST(request: NextRequest) {
   try {
+    await checkAppCheck(request);
     const user = await requireAuth(request);
     const body = await request.json().catch(() => ({}));
     const name = body.name;
@@ -43,18 +26,6 @@ export async function POST(request: NextRequest) {
     
     return NextResponse.json(response);
   } catch (error) {
-    console.error('Session error:', error);
-    console.error('Session error details:', getErrorDetails(error));
-    
-    if (isApiError(error)) {
-      return NextResponse.json(error, { 
-        status: error.code === 'AUTH_REQUIRED' ? 401 : 500 
-      });
-    }
-    
-    return NextResponse.json({
-      code: 'INTERNAL_ERROR',
-      message: 'Internal server error'
-    }, { status: 500 });
+    return handleApiError(error, 'Session');
   }
 }

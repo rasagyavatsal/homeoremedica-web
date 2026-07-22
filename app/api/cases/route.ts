@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { checkAppCheck } from '@/lib/app-check/server';
 import { requireAuth } from '@/lib/auth/middleware';
 import { handleApiError } from '@/lib/server/api-helpers';
 import { listCases, createCase } from '@/lib/server/cases/service';
@@ -8,6 +9,7 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
   try {
+    await checkAppCheck(request);
     const user = await requireAuth(request);
     const result = await listCases(user.uid);
     return NextResponse.json(result);
@@ -18,6 +20,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    await checkAppCheck(request);
     const user = await requireAuth(request);
     const body = await request.json();
     const newCase = await createCase(user.uid, body);

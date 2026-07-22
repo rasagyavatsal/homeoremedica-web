@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { checkAppCheck } from '@/lib/app-check/server';
 import { requireAuth } from '@/lib/auth/middleware';
 import { handleApiError, validateCaseId } from '@/lib/server/api-helpers';
 import { updateCase, deleteCase } from '@/lib/server/cases/service';
@@ -11,6 +12,7 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    await checkAppCheck(request);
     const { id } = await params;
     if (!validateCaseId(id)) {
       return NextResponse.json({
@@ -34,6 +36,7 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    await checkAppCheck(request);
     const { id } = await params;
     if (!validateCaseId(id)) {
       return NextResponse.json({

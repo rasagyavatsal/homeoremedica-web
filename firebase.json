@@ -2,6 +2,33 @@
   "apphosting": [
     {
       "backendId": "homeoremedica-web-dev",
+      "alwaysDeployFromSource": true,
+      "rootDir": ".",
+      "ignore": [
+        "node_modules",
+        ".git",
+        ".next",
+        "server-data",
+        "firebase-debug.log",
+        "firebase-debug.*.log"
+      ]
+    },
+    {
+      "backendId": "homeoremedica-web",
+      "alwaysDeployFromSource": true,
+      "rootDir": ".",
+      "ignore": [
+        "node_modules",
+        ".git",
+        ".next",
+        "server-data",
+        "firebase-debug.log",
+        "firebase-debug.*.log"
+      ]
+    },
+    {
+      "backendId": "homeoremedica-web-preview",
+      "alwaysDeployFromSource": true,
       "rootDir": ".",
       "ignore": [
         "node_modules",
