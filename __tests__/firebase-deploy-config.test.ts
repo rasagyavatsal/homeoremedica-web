@@ -52,4 +52,13 @@ describe('Firebase App Hosting deployments', () => {
     );
     expect(productionAppHostingConfig).toContain('value: monitor');
   });
+
+  it('pins the verified production remedies database release', () => {
+    expect(productionAppHostingConfig).toContain(
+      'value: production/remedies-2026-07-27.db'
+    );
+    expect(productionAppHostingConfig).toContain(
+      'value: 721b3101eb778ea5265791ed258951422a60b5dc2cd43b1fc8758cf438fbc2dc'
+    );
+  });
 });
