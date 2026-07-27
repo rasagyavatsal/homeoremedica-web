@@ -33,11 +33,11 @@ env:
     value: homeoremedica-private-remedies
     availability: [RUNTIME]
   - variable: REMEDIES_OBJECT
-    value: production/remedies-2026-07-22.db
+    value: production/remedies-2026-07-27.db
     availability: [RUNTIME]
   - variable: REMEDIES_DB_PATH
     value: /tmp/remedies.db
     availability: [RUNTIME]
   - variable: REMEDIES_DB_SHA256
-    value: 8fb41ffecb67d2ae9bfd6e31ac3cf585d3f7cd537e8a209fd157467e6d979b86
+    value: 721b3101eb778ea5265791ed258951422a60b5dc2cd43b1fc8758cf438fbc2dc
     availability: [RUNTIME]
