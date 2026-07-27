@@ -13,11 +13,11 @@ describe('Firebase App Hosting deployments', () => {
   it('scopes each deploy script to its intended project and backend', () => {
     expect(packageConfig.scripts).toMatchObject({
       'deploy-dev':
-        'firebase deploy --project development --only apphosting:homeoremedica-web-dev',
+        'npm run with-node-24 -- firebase deploy --project development --only apphosting:homeoremedica-web-dev',
       'deploy-prod':
-        'firebase deploy --project production --only apphosting:homeoremedica-web',
+        'npm run with-node-24 -- firebase deploy --project production --only apphosting:homeoremedica-web',
       'deploy-prod-preview':
-        'firebase deploy --project production --only apphosting:homeoremedica-web-preview',
+        'npm run with-node-24 -- firebase deploy --project production --only apphosting:homeoremedica-web-preview',
     });
   });
 

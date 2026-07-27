@@ -5,26 +5,20 @@
   "engines": {
     "node": "24.x"
   },
-  "devEngines": {
-    "runtime": {
-      "name": "node",
-      "version": "24.x",
-      "onFail": "error"
-    }
-  },
   "scripts": {
-    "dev": "next dev",
-    "build": "npm run generate-demo-db && next build --webpack",
-    "start": "next start",
-    "lint": "eslint .",
-    "generate-demo-db": "node scripts/generate-demo-db.js",
-    "typecheck": "tsc --noEmit",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage",
-    "deploy-dev": "firebase deploy --project development --only apphosting:homeoremedica-web-dev",
-    "deploy-prod": "firebase deploy --project production --only apphosting:homeoremedica-web",
-    "deploy-prod-preview": "firebase deploy --project production --only apphosting:homeoremedica-web-preview",
+    "with-node-24": "npx --yes --package=node@24 --",
+    "dev": "npm run with-node-24 -- next dev",
+    "build": "npm run generate-demo-db && npm run with-node-24 -- next build --webpack",
+    "start": "npm run with-node-24 -- next start",
+    "lint": "npm run with-node-24 -- eslint .",
+    "generate-demo-db": "npm run with-node-24 -- node scripts/generate-demo-db.js",
+    "typecheck": "npm run with-node-24 -- tsc --noEmit",
+    "test": "npm run with-node-24 -- vitest run",
+    "test:watch": "npm run with-node-24 -- vitest",
+    "test:coverage": "npm run with-node-24 -- vitest run --coverage",
+    "deploy-dev": "npm run with-node-24 -- firebase deploy --project development --only apphosting:homeoremedica-web-dev",
+    "deploy-prod": "npm run with-node-24 -- firebase deploy --project production --only apphosting:homeoremedica-web",
+    "deploy-prod-preview": "npm run with-node-24 -- firebase deploy --project production --only apphosting:homeoremedica-web-preview",
     "validate": "npm run generate-demo-db && npm run lint && npm run typecheck && npm test && npm run build"
   },
   "dependencies": {
