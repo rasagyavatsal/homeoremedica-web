@@ -15,6 +15,12 @@ The web server handles remedy searches for both clients. Firebase stores account
 
 ## Local development
 
+The project targets Node 24, as specified by `.nvmrc` and
+`package.json#engines`. Package scripts automatically run their commands with
+Node 24, so they can be invoked normally even when the active shell uses Node
+26. The first script invocation may download Node 24; later invocations reuse
+npm's cached runtime.
+
 ```sh
 npm ci
 cp .env.example .env.local
