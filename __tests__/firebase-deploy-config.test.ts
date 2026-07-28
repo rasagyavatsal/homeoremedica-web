@@ -55,10 +55,10 @@ describe('Firebase App Hosting deployments', () => {
 
   it('pins the verified production remedies database release', () => {
     expect(productionAppHostingConfig).toContain(
-      'value: production/remedies-2026-07-27.db'
+      'value: production/remedies-2026-07-28.db'
     );
     expect(productionAppHostingConfig).toContain(
-      'value: 721b3101eb778ea5265791ed258951422a60b5dc2cd43b1fc8758cf438fbc2dc'
+      'value: 870f77356f58da95368c4bf294bc475ab4c268b49bb94dfa44947f5528581c87'
     );
   });
 });
