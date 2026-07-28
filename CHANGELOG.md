@@ -1,5 +1,15 @@
 # Changelog
 
+## [5.3.1](https://github.com/rasagyavatsal/homeoremedica-web/compare/homeoremedica-web-v5.3.0...homeoremedica-web-v5.3.1) (2026-07-28)
+
+
+### Bug Fixes
+
+* use remedies database release 2026-07-27 ([ebf55f3](https://github.com/rasagyavatsal/homeoremedica-web/commit/ebf55f3849a4e4c43f206f6e6167edffb231b67b))
+* use remedies database release 2026-07-27 ([072db99](https://github.com/rasagyavatsal/homeoremedica-web/commit/072db998969136fe4c3b94688b55af423d564acc))
+* use remedies database release 2026-07-28 ([e9e48a6](https://github.com/rasagyavatsal/homeoremedica-web/commit/e9e48a66986844fd4d8f478f28e14bb9dfb9d2a4))
+* use remedies database release 2026-07-28 ([0d5e0bc](https://github.com/rasagyavatsal/homeoremedica-web/commit/0d5e0bc8fc3e1ee160cd904a56e8a188092880a0))
+
 ## [5.3.0](https://github.com/rasagyavatsal/homeoremedica-web/compare/homeoremedica-web-v5.2.0...homeoremedica-web-v5.3.0) (2026-07-27)
 
 
