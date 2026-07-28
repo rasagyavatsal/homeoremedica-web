@@ -1,5 +1,13 @@
 # Changelog
 
+## [5.3.2](https://github.com/rasagyavatsal/homeoremedica-web/compare/homeoremedica-web-v5.3.1...homeoremedica-web-v5.3.2) (2026-07-28)
+
+
+### Bug Fixes
+
+* **ci:** pin release-please action to commit ([2209564](https://github.com/rasagyavatsal/homeoremedica-web/commit/22095642ec2344d67c08bfc4cfd88509bc123a2b))
+* **ci:** pin release-please action to commit ([3b40402](https://github.com/rasagyavatsal/homeoremedica-web/commit/3b40402afd1c44de5f8af09077e95dd27d42b5d0))
+
 ## [5.3.1](https://github.com/rasagyavatsal/homeoremedica-web/compare/homeoremedica-web-v5.3.0...homeoremedica-web-v5.3.1) (2026-07-28)
 
 
