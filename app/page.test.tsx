@@ -47,18 +47,17 @@ describe('HomePage', () => {
       screen.getByText('Search by symptom. Choose the closest matches. Compare the remedies.'),
     ).toBeInTheDocument();
 
-    const hero = screen.getByRole('heading', { level: 1 }).parentElement;
+    const hero = screen.getByRole('heading', { level: 1 }).parentElement!;
     expect(hero).toHaveClass('text-center');
-    const remedyPreview = screen.getByRole('region', { name: 'Remedy finder demonstration' });
-    const referenceDisclaimer = screen.getByText(
-      'Results are a reference for study and practitioner research, not medical diagnosis or treatment advice.',
-    );
     const classicalSources = screen.getByRole('region', { name: 'Classical sources' });
 
-    expect(remedyPreview).toHaveClass('preview-device');
-    expect(remedyPreview.compareDocumentPosition(referenceDisclaimer)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
-    expect(referenceDisclaimer.compareDocumentPosition(classicalSources)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
-    expect(referenceDisclaimer).toHaveClass('mx-auto', 'text-center');
+    expect(screen.queryByRole('region', { name: 'Remedy finder demonstration' })).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(
+        'Results are a reference for study and practitioner research, not medical diagnosis or treatment advice.',
+      ),
+    ).not.toBeInTheDocument();
+    expect(hero.compareDocumentPosition(classicalSources)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
   });
 
   it('rotates the hero audience through practitioners and students', () => {
@@ -179,7 +178,7 @@ describe('HomePage', () => {
     expect(howToSearch.compareDocumentPosition(classicalSources)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
   });
 
-  it('replaces the generic closing callout with a saved-cases section', () => {
+  it('explains the saved-case workflow without an embedded preview', () => {
     render(<HomePage />);
 
     const casesSection = screen.getByRole('region', { name: 'Saved cases' });
@@ -194,22 +193,22 @@ describe('HomePage', () => {
     expect(casesHeading.parentElement).not.toHaveClass('grid');
     expect(casesCopy).toHaveClass('mt-5');
     expect(casesCopy).toHaveTextContent(
-      'Select the symptoms you want to keep, give the case a name, and save it.',
+      'Sign in to save a named snapshot of the source book and symptoms selected in your current search.',
     );
     expect(casesSection).toHaveTextContent(
-      'Select the symptoms you want to keep, give the case a name, and save it. You can open it again from Saved cases.',
+      'Each case stores its name, the source book used for the search, and the symptoms you selected.',
     );
-    expect(casesSection).not.toHaveTextContent('Save the working set');
-    expect(casesSection).not.toHaveTextContent('Review the record');
-    expect(casesSection).not.toHaveTextContent('Resume with context');
-    expect(casesSection).toContainElement(screen.getByRole('region', { name: 'Saved cases preview' }));
-    expect(casesSection).not.toContainElement(screen.getByText(/Results are a reference for study/));
+    expect(casesSection).toHaveTextContent(
+      'The list shows the save date, source, and symptom count for each case. You can also delete cases you no longer need.',
+    );
+    expect(casesSection).toHaveTextContent(
+      'Opening a case restores its source and selected symptoms. Remedy matches are then recalculated from that symptom set.',
+    );
+    expect(screen.queryByRole('region', { name: 'Saved cases preview' })).not.toBeInTheDocument();
     expect(screen.queryByText('Give the case your full attention.')).not.toBeInTheDocument();
-    const casesPreview = screen.getByRole('region', { name: 'Saved cases preview' });
     const findRemedyLink = screen.getByRole('link', { name: 'Find Remedy' });
 
     expect(findRemedyLink).toHaveAttribute('href', '/find-remedy');
-    expect(casesPreview.compareDocumentPosition(findRemedyLink)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
     expect(findRemedyLink.parentElement).toHaveClass('justify-center');
   });
 });

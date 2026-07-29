@@ -3,11 +3,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 
-import { CasesPreview } from '@/components/cases-preview';
 import { Footer } from '@/components/footer';
 import { Header } from '@/components/header';
 import { HeroHeading } from '@/components/hero-heading';
-import { RemedyPreview } from '@/components/remedy-preview';
 import { Button } from '@/components/ui/button';
 import { MotionRouteShell } from '@/components/ui/motion';
 import { PLAY_STORE_URL } from '@/lib/constants/links';
@@ -62,12 +60,6 @@ export default function HomePage() {
               </div>
             </div>
 
-            <div className="mt-16 w-full lg:mt-20">
-              <RemedyPreview />
-              <p className="mx-auto mt-6 max-w-3xl text-center text-sm text-on-surface-variant">
-                Results are a reference for study and practitioner research, not medical diagnosis or treatment advice.
-              </p>
-            </div>
           </MotionRouteShell>
         </section>
 
@@ -179,14 +171,39 @@ export default function HomePage() {
             <div className="mb-12 max-w-3xl">
               <h2 className="display-md max-w-3xl">Save cases. Pick up where you left off.</h2>
               <p className="mt-5 max-w-2xl text-lg leading-relaxed text-on-surface-variant">
-                Select the symptoms you want to keep, give the case a name, and save it. You can open it again from
-                Saved cases.
+                Sign in to save a named snapshot of the source book and symptoms selected in your current search.
               </p>
             </div>
 
-            <CasesPreview />
+            <div className="grid gap-px overflow-hidden rounded-xl border border-border bg-border md:grid-cols-3">
+              <article className="bg-card p-5 md:p-6">
+                <p className="index-label text-primary">Stored details</p>
+                <h3 className="mt-5 text-lg font-medium leading-title">What gets saved</h3>
+                <p className="mt-3 leading-relaxed text-on-surface-variant">
+                  Each case stores its name, the source book used for the search, and the symptoms you selected.
+                </p>
+              </article>
 
-            <div className="mt-6 flex justify-center">
+              <article className="bg-card p-5 md:p-6">
+                <p className="index-label text-primary">Saved cases</p>
+                <h3 className="mt-5 text-lg font-medium leading-title">What the list shows</h3>
+                <p className="mt-3 leading-relaxed text-on-surface-variant">
+                  The list shows the save date, source, and symptom count for each case. You can also delete cases you
+                  no longer need.
+                </p>
+              </article>
+
+              <article className="bg-card p-5 md:p-6">
+                <p className="index-label text-primary">Resume search</p>
+                <h3 className="mt-5 text-lg font-medium leading-title">What happens when you reopen</h3>
+                <p className="mt-3 leading-relaxed text-on-surface-variant">
+                  Opening a case restores its source and selected symptoms. Remedy matches are then recalculated from
+                  that symptom set.
+                </p>
+              </article>
+            </div>
+
+            <div className="mt-10 flex justify-center">
               <Button asChild size="lg" className="gap-3">
                 <Link href="/find-remedy">
                   Find Remedy
