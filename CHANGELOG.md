@@ -1,5 +1,13 @@
 # Changelog
 
+## [5.4.0](https://github.com/rasagyavatsal/homeoremedica-web/compare/homeoremedica-web-v5.3.2...homeoremedica-web-v5.4.0) (2026-07-29)
+
+
+### Features
+
+* simplify home page and explain saved cases ([7caf393](https://github.com/rasagyavatsal/homeoremedica-web/commit/7caf393fd2aebdb49a34a344e77e8f2ac3c98645))
+* simplify home page and explain saved cases ([cf42cba](https://github.com/rasagyavatsal/homeoremedica-web/commit/cf42cba3cc346419de83580545cd708b63b2a8c2))
+
 ## [5.3.2](https://github.com/rasagyavatsal/homeoremedica-web/compare/homeoremedica-web-v5.3.1...homeoremedica-web-v5.3.2) (2026-07-28)
 
 
