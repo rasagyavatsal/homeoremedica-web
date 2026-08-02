@@ -49,7 +49,7 @@
     "firebase-functions": "^7.3.0",
     "framer-motion": "^12.38.0",
     "lucide-react": "^0.292.0",
-    "newrelic": "^13.10.0",
+    "newrelic": "^14.3.4",
     "next": "^16.2.12",
     "nodemailer": "^9.0.3",
     "postcss": "^8.5.23",
