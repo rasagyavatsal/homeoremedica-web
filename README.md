@@ -44,9 +44,43 @@ Useful commands:
 | `npm run typecheck` | Type-check without emitting files. |
 | `npm run build` | Regenerate the demo database and create an optimized Next.js build. |
 | `npm run validate` | Run the database generator, lint, type-check, tests, and build. |
+| `npm run rag:sync` | Download and verify the active RAG corpus. |
+| `npm run rag:chat` | Start an interactive grounded chat in the terminal. |
+| `npm run rag:serve` | Serve the Python chat API at `http://127.0.0.1:8000`. |
 | `npm run deploy-dev` | Deploy the app to the development App Hosting backend. |
 | `npm run deploy-prod` | Deploy the app to the production App Hosting backend. |
 | `npm run deploy-prod-preview` | Deploy the app to the isolated preview backend in the production Firebase project. |
+
+## RAG chat backend
+
+The Python service in [`rag/`](rag/) is the testable backend for chat before a frontend is added.
+It reads the immutable active corpus from the private `homeoremedica` Cloud Storage bucket,
+verifies every pinned generation, byte size, SHA-256 digest, schema, and artifact metadata field,
+then caches the four SQLite books under ignored `server-data/`. Retrieval stays local: each query
+combines Porter-stemmed FTS5 and `sqlite-vec` cosine rankings, and Gemini receives only the top
+versioned excerpts. Responses include structured source records that the future UI can render.
+
+Authenticate with Application Default Credentials, sync once, and chat:
+
+```sh
+gcloud auth application-default login
+npm run rag:sync
+npm run rag:chat
+```
+
+For a single question or API server:
+
+```sh
+npm run rag -- ask "How is Nux vomica described?"
+npm run rag:serve
+curl -s http://127.0.0.1:8000/v1/chat \
+  -H 'content-type: application/json' \
+  -d '{"message":"How is Nux vomica described?","bookIds":["kent-lectures"]}'
+```
+
+Use `npm run rag -- --cached chat` to skip the Cloud Storage active-release check. The API contract,
+configuration, safety boundary, and current cost estimate are documented in
+[`rag/README.md`](rag/README.md).
 
 ## Production rollout and security
 
