@@ -9,11 +9,18 @@ ENV PYTHONUNBUFFERED=1 \
     UV_LINK_MODE=copy
 
 COPY pyproject.toml uv.lock ./
+RUN uv sync --locked --no-dev --no-install-project --no-build
+
 COPY src ./src
-RUN uv sync --locked --no-dev --no-editable
 
 ENV PATH="/app/.venv/bin:$PATH" \
+    PYTHONPATH=/app/src \
     RAG_CACHE_DIR=/tmp/homeoremedica-rag-corpus
+
+RUN groupadd --system --gid 10001 homeoremedica \
+    && useradd --system --uid 10001 --gid homeoremedica --no-create-home homeoremedica
+
+USER homeoremedica
 
 EXPOSE 8080
 
