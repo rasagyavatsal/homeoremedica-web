@@ -4,10 +4,11 @@ import math
 from collections.abc import Sequence
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlsplit
 
 from google import genai
 from google.genai import types
-from pydantic import Field
+from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from homeoremedica_chat.chat import ChatService
@@ -24,6 +25,31 @@ class Settings(BaseSettings):
     cache_dir: Path = Path("server-data/rag-corpus")
     model: str = "gemini-2.5-flash-lite"
     max_output_tokens: int = Field(default=700, gt=0, le=4_096)
+    allowed_origins: str = ""
+
+    @field_validator("allowed_origins")
+    @classmethod
+    def validate_allowed_origins(cls, value: str) -> str:
+        origins = tuple(
+            origin.strip().rstrip("/") for origin in value.split(",") if origin.strip()
+        )
+        for origin in origins:
+            parsed = urlsplit(origin)
+            if (
+                parsed.scheme not in {"http", "https"}
+                or not parsed.netloc
+                or parsed.path
+                or parsed.query
+                or parsed.fragment
+                or parsed.username
+                or parsed.password
+            ):
+                raise ValueError(f"invalid allowed origin: {origin}")
+        return ",".join(origins)
+
+    @property
+    def cors_origins(self) -> tuple[str, ...]:
+        return tuple(self.allowed_origins.split(",")) if self.allowed_origins else ()
 
 
 class VertexChatModel:

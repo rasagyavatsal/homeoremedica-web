@@ -1,6 +1,7 @@
 from fastapi.testclient import TestClient
 from homeoremedica_chat.api import create_app
 from homeoremedica_chat.chat import ChatRequest, ChatResponse, Citation
+from homeoremedica_chat.runtime import Settings
 
 
 class StubService:
@@ -60,3 +61,42 @@ def test_chat_endpoint_exposes_the_frontend_contract_in_camel_case() -> None:
         "corpusVersion": "v1",
         "model": "test-model",
     }
+
+
+def test_configured_frontend_origin_can_call_the_chat_api() -> None:
+    client = TestClient(
+        create_app(
+            StubService(),
+            settings=Settings(allowed_origins="https://app.example.com"),
+        )
+    )
+
+    response = client.options(
+        "/v1/chat",
+        headers={
+            "Origin": "https://app.example.com",
+            "Access-Control-Request-Method": "POST",
+            "Access-Control-Request-Headers": "content-type",
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.headers["access-control-allow-origin"] == "https://app.example.com"
+
+
+def test_unconfigured_frontend_origin_is_not_allowed() -> None:
+    client = TestClient(
+        create_app(
+            StubService(),
+            settings=Settings(allowed_origins="https://app.example.com"),
+        )
+    )
+
+    response = client.post(
+        "/v1/chat",
+        headers={"Origin": "https://other.example.com"},
+        json={"message": "What is described?", "bookIds": ["kent-lectures"]},
+    )
+
+    assert response.status_code == 200
+    assert "access-control-allow-origin" not in response.headers
