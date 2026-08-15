@@ -3,6 +3,10 @@
 # dependencies
 node_modules/
 dist/
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
 /.pnp
 .pnp.js
 
