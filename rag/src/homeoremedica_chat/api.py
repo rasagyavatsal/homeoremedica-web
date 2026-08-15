@@ -6,6 +6,7 @@ from contextlib import asynccontextmanager
 from typing import Protocol
 
 from fastapi import FastAPI, HTTPException, Request
+from fastapi.middleware.cors import CORSMiddleware
 
 from homeoremedica_chat.chat import ChatRequest, ChatResponse, Contract
 from homeoremedica_chat.runtime import Settings, build_service
@@ -32,11 +33,13 @@ def create_app(
     *,
     settings: Settings | None = None,
 ) -> FastAPI:
+    resolved_settings = settings or Settings()
+
     @asynccontextmanager
     async def lifespan(application: FastAPI) -> AsyncIterator[None]:
         if service is None:
             application.state.chat_service = await asyncio.to_thread(
-                build_service, settings or Settings()
+                build_service, resolved_settings
             )
         else:
             application.state.chat_service = service
@@ -47,6 +50,13 @@ def create_app(
         version="1.0.0",
         lifespan=lifespan,
     )
+    if resolved_settings.cors_origins:
+        application.add_middleware(
+            CORSMiddleware,
+            allow_origins=list(resolved_settings.cors_origins),
+            allow_methods=["GET", "POST"],
+            allow_headers=["Content-Type"],
+        )
     if service is not None:
         application.state.chat_service = service
 

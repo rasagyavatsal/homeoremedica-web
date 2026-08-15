@@ -47,6 +47,7 @@ Useful commands:
 | `npm run rag:sync` | Download and verify the active RAG corpus. |
 | `npm run rag:chat` | Start an interactive grounded chat in the terminal. |
 | `npm run rag:serve` | Serve the Python chat API at `http://127.0.0.1:8000`. |
+| `npm run rag:deploy` | Deploy the Python chat API to Cloud Run in `homeoremedica`. |
 | `npm run deploy-dev` | Deploy the app to the development App Hosting backend. |
 | `npm run deploy-prod` | Deploy the app to the production App Hosting backend. |
 | `npm run deploy-prod-preview` | Deploy the app to the isolated preview backend in the production Firebase project. |
@@ -81,6 +82,11 @@ curl -s http://127.0.0.1:8000/v1/chat \
 Use `npm run rag -- --cached chat` to skip the Cloud Storage active-release check. The API contract,
 configuration, safety boundary, and current cost estimate are documented in
 [`rag/README.md`](rag/README.md).
+
+The deployed backend is available at
+<https://homeoremedica-chat-619837289655.us-central1.run.app>. Its `/health`, `/v1/chat`, and
+`/docs` endpoints use the same contract as the local server. Run `npm run rag:deploy` to rebuild
+and update it from `rag/Dockerfile`.
 
 ## Production rollout and security
 

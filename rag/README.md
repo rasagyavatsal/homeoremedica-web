@@ -70,6 +70,7 @@ Settings use the `RAG_` prefix. Defaults target the required GCP project and act
 | `RAG_CACHE_DIR` | `server-data/rag-corpus` |
 | `RAG_MODEL` | `gemini-2.5-flash-lite` |
 | `RAG_MAX_OUTPUT_TOKENS` | `700` |
+| `RAG_ALLOWED_ORIGINS` | empty (comma-separated browser origins) |
 
 Application Default Credentials need Storage object-viewer access to the private bucket and
 Vertex AI prediction access in `homeoremedica`.
@@ -92,3 +93,28 @@ Pricing checked on 2026-08-15 against the official
 
 Actual cost varies with conversation and excerpt length. No GCP resources are created by these
 commands; only Storage reads and Vertex AI inference are used.
+
+## Cloud Run deployment
+
+`npm run rag:deploy` deploys the service to `homeoremedica` in `us-central1`. The script creates a
+dedicated runtime service account when needed, grants it object-viewer access only on the private
+corpus bucket and Vertex AI user access on the project, then deploys `rag/Dockerfile` from source.
+The API is public so a browser frontend can call it; CORS is restricted to the production and
+preview App Hosting origins.
+
+The service uses request-based billing with 1 vCPU, 512 MiB memory, zero minimum instances, one
+maximum instance, concurrency 20, and a 120-second request timeout. Pricing checked on 2026-08-16
+against the official [Cloud Run pricing](https://cloud.google.com/run/pricing),
+[Cloud Build pricing](https://cloud.google.com/build/pricing), and
+[Artifact Registry pricing](https://cloud.google.com/artifact-registry/pricing) pages:
+
+- Expected development and preview traffic should cost **$0 for Cloud Run** within its monthly
+  180,000 vCPU-second, 360,000 GiB-second, and two-million-request free tiers. Vertex AI chat costs
+  remain usage-based as estimated above.
+- A source build should remain within Cloud Build's 2,500 free build-minutes per billing account.
+  Artifact Registry includes 0.5 GiB-month of free image storage; the deployed image is about
+  96.6 MiB.
+- Beyond the Cloud Run free tier, `us-central1` request-based rates are $0.000024 per active
+  vCPU-second, $0.0000025 per active GiB-second, and $0.40 per million requests. With the configured
+  one-instance cap, a continuously busy 30-day month would be about **$60.23** for CPU and memory
+  before request, network, Storage, and Vertex AI charges. Normal scale-to-zero usage is far lower.
