@@ -1,19 +1,14 @@
 import { ApiClient } from '@/lib/api/base-client';
 import { getAppCheckToken } from '@/lib/app-check/client';
-import type { BookId, SearchResult } from '@/types';
+import type { ChatRequest, ChatResponse } from '@/lib/types/chat';
 
 class WebApiClient extends ApiClient {
-  // Search remedies (used by search-store.ts) — web-only
-  async searchRemedies(symptoms: string[], book: BookId): Promise<SearchResult[]> {
-    return this.request<SearchResult[]>('/remedies/search', {
+  // Grounded chat (used by chat-client.tsx) — web-only
+  async sendChatMessage(request: ChatRequest): Promise<ChatResponse> {
+    return this.request<ChatResponse>('/chat', {
       method: 'POST',
-      body: JSON.stringify({ symptoms, book }),
+      body: JSON.stringify(request),
     });
-  }
-
-  // Search symptoms (used by unified-symptom-search.tsx) — web-only
-  async searchSymptoms(query: string, book: BookId, limit: number, offset: number): Promise<{ results: any[], total: number }> {
-    return this.request<{ results: any[], total: number }>(`/symptoms/search?query=${encodeURIComponent(query)}&book=${encodeURIComponent(book)}&limit=${limit}&offset=${offset}`);
   }
 }
 

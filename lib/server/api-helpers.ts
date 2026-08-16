@@ -17,6 +17,8 @@ export function getErrorStatus(error: ApiError): number {
       return 404;
     case 'INVALID_INPUT':
       return 400;
+    case 'UPSTREAM_UNAVAILABLE':
+      return 502;
     default:
       return 500;
   }

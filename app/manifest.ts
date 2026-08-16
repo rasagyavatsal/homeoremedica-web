@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: 'HomeoRemedica - Homoeopathic Remedy Finder',
     short_name: 'HomeoRemedica',
-    description: 'A calm, focused homoeopathic remedy finder for searching classical materia medica by symptom.',
+    description: 'A calm, focused homoeopathic reference chat over classical materia medica, with every answer grounded in cited source passages.',
     start_url: '/',
     display: 'standalone',
     background_color: themeConfig.light.backgroundColor,
@@ -40,10 +40,10 @@ export default function manifest(): MetadataRoute.Manifest {
     ] as any,
     shortcuts: [
       {
-        name: 'Find Remedy',
-        short_name: 'Find',
-        description: 'Search symptoms and find remedies',
-        url: '/find-remedy',
+        name: 'Chat',
+        short_name: 'Chat',
+        description: 'Ask the materia medica',
+        url: '/chat',
       }
     ] as any,
     prefer_related_applications: false,

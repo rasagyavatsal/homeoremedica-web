@@ -111,7 +111,7 @@ describe('LoginPage', () => {
     render(<LoginPage />);
 
     await waitFor(() => {
-      expect(mockReplace).toHaveBeenCalledWith('/find-remedy');
+      expect(mockReplace).toHaveBeenCalledWith('/chat');
     });
   });
 

@@ -59,7 +59,7 @@ export default function SettingsPage() {
     }
 
     if (isGoogleUser()) {
-      router.push('/find-remedy');
+      router.push('/chat');
     }
   }, [loading, router, user]);
 

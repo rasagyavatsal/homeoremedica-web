@@ -52,6 +52,6 @@ describe('useAuthRedirect', () => {
 
     renderHook(() => useAuthRedirect());
 
-    expect(mockReplace).toHaveBeenCalledWith('/find-remedy');
+    expect(mockReplace).toHaveBeenCalledWith('/chat');
   });
 });

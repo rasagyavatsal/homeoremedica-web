@@ -13,6 +13,6 @@ export function useAuthRedirect() {
   useEffect(() => {
     if (loading) return;
     if (!user) return;
-    router.replace('/find-remedy');
+    router.replace('/chat');
   }, [loading, user, router]);
 }

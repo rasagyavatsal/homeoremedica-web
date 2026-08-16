@@ -2,10 +2,10 @@ import { describe, expect, it } from 'vitest';
 
 import { metadata as rootMetadata } from '../layout';
 import { metadata as homeMetadata } from '../page';
-import { metadata as finderMetadata } from '../find-remedy/page';
+import { metadata as chatMetadata } from '../chat/page';
 
 const ROOT_DESCRIPTION =
-  'A calm, focused homoeopathic remedy finder for searching classical materia medica by symptom.';
+  'A calm, focused homoeopathic reference chat over classical materia medica, with every answer grounded in cited source passages.';
 
 describe('metadata positioning copy', () => {
   it('positions the product as a calm homoeopathic reference tool', () => {
@@ -19,11 +19,11 @@ describe('metadata positioning copy', () => {
     expect(rootMetadata.openGraph?.description).toBe(ROOT_DESCRIPTION);
   });
 
-  it('gives the landing page and finder distinct canonical URLs', () => {
+  it('gives the landing page and chat distinct canonical URLs', () => {
     expect(homeMetadata.alternates?.canonical).toBe('/');
     expect(homeMetadata.title).toBe('HomeoRemedica - Homeopathic Remedy Finder');
-    expect(finderMetadata.alternates?.canonical).toBe('/find-remedy');
-    expect(finderMetadata.title).toBe('Find a homoeopathic remedy');
+    expect(chatMetadata.alternates?.canonical).toBe('/chat');
+    expect(chatMetadata.title).toBe('Chat with the materia medica');
   });
 
   it('provides theme-aware browser icons from the new logo set', () => {

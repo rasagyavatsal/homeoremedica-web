@@ -35,7 +35,7 @@ export default function LoginPage() {
 
     try {
       await signIn(email, password);
-      router.push('/find-remedy');
+      router.push('/chat');
     } catch (err: any) {
       console.error('Login error:', err);
       setError(getEmailSignInErrorMessage(err));

@@ -29,7 +29,7 @@ export default function NotFound() {
 
           <div className="flex flex-wrap items-center justify-center gap-3">
             <Button asChild>
-              <Link href="/find-remedy">Open symptom finder</Link>
+              <Link href="/chat">Open chat</Link>
             </Button>
           </div>
         </div>

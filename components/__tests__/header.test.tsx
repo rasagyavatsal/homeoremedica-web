@@ -83,8 +83,8 @@ describe('Header', () => {
       </ThemeProvider>,
     );
 
-    const findRemedyLinks = screen.getAllByRole('link', { name: /find remedy/i });
-    expect(findRemedyLinks[0].className).toContain('min-h-touch');
+    const chatLinks = screen.getAllByRole('link', { name: /chat/i });
+    expect(chatLinks[0].className).toContain('min-h-touch');
 
     const themeToggle = screen.getByRole('button', { name: /switch to/i });
     expect(themeToggle.className).toContain('h-control-sm');
