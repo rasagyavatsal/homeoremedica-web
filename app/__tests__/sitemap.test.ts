@@ -16,10 +16,10 @@ describe('sitemap', () => {
     expect(urls.some((url) => url.includes('/remedy/'))).toBe(false);
   });
 
-  it('includes the dedicated finder route', () => {
+  it('includes the dedicated chat route', () => {
     const urls = sitemap().map((entry) => entry.url);
 
-    expect(urls).toContain('https://homeoremedica.com/find-remedy');
+    expect(urls).toContain('https://homeoremedica.com/chat');
   });
 
   it('includes both legal pages', () => {

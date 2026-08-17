@@ -22,7 +22,7 @@ describe('Footer', () => {
 
   it('renders footer navigation links', () => {
     render(<Footer />);
-    expect(screen.getByRole('link', { name: 'Find Remedy' })).toBeDefined();
+    expect(screen.getByRole('link', { name: 'Chat' })).toBeDefined();
     expect(screen.queryByRole('link', { name: 'Remedies' })).toBeNull();
     expect(screen.getByRole('link', { name: 'Android App' })).toBeDefined();
     expect(screen.getByRole('link', { name: 'Privacy' })).toBeDefined();
@@ -54,12 +54,12 @@ describe('Footer', () => {
   });
   it('uses tokenized touch sizing and spacing for footer links', () => {
     render(<Footer />);
-    const findRemedyLink = screen.getByRole('link', { name: 'Find Remedy' });
-    
-    expect(findRemedyLink.className).toContain('min-h-touch');
-    expect(findRemedyLink.className).toContain('px-1.5');
+    const chatLink = screen.getByRole('link', { name: 'Chat' });
+
+    expect(chatLink.className).toContain('min-h-touch');
+    expect(chatLink.className).toContain('px-1.5');
     // Should offset the padding to maintain layout alignment
-    expect(findRemedyLink.className).toContain('-mx-1.5');
-    expect(findRemedyLink.className).toContain('focus-visible:outline-none');
+    expect(chatLink.className).toContain('-mx-1.5');
+    expect(chatLink.className).toContain('focus-visible:outline-none');
   });
 });

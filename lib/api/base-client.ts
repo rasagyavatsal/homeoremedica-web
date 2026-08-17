@@ -1,6 +1,3 @@
-import type { FindRemedyResponse } from '@/types';
-import { createCaseSchema, findRemedySchema, type FindRemedyRequest, updateCaseSchema } from '@/lib/validation/schemas';
-
 function parseResponseBody(text: string) {
   const trimmedText = text.trim();
 
@@ -41,7 +38,7 @@ export class ApiClient {
   }
 
   protected async request<T>(
-    endpoint: string, 
+    endpoint: string,
     options: RequestInit = {}
   ): Promise<T> {
     const url = `${this.baseUrl}${endpoint}`;
@@ -83,42 +80,6 @@ export class ApiClient {
     return this.request('/auth/session', {
       method: 'POST',
       body: name ? JSON.stringify({ name }) : undefined,
-    });
-  }
-
-  // Find remedies with zod validation
-  async findRemedies(request: FindRemedyRequest): Promise<FindRemedyResponse> {
-    const validated = findRemedySchema.parse(request);
-    return this.request<FindRemedyResponse>('/find', {
-      method: 'POST',
-      body: JSON.stringify(validated),
-    });
-  }
-
-  // Cases endpoints
-  async getCases(): Promise<{ cases: any[]; retiredCaseCount: number }> {
-    return this.request<{ cases: any[]; retiredCaseCount: number }>('/cases');
-  }
-
-  async createCase(caseData: any): Promise<any> {
-    const validated = createCaseSchema.parse(caseData);
-    return this.request('/cases', {
-      method: 'POST',
-      body: JSON.stringify(validated),
-    });
-  }
-
-  async updateCase(id: string, updates: any): Promise<any> {
-    const validated = updateCaseSchema.parse(updates);
-    return this.request(`/cases/${id}`, {
-      method: 'PATCH',
-      body: JSON.stringify(validated),
-    });
-  }
-
-  async deleteCase(id: string): Promise<{ success: boolean }> {
-    return this.request<{ success: boolean }>(`/cases/${id}`, {
-      method: 'DELETE',
     });
   }
 }

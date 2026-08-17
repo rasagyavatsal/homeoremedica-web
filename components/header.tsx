@@ -57,7 +57,7 @@ export function Header() {
     }
   };
 
-  const isFinder = pathname === '/find-remedy';
+  const isChat = pathname === '/chat';
   const usesGoogleProvider = user ? isGoogleUser() : false;
 
   return (
@@ -70,7 +70,7 @@ export function Header() {
             </Link>
 
             <nav className="hidden items-center gap-1 lg:flex" aria-label="Primary">
-              <NavLink href="/find-remedy" active={isFinder}>Find remedy</NavLink>
+              <NavLink href="/chat" active={isChat}>Chat</NavLink>
               <NavLink href={PLAY_STORE_URL} target="_blank" rel="noopener noreferrer">Android app</NavLink>
             </nav>
 
@@ -132,7 +132,7 @@ export function Header() {
             <MotionSection className="border-t border-border bg-background lg:hidden">
               <div className="grid gap-6 px-4 py-5 sm:px-6 lg:px-8">
                 <nav className="grid" aria-label="Primary mobile">
-                  <MenuLink href="/find-remedy">Find remedy</MenuLink>
+                  <MenuLink href="/chat">Chat</MenuLink>
                   <MenuLink href={PLAY_STORE_URL} external>Android app</MenuLink>
                   <MenuLink href="/terms">Terms</MenuLink>
                   <MenuLink href="/privacy">Privacy</MenuLink>

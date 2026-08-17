@@ -23,7 +23,7 @@ vi.mock('@/components/footer', () => ({
 }));
 
 describe('HomePage', () => {
-  it('introduces the product and sends the primary action to the dedicated finder', () => {
+  it('introduces the product and sends the primary action to the chat', () => {
     render(<HomePage />);
 
     expect(
@@ -32,9 +32,9 @@ describe('HomePage', () => {
         name: 'Homeopathic Remedy Finder for Doctors',
       }),
     ).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Find a remedy' })).toHaveAttribute(
+    expect(screen.getAllByRole('link', { name: 'Open chat' })[0]).toHaveAttribute(
       'href',
-      '/find-remedy',
+      '/chat',
     );
     expect(screen.getByRole('link', { name: 'Android app' })).toHaveAttribute(
       'href',
@@ -44,7 +44,7 @@ describe('HomePage', () => {
     expect(screen.getByRole('region', { name: 'Classical sources' })).toBeInTheDocument();
     expect(screen.queryByTestId('symptom-search')).not.toBeInTheDocument();
     expect(
-      screen.getByText('Search by symptom. Choose the closest matches. Compare the remedies.'),
+      screen.getByText('Ask about a remedy or symptom. Every answer cites the passages it comes from.'),
     ).toBeInTheDocument();
 
     const hero = screen.getByRole('heading', { level: 1 }).parentElement!;
@@ -100,10 +100,10 @@ describe('HomePage', () => {
     expect(screen.queryByText('Search')).not.toBeInTheDocument();
     const booksHeading = screen.getByRole('heading', {
       level: 2,
-      name: 'Four books. One place to search.',
+      name: 'Four books. Every answer cited.',
     });
     const booksCopy = screen.getByText(
-      'Choose a book before you search. The results will only include symptoms and remedies from that book. Each book uses different wording. If a search does not return a useful result, try the same symptom in another book.',
+      'Each answer is grounded in passages from these books, listed under the answer with their book, remedy, and section. The books use different wording, so the same question can surface different voices.',
     );
 
     expect(booksHeading.nextElementSibling).toBe(booksCopy);
@@ -134,81 +134,51 @@ describe('HomePage', () => {
     });
   });
 
-  it('explains keyword searching between the hero and classical sources', () => {
+  it('shows example questions between the hero and classical sources', () => {
     render(<HomePage />);
 
-    const howToSearch = screen.getByRole('region', {
+    const howToAsk = screen.getByRole('region', {
       name: 'How it works',
     });
     const classicalSources = screen.getByRole('region', { name: 'Classical sources' });
     const heroHeading = screen.getByRole('heading', { level: 1 });
 
-    expect(howToSearch).toContainElement(
-      screen.getByRole('heading', { level: 2, name: 'How it works' }),
-    );
     const heading = screen.getByRole('heading', { level: 2, name: 'How it works' });
     const supportingCopy = screen.getByText(
-      'Use a few distinct keywords rather than a full sentence.',
+      'Ask in plain language. Full sentences work here.',
     );
 
+    expect(howToAsk).toContainElement(heading);
     expect(heading.nextElementSibling).toBe(supportingCopy);
     expect(heading.parentElement).not.toHaveClass('grid');
-    expect(howToSearch).toHaveClass('border-y');
-    expect(heading).not.toHaveClass('max-w-2xl');
+    expect(howToAsk).toHaveClass('border-y');
     expect(supportingCopy).toHaveClass('mt-5');
-    expect(howToSearch).toHaveTextContent('itching at night in bed');
-    expect(howToSearch).toHaveTextContent('itching bed night');
-    expect(howToSearch).toHaveTextContent('pain in the molar tooth aggravated by touching the cheek');
-    expect(howToSearch).toHaveTextContent('toothache cheeks');
-    expect(screen.getAllByText('Full sentence')).toHaveLength(2);
-    expect(screen.getAllByText('Search words')).toHaveLength(2);
-    expect(howToSearch).toHaveTextContent(
-      'The order of the words is not important. Type them in whichever order they come to mind.',
+    expect(howToAsk).toHaveTextContent('How does Kent describe the temper of Nux vomica?');
+    expect(howToAsk).toHaveTextContent('Which remedies does Clarke list for sleeplessness?');
+    expect(screen.getAllByText(/^Example 0[12]$/)).toHaveLength(2);
+    expect(howToAsk).toHaveTextContent(
+      'Answers draw only from the four source books and cite the passages used.',
     );
-    expect(howToSearch).toHaveTextContent(
-      'A book may describe the same symptom in more than one way. Select each result that matches what you mean.',
+    expect(howToAsk).toHaveTextContent(
+      'Follow-up questions keep the thread, so a remedy can be narrowed step by step.',
     );
-    expect(howToSearch).toHaveTextContent(
-      'If a symptom does not appear, break it into smaller symptoms and search them separately.',
+    expect(howToAsk).toHaveTextContent(
+      'The books are historical reference, not medical advice.',
     );
-    expect(howToSearch).not.toHaveTextContent('Order doesn’t matter');
-    expect(howToSearch).not.toHaveTextContent('Select every close match');
-    expect(howToSearch).not.toHaveTextContent('Break complex symptoms apart');
-    expect(heroHeading.compareDocumentPosition(howToSearch)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
-    expect(howToSearch.compareDocumentPosition(classicalSources)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(howToAsk).not.toHaveTextContent('Search words');
+    expect(howToAsk).not.toHaveTextContent('itching bed night');
+    expect(heroHeading.compareDocumentPosition(howToAsk)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(howToAsk.compareDocumentPosition(classicalSources)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
   });
 
-  it('explains the saved-case workflow without an embedded preview', () => {
+  it('ends the classical sources with a chat call to action', () => {
     render(<HomePage />);
 
-    const casesSection = screen.getByRole('region', { name: 'Saved cases' });
+    expect(screen.queryByRole('region', { name: 'Saved cases' })).not.toBeInTheDocument();
+    const chatLinks = screen.getAllByRole('link', { name: 'Open chat' });
 
-    const casesHeading = screen.getByRole('heading', {
-      level: 2,
-      name: 'Save cases. Pick up where you left off.',
-    });
-    const casesCopy = casesHeading.nextElementSibling;
-
-    expect(casesSection).toContainElement(casesHeading);
-    expect(casesHeading.parentElement).not.toHaveClass('grid');
-    expect(casesCopy).toHaveClass('mt-5');
-    expect(casesCopy).toHaveTextContent(
-      'Sign in to save a named snapshot of the source book and symptoms selected in your current search.',
-    );
-    expect(casesSection).toHaveTextContent(
-      'Each case stores its name, the source book used for the search, and the symptoms you selected.',
-    );
-    expect(casesSection).toHaveTextContent(
-      'The list shows the save date, source, and symptom count for each case. You can also delete cases you no longer need.',
-    );
-    expect(casesSection).toHaveTextContent(
-      'Opening a case restores its source and selected symptoms. Remedy matches are then recalculated from that symptom set.',
-    );
-    expect(screen.queryByRole('region', { name: 'Saved cases preview' })).not.toBeInTheDocument();
-    expect(screen.queryByText('Give the case your full attention.')).not.toBeInTheDocument();
-    const findRemedyLink = screen.getByRole('link', { name: 'Find Remedy' });
-
-    expect(findRemedyLink).toHaveAttribute('href', '/find-remedy');
-    expect(findRemedyLink.parentElement).toHaveClass('justify-center');
+    expect(chatLinks).toHaveLength(2);
+    chatLinks.forEach((link) => expect(link).toHaveAttribute('href', '/chat'));
+    expect(chatLinks[1].parentElement).toHaveClass('justify-center');
   });
 });

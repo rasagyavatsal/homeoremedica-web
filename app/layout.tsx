@@ -7,7 +7,7 @@ import { themeConfig } from '@/lib/theme-config'
 import { getSiteUrl } from '@/lib/seo/site-url'
 
 const SITE_NAME = 'HomeoRemedica'
-const SITE_DESCRIPTION = 'A calm, focused homoeopathic remedy finder for searching classical materia medica by symptom.'
+const SITE_DESCRIPTION = 'A calm, focused homoeopathic reference chat over classical materia medica, with every answer grounded in cited source passages.'
 
 const SITE_URL = getSiteUrl()
 const SOCIAL_IMAGE_URL = new URL('/og.png', SITE_URL).toString()
@@ -98,7 +98,7 @@ export default function RootLayout({
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: SITE_NAME,
-    url: `${SITE_URL.origin}/find-remedy`,
+    url: `${SITE_URL.origin}/chat`,
     logo: `${SITE_URL.origin}/logo/logo-light.png`,
   }
 

@@ -54,12 +54,13 @@ Useful commands:
 
 ## RAG chat backend
 
-The Python service in [`rag/`](rag/) is the testable backend for chat before a frontend is added.
+The Python service in [`rag/`](rag/) is the grounded chat backend behind the website's `/chat` page.
 It reads the immutable active corpus from the private `homeoremedica` Cloud Storage bucket,
 verifies every pinned generation, byte size, SHA-256 digest, schema, and artifact metadata field,
 then caches the four SQLite books under ignored `server-data/`. Retrieval stays local: each query
 combines Porter-stemmed FTS5 and `sqlite-vec` cosine rankings, and Gemini receives only the top
-versioned excerpts. Responses include structured source records that the future UI can render.
+versioned excerpts. Responses include structured source records that the chat UI renders as cited
+passages.
 
 Authenticate with Application Default Credentials, sync once, and chat:
 
@@ -127,6 +128,7 @@ The API surface used by the clients is:
 
 | Route | Access | Purpose |
 | --- | --- | --- |
+| `POST /api/chat` | Public | Proxy a grounded chat turn to the RAG backend. |
 | `GET /api/symptoms/search` | Public | Search symptom text within one book. |
 | `POST /api/find` | Public | Rank remedies matching selected symptoms. |
 | `POST /api/remedies/search` | Public | Return the web client's detailed remedy search results. |

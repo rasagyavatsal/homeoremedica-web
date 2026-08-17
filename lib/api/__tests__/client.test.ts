@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { apiClient } from '../client';
 
 // Use vi.spyOn to mock the request method
@@ -14,27 +14,17 @@ describe('WebApiClient', () => {
     vi.restoreAllMocks();
   });
 
-  it('should call searchRemedies with correct parameters', async () => {
-    const symptoms = ['itching', 'fever'];
-    const book = 'boericke-MM';
-    
-    await apiClient.searchRemedies(symptoms, book);
+  it('should call sendChatMessage with the chat endpoint and payload', async () => {
+    const request = {
+      message: 'How is Nux vomica described?',
+      history: [{ role: 'user' as const, content: 'Earlier question' }],
+    };
 
-    expect(requestSpy).toHaveBeenCalledWith('/remedies/search', {
+    await apiClient.sendChatMessage(request);
+
+    expect(requestSpy).toHaveBeenCalledWith('/chat', {
       method: 'POST',
-      body: JSON.stringify({ symptoms, book }),
+      body: JSON.stringify(request),
     });
-  });
-
-  it('should call searchSymptoms with correct parameters and URL encoding', async () => {
-    const query = 'itching & burning';
-    const book = 'clarke-MM';
-    const limit = 50;
-    const offset = 10;
-    
-    await apiClient.searchSymptoms(query, book, limit, offset);
-
-    const expectedUrl = `/symptoms/search?query=${encodeURIComponent(query)}&book=${book}&limit=${limit}&offset=${offset}`;
-    expect(requestSpy).toHaveBeenCalledWith(expectedUrl);
   });
 });
