@@ -15,7 +15,7 @@ const SOCIAL_IMAGE_URL = new URL('/og.png', SITE_URL).toString()
 export const metadata: Metadata = {
   metadataBase: SITE_URL,
   title: {
-    default: 'HomeoRemedica — Homoeopathic Remedy Finder',
+    default: 'HomeoRemedica — Homoeopathic Reference Chat',
     template: `%s | ${SITE_NAME}`,
   },
   description: SITE_DESCRIPTION,
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     siteName: SITE_NAME,
-    title: 'HomeoRemedica — Homoeopathic Remedy Finder',
+    title: 'HomeoRemedica — Homoeopathic Reference Chat',
     description: SITE_DESCRIPTION,
     url: '/',
     images: [
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'HomeoRemedica — Homoeopathic Remedy Finder',
+    title: 'HomeoRemedica — Homoeopathic Reference Chat',
     description: SITE_DESCRIPTION,
     images: [SOCIAL_IMAGE_URL],
   },

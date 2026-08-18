@@ -35,18 +35,11 @@ const sections = [
           </p>
         </div>
         <div>
-          <h3 className="font-semibold text-foreground">Search information</h3>
+          <h3 className="font-semibold text-foreground">Chat information</h3>
           <p>
-            The source you choose, symptom queries you type, and symptoms you select are sent
-            to the HomeoRemedica server to return symptom and remedy matches. This information
-            may reveal health concerns, even if you do not save a case.
-          </p>
-        </div>
-        <div>
-          <h3 className="font-semibold text-foreground">Saved cases</h3>
-          <p>
-            If you choose to save a case, we store its name or title, optional notes, selected
-            source, symptoms, remedy results, and creation or update times with your account.
+            Questions you type in the chat are sent to the HomeoRemedica server and the chat
+            service to return an answer grounded in the source books. This information may reveal
+            health concerns.
           </p>
         </div>
         <div>
@@ -67,13 +60,12 @@ const sections = [
     content: (
       <>
         <p>
-          When you submit a symptom search or save a case, you ask us to process that information
-          for the requested feature. We use information to:
+          When you submit a chat question, you ask us to process that information for the requested
+          feature. We use information to:
         </p>
         <ul className="list-disc space-y-1 pl-5">
           <li>Authenticate your account and keep it signed in.</li>
-          <li>Process symptom searches and return remedy matches.</li>
-          <li>Save, sync, update, and delete cases at your request.</li>
+          <li>Process chat questions and return answers grounded in the source books.</li>
           <li>Respond to support and privacy requests.</li>
           <li>Maintain security, prevent abuse, diagnose errors, and keep the service reliable.</li>
           <li>Comply with applicable law and valid legal requests.</li>
@@ -87,15 +79,14 @@ const sections = [
     content: (
       <>
         <p>
-          The website uses browser storage for your theme, authentication state, selected source,
-          search query, selected symptoms, and search results. The Android app uses device storage
-          to keep your Firebase sign-in state and a local account summary. Its current search
-          selection otherwise remains in app memory unless you save a case to your account.
+          The website uses browser storage for your theme, authentication state, and chat session.
+          The Android app uses device storage to keep your Firebase sign-in state and a local
+          account summary.
         </p>
         <p>
           Clearing the website&apos;s browser storage or the Android app&apos;s data removes locally
-          stored information. Signing out or uninstalling the app does not delete your account or
-          saved cases from our servers.
+          stored information. Signing out or uninstalling the app does not delete your account from
+          our servers.
         </p>
         <p>
           The website loads Google Analytics only when an analytics ID is configured. When
@@ -117,9 +108,9 @@ const sections = [
         <ul className="list-disc space-y-1 pl-5">
           <li>
             <strong>Google service providers:</strong> Firebase Authentication and Google Sign-In
-            provide account access; Cloud Firestore stores account records and saved cases; and
-            Firebase App Hosting runs the website and API. Google Analytics processes website
-            usage only when enabled.
+            provide account access; Cloud Firestore stores account records; and Firebase App
+            Hosting runs the website and API. Google Analytics processes website usage only when
+            enabled.
           </li>
           <li>
             <strong>Email provider:</strong> Our email provider processes messages you choose to
@@ -159,16 +150,15 @@ const sections = [
     content: (
       <>
         <p>
-          Account records and saved cases are kept while your account remains open. You can delete
-          individual cases in the website or app. Searches that you do not save are not added to
-          your Firestore case records, although they may remain in browser storage and limited
-          technical or security logs.
+          Account records are kept while your account remains open. Chat questions are processed to
+          produce an answer and are not added to your Firestore records, although they may remain
+          in limited technical or security logs.
         </p>
         <p>
           To delete your account and its associated data, email us from the address linked to the
           account with the subject &quot;Delete HomeoRemedica account.&quot; After verifying the request,
-          we will delete the Firebase Authentication account, HomeoRemedica account record, and
-          saved cases. We generally complete valid requests within 30 days.
+          we will delete the Firebase Authentication account and the HomeoRemedica account record.
+          We generally complete valid requests within 30 days.
         </p>
         <p>
           We retain support messages and limited technical records only as long as reasonably
@@ -184,8 +174,8 @@ const sections = [
     content: (
       <>
         <p>
-          You may use remedy search without an account. An account is required only for saved-case
-          features. You choose whether to save a case and what to include in its free-text fields.
+          You may use the chat without an account. An account is required only for account-specific
+          settings such as changing your password.
         </p>
         <p>
           You may ask to access, correct, or delete personal information we hold about you, or
@@ -202,9 +192,9 @@ const sections = [
     title: 'Information About Other People',
     content: (
       <p>
-        Case names and notes are free-text fields. Avoid entering a patient&apos;s full name or other
-        identifying details. If you submit another person&apos;s information, you are responsible for
-        having lawful authority to do so, informing them as required, and entering only what is
+        Avoid entering another person&apos;s full name or other identifying details into chat
+        questions. If you submit another person&apos;s information, you are responsible for having
+        lawful authority to do so, informing them as required, and entering only what is
         necessary.
       </p>
     ),
@@ -214,10 +204,9 @@ const sections = [
     title: 'Security',
     content: (
       <p>
-        We use production HTTPS connections, Firebase Authentication, authenticated API endpoints,
-        and per-user case storage to protect information. No system can guarantee absolute
-        security, so please use a unique password and avoid placing unnecessary identifying
-        information in searches, case names, or notes.
+        We use production HTTPS connections, Firebase Authentication, and authenticated API
+        endpoints to protect information. No system can guarantee absolute security, so please use
+        a unique password and avoid placing unnecessary identifying information in chat questions.
       </p>
     ),
   },

@@ -7,7 +7,7 @@ describe('Terms Page Metadata', () => {
   const cases = [
     {
       title: 'Terms and Conditions',
-      description: 'Read the terms governing use of the HomeoRemedica website, API, accounts, saved cases, and Android app.',
+      description: 'Read the terms governing use of the HomeoRemedica website, API, accounts, and Android app.',
       canonical: '/terms',
     },
   ];

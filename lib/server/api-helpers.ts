@@ -40,7 +40,3 @@ export function handleApiError(error: unknown, context?: string) {
     message: 'Internal server error'
   }, { status: 500 });
 }
-
-export function validateCaseId(id: string | undefined | null): id is string {
-  return typeof id === 'string' && id.trim() !== '';
-}

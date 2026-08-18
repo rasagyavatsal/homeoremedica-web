@@ -80,7 +80,7 @@ export default function SignupPage() {
     <AuthPageShell>
       <CardHeader className="space-y-1">
         <CardTitle className="text-2xl">Sign up</CardTitle>
-        <CardDescription>Save cases across devices.</CardDescription>
+        <CardDescription>Ask the materia medica, with every answer cited.</CardDescription>
       </CardHeader>
 
       <CardContent className="space-y-6">

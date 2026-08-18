@@ -7,7 +7,7 @@ const nextConfig = {
     NEXT_PUBLIC_APP_VERSION: version,
   },
   // Externalize firebase-admin - it has native dependencies
-  serverExternalPackages: ['firebase-admin', 'sqlite3'],
+  serverExternalPackages: ['firebase-admin'],
   // Performance optimizations
   compress: true,
   poweredByHeader: false,

@@ -15,18 +15,18 @@ const HOME_DESCRIPTION =
   'A calm, focused homoeopathic reference chat over classical materia medica, with every answer grounded in cited source passages.';
 
 export const metadata: Metadata = {
-  title: 'HomeoRemedica - Homeopathic Remedy Finder',
+  title: 'HomeoRemedica - Homoeopathic Reference Chat',
   description: HOME_DESCRIPTION,
   alternates: { canonical: '/' },
   openGraph: {
-    title: 'HomeoRemedica — A calmer homoeopathic remedy finder',
+    title: 'HomeoRemedica — A calmer homoeopathic reference chat',
     description: HOME_DESCRIPTION,
     url: '/',
-    images: [{ url: '/og.png', width: 1200, height: 630, alt: 'HomeoRemedica — A quieter way to find the remedy.' }],
+    images: [{ url: '/og.png', width: 1200, height: 630, alt: 'HomeoRemedica — A quieter way to study the materia medica.' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'HomeoRemedica — A calmer homoeopathic remedy finder',
+    title: 'HomeoRemedica — A calmer homoeopathic reference chat',
     description: HOME_DESCRIPTION,
     images: ['/og.png'],
   },
