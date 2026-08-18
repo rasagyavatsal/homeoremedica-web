@@ -1,5 +1,25 @@
 # Changelog
 
+## [6.0.0](https://github.com/rasagyavatsal/homeoremedica-web/compare/homeoremedica-web-v5.4.0...homeoremedica-web-v6.0.0) (2026-08-18)
+
+
+### ⚠ BREAKING CHANGES
+
+* **chat:** the /find-remedy page and web saved-case management are removed; /chat replaces the finder workflow.
+
+### Features
+
+* **chat:** replace remedy finder with grounded chat ([c84d2ae](https://github.com/rasagyavatsal/homeoremedica-web/commit/c84d2ae3b866a429b670cb6477f20d7616b248b9))
+* **rag:** add Cloud Run deployment ([7774574](https://github.com/rasagyavatsal/homeoremedica-web/commit/7774574e0daffbad1b7350d82613365940bcd018))
+* **rag:** add Cloud Run deployment ([056cea2](https://github.com/rasagyavatsal/homeoremedica-web/commit/056cea2952ef0d5aa7ec0036a99d6d664d866e05))
+* **rag:** add grounded chat backend ([c0ced4d](https://github.com/rasagyavatsal/homeoremedica-web/commit/c0ced4d36c1a7a8c7b96ae146b56ff1d83a521e8))
+* **rag:** add grounded chat backend ([1704210](https://github.com/rasagyavatsal/homeoremedica-web/commit/170421008b3871a30c1ff930c6d06f4aa02f0b31))
+
+
+### Bug Fixes
+
+* **rag:** harden Cloud Run container ([bb0ca31](https://github.com/rasagyavatsal/homeoremedica-web/commit/bb0ca3194b0e487bfac52533766ee28895d4e53e))
+
 ## [5.4.0](https://github.com/rasagyavatsal/homeoremedica-web/compare/homeoremedica-web-v5.3.2...homeoremedica-web-v5.4.0) (2026-07-29)
 
 
