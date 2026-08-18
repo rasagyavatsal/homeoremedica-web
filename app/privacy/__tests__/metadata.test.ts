@@ -6,7 +6,7 @@ describe('Privacy Page Metadata', () => {
   const cases = [
     {
       title: 'Privacy Policy - HomeoRemedica',
-      description: 'Learn how HomeoRemedica handles account, case, symptom, and usage data for the homeopathic remedy finder.',
+      description: 'Learn how HomeoRemedica handles account, chat, and usage data for the homoeopathic reference chat.',
       canonical: '/privacy',
     },
   ];

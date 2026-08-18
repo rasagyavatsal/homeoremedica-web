@@ -29,7 +29,7 @@ describe('HomePage', () => {
     expect(
       screen.getByRole('heading', {
         level: 1,
-        name: 'Homeopathic Remedy Finder for Doctors',
+        name: 'Homeopathic Reference Chat for Doctors',
       }),
     ).toBeInTheDocument();
     expect(screen.getAllByRole('link', { name: 'Open chat' })[0]).toHaveAttribute(
@@ -74,10 +74,10 @@ describe('HomePage', () => {
     expect(screen.queryByTestId('hero-audience-sizer')).not.toBeInTheDocument();
 
     act(() => vi.advanceTimersByTime(3_000));
-    expect(heading).toHaveAccessibleName('Homeopathic Remedy Finder for Practitioners');
+    expect(heading).toHaveAccessibleName('Homeopathic Reference Chat for Practitioners');
 
     act(() => vi.advanceTimersByTime(3_000));
-    expect(heading).toHaveAccessibleName('Homeopathic Remedy Finder for Students');
+    expect(heading).toHaveAccessibleName('Homeopathic Reference Chat for Students');
 
     vi.useRealTimers();
   });

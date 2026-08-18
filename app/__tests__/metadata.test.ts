@@ -14,14 +14,14 @@ describe('metadata positioning copy', () => {
       throw new Error('Expected root metadata title to be an object with default value');
     }
 
-    expect(title.default).toBe('HomeoRemedica — Homoeopathic Remedy Finder');
+    expect(title.default).toBe('HomeoRemedica — Homoeopathic Reference Chat');
     expect(rootMetadata.description).toBe(ROOT_DESCRIPTION);
     expect(rootMetadata.openGraph?.description).toBe(ROOT_DESCRIPTION);
   });
 
   it('gives the landing page and chat distinct canonical URLs', () => {
     expect(homeMetadata.alternates?.canonical).toBe('/');
-    expect(homeMetadata.title).toBe('HomeoRemedica - Homeopathic Remedy Finder');
+    expect(homeMetadata.title).toBe('HomeoRemedica - Homoeopathic Reference Chat');
     expect(chatMetadata.alternates?.canonical).toBe('/chat');
     expect(chatMetadata.title).toBe('Chat with the materia medica');
   });

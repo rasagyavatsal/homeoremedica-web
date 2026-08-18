@@ -5,13 +5,13 @@ import { PrivacyClient } from './privacy-client';
 
 export const metadata: Metadata = {
   title: 'Privacy Policy - HomeoRemedica',
-  description: 'Learn how HomeoRemedica handles account, case, symptom, and usage data for the homeopathic remedy finder.',
+  description: 'Learn how HomeoRemedica handles account, chat, and usage data for the homoeopathic reference chat.',
   alternates: {
     canonical: '/privacy',
   },
   openGraph: {
     title: 'Privacy Policy - HomeoRemedica',
-    description: 'Learn how HomeoRemedica handles account, case, symptom, and usage data for the homeopathic remedy finder.',
+    description: 'Learn how HomeoRemedica handles account, chat, and usage data for the homoeopathic reference chat.',
     url: '/privacy',
   },
 };

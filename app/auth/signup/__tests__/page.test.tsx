@@ -66,8 +66,8 @@ describe('SignupPage Header Copy Cleanup (Issue #43)', () => {
 
   it('renders concise card description', () => {
     render(<SignupPage />);
-    expect(screen.getByText('Save cases across devices.')).toBeInTheDocument();
-    expect(screen.queryByText('Create your account to save your cases.')).not.toBeInTheDocument();
+    expect(screen.getByText('Ask the materia medica, with every answer cited.')).toBeInTheDocument();
+    expect(screen.queryByText('Save cases across devices.')).not.toBeInTheDocument();
   });
 
   it('links to the terms and privacy policy', () => {

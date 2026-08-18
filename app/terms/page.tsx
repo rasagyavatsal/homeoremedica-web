@@ -4,7 +4,7 @@ import { Footer } from '@/components/footer';
 import { Header } from '@/components/header';
 import { TermsClient } from './terms-client';
 
-const description = 'Read the terms governing use of the HomeoRemedica website, API, accounts, saved cases, and Android app.';
+const description = 'Read the terms governing use of the HomeoRemedica website, API, accounts, and Android app.';
 
 export const metadata: Metadata = {
   title: 'Terms and Conditions',

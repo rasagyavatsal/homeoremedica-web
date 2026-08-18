@@ -36,7 +36,7 @@ const sections = [
           guardian must review and accept them and supervise your use of HomeoRemedica.
         </p>
         <p>
-          Remedy search does not require an account. If you create one, provide accurate
+          Using the chat does not require an account. If you create one, provide accurate
           information, keep your sign-in credentials secure, and do not share the account. You are
           responsible for activity performed through your account. Contact us promptly if you
           believe it has been accessed without permission.
@@ -55,10 +55,10 @@ const sections = [
           advice, a prescription, or emergency assistance.
         </p>
         <p>
-          Results are automated text matches between the symptoms and classical materia medica
-          source you select. They are not an individual assessment. A remedy&apos;s inclusion does not
-          establish that it is safe, effective, appropriate, or scientifically validated for any
-          person or condition.
+          Answers are generated from passages in the classical materia medica sources and cite the
+          passages they draw on. They are not an individual assessment. A remedy&apos;s inclusion does
+          not establish that it is safe, effective, appropriate, or scientifically validated for
+          any person or condition.
         </p>
         <p>
           Consult a qualified healthcare professional for medical advice, diagnosis, or treatment.
@@ -70,7 +70,7 @@ const sections = [
   },
   {
     id: 'professional-use',
-    title: 'Professional Use and Saved Cases',
+    title: 'Professional Use and Chat Content',
     content: (
       <>
         <p>
@@ -79,9 +79,9 @@ const sections = [
           does not create a practitioner-patient relationship between us and any user or patient.
         </p>
         <p>
-          You retain any rights you have in case names, notes, symptoms, and other information you
-          submit. You give us a limited permission to host, process, transmit, and display that
-          information only as needed to operate the service for you.
+          You retain any rights you have in the questions and other content you submit. You give us
+          a limited permission to host, process, transmit, and display that information only as
+          needed to operate the service for you.
         </p>
         <p>
           Submit another person&apos;s information only when you have lawful authority to do so. Avoid
@@ -145,7 +145,7 @@ const sections = [
       <>
         <p>
           We may maintain, update, add, remove, suspend, or discontinue features. We do not
-          guarantee that the service or any particular source, search result, or saved-case feature
+          guarantee that the service or any particular source or chat feature
           will always be available or free from errors.
         </p>
         <p>

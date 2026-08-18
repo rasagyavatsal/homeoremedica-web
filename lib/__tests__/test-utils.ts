@@ -13,11 +13,6 @@ export function createMockApiClient(): {
   return {
     setAuthToken: vi.fn(),
     getSession: vi.fn().mockResolvedValue({ user: { uid: 'mock-uid', email: 'mock@test.com' } }),
-    findRemedies: vi.fn().mockResolvedValue({ remedies: [], totalMatches: 0 }),
-    getCases: vi.fn().mockResolvedValue({ cases: [] }),
-    createCase: vi.fn().mockResolvedValue({ id: 'new-case-id', name: 'New Case' }),
-    updateCase: vi.fn().mockResolvedValue({ id: 'case-id', name: 'Updated Case' }),
-    deleteCase: vi.fn().mockResolvedValue({ success: true }),
   } as any;
 }
 

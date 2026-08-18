@@ -6,7 +6,7 @@ describe('Contact Page Metadata', () => {
   const cases = [
     {
       title: 'Contact Us - HomeoRemedica',
-      description: 'Contact HomeoRemedica for support, feedback, questions, or help with the homeopathic remedy finder.',
+      description: 'Contact HomeoRemedica for support, feedback, or questions about the homoeopathic reference chat.',
       canonical: '/contact',
     },
   ];

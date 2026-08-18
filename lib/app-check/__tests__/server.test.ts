@@ -15,7 +15,7 @@ import { checkAppCheck } from '../server';
 function createRequest(token?: string) {
   const headers = new Headers();
   if (token) headers.set('x-firebase-appcheck', token);
-  return new NextRequest('http://localhost:3000/api/find', {
+  return new NextRequest('http://localhost:3000/api/chat', {
     method: 'POST',
     headers,
   });
@@ -49,7 +49,7 @@ describe('checkAppCheck', () => {
 
     await expect(checkAppCheck(createRequest())).resolves.toBe('missing');
     expect(warn).toHaveBeenCalledWith(
-      '[App Check] missing token for POST /api/find'
+      '[App Check] missing token for POST /api/chat'
     );
   });
 
@@ -62,7 +62,7 @@ describe('checkAppCheck', () => {
       'invalid'
     );
     expect(warn).toHaveBeenCalledWith(
-      '[App Check] invalid token for POST /api/find'
+      '[App Check] invalid token for POST /api/chat'
     );
   });
 

@@ -3,7 +3,7 @@ import { themeConfig } from '@/lib/theme-config'
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'HomeoRemedica - Homoeopathic Remedy Finder',
+    name: 'HomeoRemedica - Homoeopathic Reference Chat',
     short_name: 'HomeoRemedica',
     description: 'A calm, focused homoeopathic reference chat over classical materia medica, with every answer grounded in cited source passages.',
     start_url: '/',

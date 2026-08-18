@@ -10,7 +10,7 @@ describe('robots.txt metadata route', () => {
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['/api/', '/auth/', '/settings', '/cases'],
+        disallow: ['/api/', '/auth/', '/settings'],
       },
     ]);
   });

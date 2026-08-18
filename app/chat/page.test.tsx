@@ -14,7 +14,7 @@ describe('ChatPage', () => {
 
     expect(screen.getByTestId('chat-workspace')).toBeInTheDocument();
     expect(
-      screen.queryByRole('heading', { name: 'A quieter way to find the remedy.' }),
+      screen.queryByRole('heading', { name: 'A quieter way to study the materia medica.' }),
     ).not.toBeInTheDocument();
   });
 });

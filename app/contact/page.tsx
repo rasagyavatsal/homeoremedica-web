@@ -5,13 +5,13 @@ import { ContactClient } from './contact-client';
 
 export const metadata: Metadata = {
   title: 'Contact Us - HomeoRemedica',
-  description: 'Contact HomeoRemedica for support, feedback, questions, or help with the homeopathic remedy finder.',
+  description: 'Contact HomeoRemedica for support, feedback, or questions about the homoeopathic reference chat.',
   alternates: {
     canonical: '/contact',
   },
   openGraph: {
     title: 'Contact Us - HomeoRemedica',
-    description: 'Contact HomeoRemedica for support, feedback, questions, or help with the homeopathic remedy finder.',
+    description: 'Contact HomeoRemedica for support, feedback, or questions about the homoeopathic reference chat.',
     url: '/contact',
   },
 };
