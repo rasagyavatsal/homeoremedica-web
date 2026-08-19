@@ -32,11 +32,13 @@ describe('Control System', () => {
   });
 
   it('supports shape variants', () => {
+    // Short controls collapse to the pill radius so generous curves never
+    // collide on the same edge; every shape resolves to the full token.
     const smShape = controlVariants({ shape: 'sm' });
-    expect(smShape).toContain('rounded-sm');
+    expect(smShape).toContain('rounded-full');
 
     const defaultShape = controlVariants({ shape: 'default' });
-    expect(defaultShape).toContain('rounded-md');
+    expect(defaultShape).toContain('rounded-full');
 
     const fullShape = controlVariants({ shape: 'full' });
     expect(fullShape).toContain('rounded-full');

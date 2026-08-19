@@ -28,7 +28,7 @@ describe('Overlay System', () => {
     const dialog = overlayVariants({ variant: 'dialog' });
     expect(dialog).toContain('fixed');
     expect(dialog).toContain('overlay-dialog-position');
-    expect(dialog).toContain('rounded-xl');
+    expect(dialog).toContain('rounded-2xl');
     expect(dialog).toContain('motion-overlay-surface');
   });
 
@@ -36,16 +36,16 @@ describe('Overlay System', () => {
     const sheet = overlayVariants({ variant: 'sheet' });
     expect(sheet).toContain('overlay-sheet-position');
     expect(sheet).toContain('bottom-0');
-    expect(sheet).toContain('rounded-t-xl');
+    expect(sheet).toContain('rounded-t-2xl');
     expect(sheet).toContain('motion-overlay-sheet');
   });
 
   it('supports popovers and dropdowns', () => {
     const popover = overlayVariants({ variant: 'popover' });
     const dropdown = overlayVariants({ variant: 'dropdown' });
-    expect(popover).toContain('rounded-lg');
+    expect(popover).toContain('rounded-xl');
     expect(popover).toContain('p-4');
-    expect(dropdown).toContain('rounded-lg');
+    expect(dropdown).toContain('rounded-xl');
     expect(dropdown).toContain('min-w-48');
     expect(dropdown).toContain('motion-overlay-popover');
   });
@@ -54,7 +54,7 @@ describe('Overlay System', () => {
     const dialog = overlayVariants({ variant: 'responsiveDialog' });
     expect(dialog).toContain('overlay-responsive-position');
     expect(dialog).toContain('bottom-0');
-    expect(dialog).toContain('sm:rounded-xl');
+    expect(dialog).toContain('sm:rounded-2xl');
     expect(overlayRecipes.picker.viewport).toContain('overlay-picker-viewport');
   });
 });

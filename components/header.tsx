@@ -141,7 +141,7 @@ export function Header() {
 
                 {user ? (
                   <div className="grid gap-2 pb-2">
-                    <div className="rounded-lg bg-surface-container-low p-4">
+                    <div className="rounded-xl bg-surface-container-low p-4">
                       <p className="text-sm font-medium">{user.displayName || 'Account'}</p>
                       <p className="truncate text-xs text-on-surface-variant">{user.email}</p>
                     </div>

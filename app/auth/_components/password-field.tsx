@@ -60,7 +60,7 @@ export function PasswordField({
         <button
           type="button"
           onClick={() => setShowPassword((prev) => !prev)}
-          className={`absolute right-1 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-md text-on-surface-variant transition-colors hover:text-foreground ${motionClassNames.press}`}
+          className={`absolute right-1 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full text-on-surface-variant transition-colors hover:text-foreground ${motionClassNames.press}`}
           aria-label={showPassword ? 'Hide password' : 'Show password'}
         >
           {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
