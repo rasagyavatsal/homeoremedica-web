@@ -52,7 +52,7 @@ function ChatSources({ sources }: Readonly<{ sources: ChatSource[] }>) {
       </Button>
 
       {open ? (
-        <ol className="mt-2 overflow-hidden rounded-xl border border-border bg-card">
+        <ol className="mt-2 overflow-hidden rounded-2xl border border-border bg-card">
           {sources.map((source, index) => (
             <li key={source.id} className="border-b border-border p-4 last:border-b-0 md:p-5">
               <div className="flex items-baseline gap-3">
@@ -81,7 +81,7 @@ function ChatMessageView({ message }: Readonly<{ message: ChatMessage }>) {
   if (message.role === 'user') {
     return (
       <div className="flex justify-end">
-        <p className="w-fit max-w-dialog whitespace-pre-wrap rounded-xl border border-border bg-card px-4 py-3 text-sm leading-relaxed text-foreground">
+        <p className="w-fit max-w-dialog whitespace-pre-wrap rounded-full border border-border bg-card px-4 py-3 text-sm leading-relaxed text-foreground">
           {message.content}
         </p>
       </div>
@@ -186,7 +186,7 @@ export function ChatComposer({
         <form
           onSubmit={handleSubmit}
           className={cn(
-            'rounded-xl border border-border bg-background/90 shadow-soft backdrop-blur-lg focus-within:border-primary',
+            'rounded-full border border-border bg-background/90 shadow-soft backdrop-blur-lg focus-within:border-primary',
             motionClassNames.surface,
           )}
         >

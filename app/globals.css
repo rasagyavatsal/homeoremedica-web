@@ -132,11 +132,15 @@
     --aspect-preview-desktop: 16 / 10;
     --aspect-preview-mobile: 9 / 16;
 
-    /* Shape, depth, and stroke tokens */
-    --radius: 0.875rem;
-    --radius-sm: 0.625rem;
-    --radius-lg: 1.25rem;
-    --radius-xl: 1.75rem;
+    /* Shape, depth, and stroke tokens.
+       Radii stay generous so every surface reads highly curved; short
+       elements collapse to the pill radius (--radius-full) instead of
+       letting two curves collide on the same edge. */
+    --radius: 1.5rem;
+    --radius-sm: 0.875rem;
+    --radius-lg: 1.75rem;
+    --radius-xl: 2rem;
+    --radius-2xl: 2.5rem;
     --radius-full: 9999px;
     --stroke-hairline: 1px;
     --stroke-strong: 2px;
@@ -359,7 +363,7 @@
   }
 
   .quiet-panel {
-    @apply rounded-xl border border-border bg-card text-card-foreground shadow-soft;
+    @apply rounded-2xl border border-border bg-card text-card-foreground shadow-soft;
   }
 
   .motion-surface {
@@ -384,7 +388,7 @@
     margin-inline: auto;
     overflow: hidden;
     border: var(--stroke-hairline) solid hsl(var(--border) / var(--border-alpha));
-    border-radius: var(--radius-xl);
+    border-radius: var(--radius-2xl);
     background: hsl(var(--background));
     box-shadow: var(--shadow-overlay);
   }

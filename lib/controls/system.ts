@@ -17,9 +17,11 @@ export const controlVariants = cva(
         "inline-link": "min-h-touch px-1.5",
         pill: "min-h-touch px-3 py-2 text-sm",
       },
+      // Controls are short enough that generous curves would collide on an
+      // edge, so every shape resolves to the pill radius (--radius-full).
       shape: {
-        default: "rounded-md",
-        sm: "rounded-sm",
+        default: "rounded-full",
+        sm: "rounded-full",
         full: "rounded-full",
       },
       ring: {
@@ -40,7 +42,7 @@ export const controlThumbVariants = cva(
   {
     variants: {
       size: {
-        default: "h-5 w-5 rounded-sm data-[state=checked]:translate-x-5 data-[state=unchecked]:translate-x-0"
+        default: "h-5 w-5 rounded-full data-[state=checked]:translate-x-5 data-[state=unchecked]:translate-x-0"
       }
     },
     defaultVariants: {

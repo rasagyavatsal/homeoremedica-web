@@ -182,7 +182,7 @@ export default function SettingsPage() {
                       <button
                         type="button"
                         onClick={() => setShowPasswords((prev) => ({ ...prev, current: !prev.current }))}
-                        className={`absolute right-1 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-md text-on-surface-variant transition-colors hover:text-foreground ${motionClassNames.press}`}
+                        className={`absolute right-1 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full text-on-surface-variant transition-colors hover:text-foreground ${motionClassNames.press}`}
                         aria-label={showPasswords.current ? 'Hide current password' : 'Show current password'}
                       >
                         {showPasswords.current ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -206,7 +206,7 @@ export default function SettingsPage() {
                       <button
                         type="button"
                         onClick={() => setShowPasswords((prev) => ({ ...prev, new: !prev.new }))}
-                        className={`absolute right-1 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-md text-on-surface-variant transition-colors hover:text-foreground ${motionClassNames.press}`}
+                        className={`absolute right-1 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full text-on-surface-variant transition-colors hover:text-foreground ${motionClassNames.press}`}
                         aria-label={showPasswords.new ? 'Hide new password' : 'Show new password'}
                       >
                         {showPasswords.new ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -214,7 +214,7 @@ export default function SettingsPage() {
                     </div>
                     <FieldHint>Min 12 characters with mixed case, numbers, and symbols.</FieldHint>
                     {newPassword && passwordValidation && (
-                      <div className="mt-2 space-y-1 rounded-md border border-border bg-surface-bright p-3">
+                      <div className="mt-2 space-y-1 rounded-xl border border-border bg-surface-bright p-3">
                         {[
                           { key: 'length', label: 'At least 12 characters' },
                           { key: 'uppercase', label: 'Uppercase letter (A-Z)' },
@@ -250,7 +250,7 @@ export default function SettingsPage() {
                       <button
                         type="button"
                         onClick={() => setShowPasswords((prev) => ({ ...prev, confirm: !prev.confirm }))}
-                        className={`absolute right-1 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-md text-on-surface-variant transition-colors hover:text-foreground ${motionClassNames.press}`}
+                        className={`absolute right-1 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full text-on-surface-variant transition-colors hover:text-foreground ${motionClassNames.press}`}
                         aria-label={showPasswords.confirm ? 'Hide confirm password' : 'Show confirm password'}
                       >
                         {showPasswords.confirm ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}

@@ -71,7 +71,7 @@ const config: Config = {
       },
       borderRadius: {
         sm: 'var(--radius-sm)', md: 'var(--radius)', lg: 'var(--radius-lg)',
-        xl: 'var(--radius-xl)', '2xl': 'var(--radius-xl)', full: 'var(--radius-full)',
+        xl: 'var(--radius-xl)', '2xl': 'var(--radius-2xl)', full: 'var(--radius-full)',
       },
       maxWidth: {
         reading: 'var(--layout-reading)', content: 'var(--layout-content)',

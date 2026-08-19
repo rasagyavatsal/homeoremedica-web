@@ -74,13 +74,13 @@ export function ChatSidebar({
             </div>
           ) : (
             chats.map((chat) => (
-              <div key={chat.id} className="group relative flex items-center rounded-lg">
+              <div key={chat.id} className="group relative flex items-center rounded-full">
                 <button
                   type="button"
                   onClick={() => handleSelect(chat.id)}
                   aria-current={chat.id === activeChatId ? 'true' : undefined}
                   className={cn(
-                    'flex min-h-touch min-w-0 flex-1 items-center gap-2.5 rounded-lg px-3 py-2 pr-10 text-left text-sm transition-colors',
+                    'flex min-h-touch min-w-0 flex-1 items-center gap-2.5 rounded-full px-3 py-2 pr-10 text-left text-sm transition-colors',
                     chat.id === activeChatId
                       ? 'bg-accent font-medium text-accent-foreground'
                       : 'text-on-surface-variant hover:bg-surface-container-low hover:text-foreground',
@@ -96,7 +96,7 @@ export function ChatSidebar({
                 </button>
 
                 {confirmingDeleteId === chat.id ? (
-                  <span className="absolute right-1.5 flex items-center gap-1 rounded-lg bg-card">
+                  <span className="absolute right-1.5 flex items-center gap-1 rounded-full bg-card">
                     <Button
                       variant="destructive"
                       size="sm"
@@ -122,7 +122,7 @@ export function ChatSidebar({
                     type="button"
                     aria-label={`Delete chat ${chat.title}`}
                     onClick={() => setConfirmingDeleteId(chat.id)}
-                    className="absolute right-1.5 rounded-md p-1.5 text-on-surface-variant opacity-60 transition-colors hover:text-destructive focus-visible:text-destructive group-hover:opacity-100"
+                    className="absolute right-1.5 rounded-full p-1.5 text-on-surface-variant opacity-60 transition-colors hover:text-destructive focus-visible:text-destructive group-hover:opacity-100"
                   >
                     <Trash2 aria-hidden="true" className="h-4 w-4" />
                   </button>

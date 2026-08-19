@@ -74,7 +74,7 @@ export default function HomePage() {
               </p>
             </div>
 
-            <div className="mt-12 grid gap-px overflow-hidden rounded-xl border border-border bg-border md:grid-cols-2">
+            <div className="mt-12 grid gap-px overflow-hidden rounded-2xl border border-border bg-border md:grid-cols-2">
               <article className="bg-background p-5 md:p-6">
                 <p className="index-label mb-6 text-primary">Example 01</p>
                 <p className="text-lg font-medium leading-relaxed text-foreground">
@@ -114,7 +114,7 @@ export default function HomePage() {
                 question can surface different voices.
               </p>
             </div>
-            <div className="grid gap-px overflow-hidden rounded-xl border border-border bg-border lg:grid-cols-2">
+            <div className="grid gap-px overflow-hidden rounded-2xl border border-border bg-border lg:grid-cols-2">
               {SEARCH_BOOKS.map((book, index) => {
                 const cover = book.cover;
                 return (
@@ -127,7 +127,7 @@ export default function HomePage() {
                           width={cover.width}
                           height={cover.height}
                           sizes="9rem"
-                          className="h-48 w-36 rounded-sm object-cover"
+                          className="h-48 w-36 rounded-lg object-cover"
                         />
                         <span className="index-label mt-4 block text-primary">Source 0{index + 1}</span>
                       </div>
