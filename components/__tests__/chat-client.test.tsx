@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const mockSendChatMessage = vi.hoisted(() => vi.fn());
@@ -12,10 +12,73 @@ vi.mock('@/components/header', () => ({
   Header: () => <header data-testid="header" />,
 }));
 
+const mockUseAuth = vi.hoisted(() => vi.fn());
+
+vi.mock('@/lib/contexts/auth-context', () => ({
+  useAuth: () => mockUseAuth(),
+}));
+
+const chatHistory = vi.hoisted(() => {
+  let onNext: ((chats: { id: string; title: string }[]) => void) | null = null;
+  return {
+    subscribeToChats: vi.fn((_userId: string, next: (chats: { id: string; title: string }[]) => void) => {
+      onNext = next;
+      return () => {
+        onNext = null;
+      };
+    }),
+    createChat: vi.fn(),
+    appendExchange: vi.fn(),
+    loadChat: vi.fn(),
+    deleteChat: vi.fn(),
+    emitChats: (chats: { id: string; title: string }[]) => onNext?.(chats),
+  };
+});
+
+vi.mock('@/lib/services/chat-history', () => ({
+  subscribeToChats: chatHistory.subscribeToChats,
+  createChat: chatHistory.createChat,
+  appendExchange: chatHistory.appendExchange,
+  loadChat: chatHistory.loadChat,
+  deleteChat: chatHistory.deleteChat,
+}));
+
+vi.mock('@/components/chat-sidebar', () => ({
+  ChatSidebar: ({
+    chats,
+    activeChatId,
+    onNewChat,
+    onSelectChat,
+    onDeleteChat,
+  }: {
+    chats: { id: string; title: string }[];
+    activeChatId: string | null;
+    onNewChat: () => void;
+    onSelectChat: (chatId: string) => void;
+    onDeleteChat: (chatId: string) => void;
+  }) => (
+    <div data-testid="chat-sidebar">
+      <button onClick={onNewChat}>sidebar-new-chat</button>
+      {chats.map((chat) => (
+        <div key={chat.id}>
+          <button onClick={() => onSelectChat(chat.id)}>resume {chat.title}</button>
+          <button onClick={() => onDeleteChat(chat.id)}>delete {chat.title}</button>
+        </div>
+      ))}
+      <span data-testid="active-chat-id">{activeChatId ?? 'none'}</span>
+    </div>
+  ),
+}));
+
 import ChatClient from '@/components/chat-client';
 import { CHAT_SAFETY_NOTICE } from '@/lib/chat-answer';
 
 const ANSWER_BODY = 'Nux vomica is irritable and chilly [1].';
+const SIGNED_IN_AUTH = {
+  user: { uid: 'user-1', email: 'test@example.com', displayName: 'Test User' },
+  loading: false,
+  token: null,
+};
 
 function makeResponse(overrides: Record<string, unknown> = {}) {
   return {
@@ -46,6 +109,7 @@ function typeAndSend(text: string) {
 describe('ChatClient', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockUseAuth.mockReturnValue({ user: null, loading: false, token: null });
   });
 
   it('opens on an empty state with the persistent safety notice', () => {
@@ -142,5 +206,129 @@ describe('ChatClient', () => {
     expect(
       screen.getByRole('heading', { name: 'Ask the materia medica' }),
     ).toBeInTheDocument();
+  });
+
+  it('does not persist chats for signed-out users', async () => {
+    mockSendChatMessage.mockResolvedValue(makeResponse());
+    render(<ChatClient />);
+
+    typeAndSend('How is Nux vomica described?');
+    await waitFor(() => expect(screen.getByText(ANSWER_BODY)).toBeInTheDocument());
+
+    expect(chatHistory.subscribeToChats).not.toHaveBeenCalled();
+    expect(chatHistory.createChat).not.toHaveBeenCalled();
+    expect(chatHistory.appendExchange).not.toHaveBeenCalled();
+  });
+
+  it('creates a chat on the first exchange when signed in', async () => {
+    mockUseAuth.mockReturnValue(SIGNED_IN_AUTH);
+    mockSendChatMessage.mockResolvedValue(makeResponse());
+    chatHistory.createChat.mockResolvedValue({ id: 'chat-1', title: 'How is Nux', updatedAt: null });
+    render(<ChatClient />);
+
+    expect(chatHistory.subscribeToChats).toHaveBeenCalledWith('user-1', expect.any(Function), expect.any(Function));
+
+    typeAndSend('How is Nux vomica described?');
+    await waitFor(() => expect(screen.getByText(ANSWER_BODY)).toBeInTheDocument());
+
+    expect(chatHistory.createChat).toHaveBeenCalledWith('user-1', [
+      expect.objectContaining({ role: 'user', content: 'How is Nux vomica described?' }),
+      expect.objectContaining({ role: 'assistant', content: ANSWER_BODY }),
+    ]);
+    await waitFor(() => expect(screen.getByTestId('active-chat-id')).toHaveTextContent('chat-1'));
+  });
+
+  it('appends later exchanges to the active chat', async () => {
+    mockUseAuth.mockReturnValue(SIGNED_IN_AUTH);
+    mockSendChatMessage.mockResolvedValue(makeResponse());
+    chatHistory.createChat.mockResolvedValue({ id: 'chat-1', title: 'First question', updatedAt: null });
+    render(<ChatClient />);
+
+    typeAndSend('First question');
+    await waitFor(() => expect(screen.getByText(ANSWER_BODY)).toBeInTheDocument());
+
+    typeAndSend('Tell me more');
+    await waitFor(() =>
+      expect(chatHistory.appendExchange).toHaveBeenCalledWith('chat-1', [
+        expect.objectContaining({ role: 'user', content: 'Tell me more' }),
+        expect.objectContaining({ role: 'assistant', content: ANSWER_BODY }),
+      ]),
+    );
+  });
+
+  it('resumes a chat from the history list', async () => {
+    mockUseAuth.mockReturnValue(SIGNED_IN_AUTH);
+    chatHistory.loadChat.mockResolvedValue({
+      id: 'chat-9',
+      userId: 'user-1',
+      title: 'A past chat',
+      createdAt: null,
+      updatedAt: null,
+      messages: [
+        { id: 'm1', role: 'user', content: 'Old question' },
+        { id: 'm2', role: 'assistant', content: 'Old answer' },
+      ],
+    });
+    render(<ChatClient />);
+
+    act(() => chatHistory.emitChats([{ id: 'chat-9', title: 'A past chat' }]));
+    fireEvent.click(screen.getByRole('button', { name: 'resume A past chat' }));
+
+    await waitFor(() => expect(chatHistory.loadChat).toHaveBeenCalledWith('chat-9'));
+    expect(screen.getByText('Old question')).toBeInTheDocument();
+    expect(screen.getByText('Old answer')).toBeInTheDocument();
+    expect(screen.getByTestId('active-chat-id')).toHaveTextContent('chat-9');
+  });
+
+  it('shows a history error when a chat cannot be loaded', async () => {
+    mockUseAuth.mockReturnValue(SIGNED_IN_AUTH);
+    chatHistory.loadChat.mockRejectedValue(new Error('permission-denied'));
+    render(<ChatClient />);
+
+    act(() => chatHistory.emitChats([{ id: 'chat-9', title: 'A past chat' }]));
+    fireEvent.click(screen.getByRole('button', { name: 'resume A past chat' }));
+
+    await waitFor(() => expect(screen.getByText('permission-denied')).toBeInTheDocument());
+  });
+
+  it('deletes the active chat and clears the thread', async () => {
+    mockUseAuth.mockReturnValue(SIGNED_IN_AUTH);
+    mockSendChatMessage.mockResolvedValue(makeResponse());
+    chatHistory.createChat.mockResolvedValue({ id: 'chat-1', title: 'How is Nux', updatedAt: null });
+    chatHistory.deleteChat.mockResolvedValue(undefined);
+    render(<ChatClient />);
+
+    typeAndSend('How is Nux vomica described?');
+    await waitFor(() => expect(screen.getByText(ANSWER_BODY)).toBeInTheDocument());
+
+    act(() => chatHistory.emitChats([{ id: 'chat-1', title: 'How is Nux' }]));
+    fireEvent.click(screen.getByRole('button', { name: 'delete How is Nux' }));
+
+    await waitFor(() => expect(chatHistory.deleteChat).toHaveBeenCalledWith('chat-1'));
+    expect(screen.queryByText(ANSWER_BODY)).not.toBeInTheDocument();
+    expect(screen.getByTestId('active-chat-id')).toHaveTextContent('none');
+  });
+
+  it('deleting another chat keeps the current thread', async () => {
+    mockUseAuth.mockReturnValue(SIGNED_IN_AUTH);
+    mockSendChatMessage.mockResolvedValue(makeResponse());
+    chatHistory.createChat.mockResolvedValue({ id: 'chat-1', title: 'First question', updatedAt: null });
+    chatHistory.deleteChat.mockResolvedValue(undefined);
+    render(<ChatClient />);
+
+    typeAndSend('First question');
+    await waitFor(() => expect(screen.getByText(ANSWER_BODY)).toBeInTheDocument());
+
+    act(() =>
+      chatHistory.emitChats([
+        { id: 'chat-1', title: 'First question' },
+        { id: 'chat-2', title: 'Older chat' },
+      ]),
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'delete Older chat' }));
+
+    await waitFor(() => expect(chatHistory.deleteChat).toHaveBeenCalledWith('chat-2'));
+    expect(screen.getByText(ANSWER_BODY)).toBeInTheDocument();
+    expect(screen.getByTestId('active-chat-id')).toHaveTextContent('chat-1');
   });
 });

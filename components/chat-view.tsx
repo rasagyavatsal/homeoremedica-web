@@ -2,7 +2,7 @@
 
 import type { FormEvent, KeyboardEvent, RefObject } from 'react';
 import { useState } from 'react';
-import { ArrowUp, BookOpen, ChevronDown, Loader2, RotateCcw } from 'lucide-react';
+import { ArrowUp, BookOpen, ChevronDown, Loader2 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Callout } from '@/components/ui/callout';
@@ -106,23 +106,14 @@ export function ChatThread({
   messages,
   isSending,
   threadEndRef,
-  onNewChat,
 }: Readonly<{
   messages: ChatMessage[];
   isSending: boolean;
   threadEndRef: RefObject<HTMLDivElement | null>;
-  onNewChat: () => void;
 }>) {
   return (
-    <section aria-label="Conversation" className="mx-auto w-full max-w-3xl px-4 py-5 sm:px-6 lg:py-8">
-      <div className="flex justify-end">
-        <Button type="button" variant="ghost" size="sm" className="gap-2" onClick={onNewChat}>
-          <RotateCcw className="h-4 w-4" />
-          <span>New chat</span>
-        </Button>
-      </div>
-
-      <MotionGroup className="mt-4 space-y-6">
+    <section aria-label="Conversation" className="mx-auto w-full max-w-3xl px-4 py-2 sm:px-6 lg:py-6">
+      <MotionGroup className="space-y-6">
         {messages.map((message) => (
           <MotionItem key={message.id}>
             <ChatMessageView message={message} />

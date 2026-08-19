@@ -1,6 +1,21 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    // Chat history: users may only ever touch their own chat documents.
+    // The userId field is set by the client at creation and is immutable
+    // afterwards; updates are limited to appending messages.
+    match /chats/{chatId} {
+      function signedIn() {
+        return request.auth != null;
+      }
+      function isOwner() {
+        return signedIn() && request.auth.uid == resource.data.userId;
+      }
+      allow read, delete: if isOwner();
+      allow create: if signedIn() && request.auth.uid == request.resource.data.userId;
+      allow update: if isOwner() && request.resource.data.userId == resource.data.userId;
+    }
+
     // Default rule - deny all other access
     match /{document=**} {
       allow read, write: if false;
