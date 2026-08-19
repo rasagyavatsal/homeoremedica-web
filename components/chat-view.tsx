@@ -22,7 +22,7 @@ export interface ChatMessage {
 
 export function ChatEmptyState() {
   return (
-    <MotionSection className="flex min-h-viewport-below-header flex-col items-center justify-center px-4 text-center sm:px-6">
+    <MotionSection className="flex min-h-0 flex-1 flex-col items-center justify-center px-4 text-center sm:px-6">
       <h1 className="display-sm">Ask the materia medica</h1>
       <p className="balanced-copy mt-5 max-w-md text-base leading-relaxed text-on-surface-variant md:text-lg">
         Answers cite passages from Clarke, Boericke, Kent, and Allen.
@@ -77,11 +77,28 @@ function ChatSources({ sources }: Readonly<{ sources: ChatSource[] }>) {
   );
 }
 
+const BUBBLE_PILL_MAX_LENGTH = 140;
+
+/**
+ * Short messages read as pills; once a message wraps to several lines the
+ * pill end-caps would clip into the first and last lines, so larger messages
+ * collapse to the same heavily curved radius as the home page surfaces.
+ */
+function messageBubbleRadius(content: string) {
+  const isLong = content.length > BUBBLE_PILL_MAX_LENGTH || content.includes('\n');
+  return isLong ? 'rounded-2xl' : 'rounded-full';
+}
+
 function ChatMessageView({ message }: Readonly<{ message: ChatMessage }>) {
   if (message.role === 'user') {
     return (
       <div className="flex justify-end">
-        <p className="w-fit max-w-dialog whitespace-pre-wrap rounded-full border border-border bg-card px-4 py-3 text-sm leading-relaxed text-foreground">
+        <p
+          className={cn(
+            'w-fit max-w-dialog whitespace-pre-wrap break-words border border-border bg-card px-4 py-3 text-sm leading-relaxed text-foreground',
+            messageBubbleRadius(message.content),
+          )}
+        >
           {message.content}
         </p>
       </div>
@@ -156,18 +173,6 @@ export function ChatComposer({
   onDraftChange: (value: string) => void;
   onSubmit: () => void;
 }>) {
-  const resizeTextarea = () => {
-    const textarea = textareaRef.current;
-    if (!textarea) return;
-
-    textarea.style.height = 'auto';
-    const maxHeight = Number.parseFloat(globalThis.getComputedStyle(textarea).maxHeight);
-    const nextHeight = Number.isFinite(maxHeight)
-      ? Math.min(textarea.scrollHeight, maxHeight)
-      : textarea.scrollHeight;
-    textarea.style.height = `${nextHeight}px`;
-  };
-
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
     onSubmit();
@@ -181,7 +186,7 @@ export function ChatComposer({
   };
 
   return (
-    <div className="sticky bottom-3 z-40">
+    <div className="sticky bottom-3 z-40 mt-auto">
       <div className="mx-auto w-full max-w-3xl px-4 sm:px-6">
         <form
           onSubmit={handleSubmit}
@@ -201,12 +206,9 @@ export function ChatComposer({
               value={draft}
               maxLength={4000}
               placeholder="Ask about a remedy or symptom…"
-              onChange={(event) => {
-                onDraftChange(event.target.value);
-                resizeTextarea();
-              }}
+              onChange={(event) => onDraftChange(event.target.value)}
               onKeyDown={handleKeyDown}
-              className="max-h-40 flex-1 resize-none overflow-y-auto border-0 bg-transparent py-2.5 text-base leading-relaxed text-foreground placeholder:text-muted-foreground focus-visible:outline-none"
+              className="flex-1 resize-none overflow-y-auto border-0 bg-transparent py-2.5 text-base leading-relaxed text-foreground placeholder:text-muted-foreground focus-visible:outline-none"
             />
             <Button
               type="submit"

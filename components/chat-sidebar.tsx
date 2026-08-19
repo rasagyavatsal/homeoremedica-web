@@ -5,6 +5,15 @@ import { useState } from 'react';
 import { MessageSquare, Plus, Trash2 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { formatChatDate } from '@/lib/services/chat-history';
 import type { ChatSummary } from '@/lib/types/chat-history';
 import { cn } from '@/lib/utils';
@@ -20,7 +29,7 @@ export interface ChatSidebarUser {
  * - desktop: persistent aside on /chat
  * - mobile: inside the history Sheet
  * The owner (chat-client) supplies state and mutations; this component only
- * manages its own inline delete confirmation.
+ * manages its own delete confirmation modal.
  */
 export function ChatSidebar({
   user,
@@ -41,7 +50,8 @@ export function ChatSidebar({
   onDeleteChat: (chatId: string) => void;
   onNavigate?: () => void;
 }>) {
-  const [confirmingDeleteId, setConfirmingDeleteId] = useState<string | null>(null);
+  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
+  const pendingDeleteChat = chats.find((chat) => chat.id === pendingDeleteId) ?? null;
 
   const handleSelect = (chatId: string) => {
     onSelectChat(chatId);
@@ -49,7 +59,7 @@ export function ChatSidebar({
   };
 
   return (
-    <div className="flex h-full min-h-0 flex-col">
+    <div className="flex min-h-0 flex-1 flex-col">
       <div className="shrink-0 border-b border-border p-3">
         <Button className="w-full justify-start gap-2" onClick={onNewChat}>
           <Plus aria-hidden="true" className="h-4 w-4" />
@@ -95,38 +105,14 @@ export function ChatSidebar({
                   </span>
                 </button>
 
-                {confirmingDeleteId === chat.id ? (
-                  <span className="absolute right-1.5 flex items-center gap-1 rounded-full bg-card">
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      className="h-8 px-2.5 text-xs"
-                      onClick={() => {
-                        onDeleteChat(chat.id);
-                        setConfirmingDeleteId(null);
-                      }}
-                    >
-                      Delete
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="h-8 px-2.5 text-xs"
-                      onClick={() => setConfirmingDeleteId(null)}
-                    >
-                      Cancel
-                    </Button>
-                  </span>
-                ) : (
-                  <button
-                    type="button"
-                    aria-label={`Delete chat ${chat.title}`}
-                    onClick={() => setConfirmingDeleteId(chat.id)}
-                    className="absolute right-1.5 rounded-full p-1.5 text-on-surface-variant opacity-60 transition-colors hover:text-destructive focus-visible:text-destructive group-hover:opacity-100"
-                  >
-                    <Trash2 aria-hidden="true" className="h-4 w-4" />
-                  </button>
-                )}
+                <button
+                  type="button"
+                  aria-label={`Delete chat ${chat.title}`}
+                  onClick={() => setPendingDeleteId(chat.id)}
+                  className="absolute right-1.5 rounded-full p-1.5 text-on-surface-variant opacity-60 transition-colors hover:text-destructive focus-visible:text-destructive group-hover:opacity-100"
+                >
+                  <Trash2 aria-hidden="true" className="h-4 w-4" />
+                </button>
               </div>
             ))
           )}
@@ -144,6 +130,39 @@ export function ChatSidebar({
           </Button>
         </div>
       )}
+
+      <Dialog
+        open={pendingDeleteChat !== null}
+        onOpenChange={(open) => {
+          if (!open) setPendingDeleteId(null);
+        }}
+      >
+        <DialogContent>
+          <DialogHeader className="px-6 pt-6">
+            <DialogTitle>Delete chat?</DialogTitle>
+            <DialogDescription>
+              {pendingDeleteChat
+                ? `"${pendingDeleteChat.title}" will be permanently deleted. This cannot be undone.`
+                : ''}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="px-6 pb-6">
+            <DialogClose asChild>
+              <Button variant="outline">Cancel</Button>
+            </DialogClose>
+            <Button
+              variant="destructive"
+              disabled={!pendingDeleteChat}
+              onClick={() => {
+                if (pendingDeleteChat) onDeleteChat(pendingDeleteChat.id);
+                setPendingDeleteId(null);
+              }}
+            >
+              Delete
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

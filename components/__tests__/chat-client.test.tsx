@@ -119,7 +119,10 @@ describe('ChatClient', () => {
       screen.getByRole('heading', { name: 'Ask the materia medica' }),
     ).toBeInTheDocument();
     expect(screen.getAllByText(CHAT_SAFETY_NOTICE)).toHaveLength(1);
+    // The chat column no longer carries its own New chat control; the
+    // mobile history toggle remains so the sidebar sheet stays reachable.
     expect(screen.queryByRole('button', { name: 'New chat' })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'History' })).toBeInTheDocument();
   });
 
   it('sends a message and shows the answer without the repeated notice', async () => {
@@ -193,14 +196,14 @@ describe('ChatClient', () => {
     expect(screen.getByLabelText('Message')).toHaveValue('How is Nux vomica described?');
   });
 
-  it('clears the thread with New chat', async () => {
+  it('clears the thread with New chat from the sidebar', async () => {
     mockSendChatMessage.mockResolvedValue(makeResponse());
     render(<ChatClient />);
 
     typeAndSend('How is Nux vomica described?');
     await waitFor(() => expect(screen.getByText(ANSWER_BODY)).toBeInTheDocument());
 
-    fireEvent.click(screen.getByRole('button', { name: 'New chat' }));
+    fireEvent.click(screen.getByRole('button', { name: 'sidebar-new-chat' }));
 
     expect(screen.queryByText(ANSWER_BODY)).not.toBeInTheDocument();
     expect(
