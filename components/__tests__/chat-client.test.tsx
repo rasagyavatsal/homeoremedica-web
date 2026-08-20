@@ -8,10 +8,6 @@ vi.mock('@/lib/api/client', () => ({
   apiClient: { sendChatMessage: mockSendChatMessage },
 }));
 
-vi.mock('@/components/theme-toggle', () => ({
-  ThemeToggle: () => <button type="button" data-testid="theme-toggle">Theme</button>,
-}));
-
 const mockUseAuth = vi.hoisted(() => vi.fn());
 
 vi.mock('@/lib/contexts/auth-context', () => ({
@@ -127,16 +123,16 @@ describe('ChatClient', () => {
     ).toBeInTheDocument();
     expect(screen.getAllByText(CHAT_SAFETY_NOTICE)).toHaveLength(1);
     // The chat column no longer carries its own New chat control; the
-    // mobile history toggle remains so the sidebar sheet stays reachable.
+    // mobile hamburger toggle remains so the sidebar sheet stays reachable.
     expect(screen.queryByRole('button', { name: 'New chat' })).not.toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'History' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Open chat history' })).toBeInTheDocument();
   });
 
-  it('keeps the theme toggle at the top-right corner without a page header', () => {
+  it('keeps no theme toggle on the chat page without a page header', () => {
     render(<ChatClient />);
 
     expect(screen.queryByRole('banner')).not.toBeInTheDocument();
-    expect(screen.getByTestId('theme-toggle')).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /switch to dark mode/i })).not.toBeInTheDocument();
   });
 
   it('sends a message and shows the answer without the repeated notice', async () => {

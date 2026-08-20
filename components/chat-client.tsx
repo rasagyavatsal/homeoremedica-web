@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { History } from 'lucide-react';
+import { Menu } from 'lucide-react';
 
 import {
   ChatComposer,
@@ -11,7 +11,6 @@ import {
   type ChatMessage,
 } from '@/components/chat-view';
 import { ChatSidebar } from '@/components/chat-sidebar';
-import { ThemeToggle } from '@/components/theme-toggle';
 import { Button } from '@/components/ui/button';
 import {
   Sheet,
@@ -207,17 +206,15 @@ export default function ChatClient() {
         </aside>
 
         <main className="flex min-h-0 min-w-0 flex-1 flex-col overflow-y-auto">
-          <div className="flex shrink-0 items-center gap-2 px-6 pt-3">
+          <div className="flex shrink-0 items-center px-6 pt-3 lg:hidden">
             <Button
               variant="ghost"
-              size="sm"
-              className="gap-2 lg:hidden"
+              size="header-icon"
+              aria-label="Open chat history"
               onClick={() => setIsSidebarOpen(true)}
             >
-              <History aria-hidden="true" className="h-4 w-4" />
-              History
+              <Menu aria-hidden="true" className="h-5 w-5" />
             </Button>
-            <ThemeToggle className="ml-auto" />
           </div>
 
           {hasMessages ? (
