@@ -18,7 +18,7 @@ import {
   SheetTitle,
 } from '@/components/ui/sheet';
 import { apiClient } from '@/lib/api/client';
-import { chatAnswerBody } from '@/lib/chat-answer';
+import { CHAT_SAFETY_NOTICE, chatAnswerBody } from '@/lib/chat-answer';
 import { useAuth } from '@/lib/contexts/auth-context';
 import {
   appendExchange,
@@ -236,6 +236,9 @@ export default function ChatClient() {
             onDraftChange={setDraft}
             onSubmit={sendMessage}
           />
+          <p className="mx-auto w-full max-w-2xl px-6 pb-3 pt-2 text-center text-xs leading-relaxed text-on-surface-variant">
+            {CHAT_SAFETY_NOTICE}
+          </p>
         </main>
       </div>
 

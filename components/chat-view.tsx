@@ -7,7 +7,6 @@ import { ArrowUp, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Callout } from '@/components/ui/callout';
 import { MotionGroup, MotionItem, MotionSection } from '@/components/ui/motion';
-import { CHAT_SAFETY_NOTICE } from '@/lib/chat-answer';
 import { motionClassNames } from '@/lib/motion/system';
 import type { ChatSource } from '@/lib/types/chat';
 import { cn } from '@/lib/utils';
@@ -210,9 +209,6 @@ export function ChatComposer({
             </Button>
           </div>
         </form>
-        <p className="mt-2 text-center text-xs leading-relaxed text-on-surface-variant">
-          {CHAT_SAFETY_NOTICE}
-        </p>
       </div>
     </div>
   );
