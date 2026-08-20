@@ -55,6 +55,14 @@ function renderSidebar(
   return props;
 }
 
+/** Radix dropdown triggers open on pointerdown, not click. */
+function openChatOptions(title: string) {
+  fireEvent.pointerDown(screen.getByRole('button', { name: `Chat options for ${title}` }), {
+    button: 0,
+    ctrlKey: false,
+  });
+}
+
 describe('ChatSidebar', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -109,11 +117,8 @@ describe('ChatSidebar', () => {
   it('deletes a chat after confirming in the modal', () => {
     const props = renderSidebar();
 
-    fireEvent.click(screen.getByRole('button', { name: 'Chat options for Arsenicum anxiety' }));
-
-    expect(screen.getByRole('dialog', { name: 'Chat options' })).toBeInTheDocument();
-
-    fireEvent.click(screen.getByRole('button', { name: 'Delete chat' }));
+    openChatOptions('Arsenicum anxiety');
+    fireEvent.click(screen.getByRole('menuitem', { name: 'Delete chat' }));
 
     expect(screen.getByRole('dialog', { name: 'Delete chat?' })).toBeInTheDocument();
     expect(
@@ -128,19 +133,20 @@ describe('ChatSidebar', () => {
   it('cancels a pending delete without deleting', () => {
     const props = renderSidebar();
 
-    fireEvent.click(screen.getByRole('button', { name: 'Chat options for Arsenicum anxiety' }));
-    fireEvent.click(screen.getByRole('button', { name: 'Delete chat' }));
+    openChatOptions('Arsenicum anxiety');
+    fireEvent.click(screen.getByRole('menuitem', { name: 'Delete chat' }));
     fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
 
     expect(props.onDeleteChat).not.toHaveBeenCalled();
   });
 
-  it('renames a chat from the options modal', () => {
+  it('renames a chat from the options menu', () => {
     const props = renderSidebar();
 
-    fireEvent.click(screen.getByRole('button', { name: 'Chat options for Nux vomica in fevers' }));
+    openChatOptions('Nux vomica in fevers');
+    fireEvent.click(screen.getByRole('menuitem', { name: 'Rename' }));
 
-    const input = screen.getByLabelText('Rename chat');
+    const input = screen.getByLabelText('Chat title');
     expect(input).toHaveValue('Nux vomica in fevers');
 
     fireEvent.change(input, { target: { value: 'Nux in fevers' } });
@@ -152,12 +158,14 @@ describe('ChatSidebar', () => {
   it('ignores an unchanged or blank rename', () => {
     const props = renderSidebar();
 
-    fireEvent.click(screen.getByRole('button', { name: 'Chat options for Nux vomica in fevers' }));
+    openChatOptions('Nux vomica in fevers');
+    fireEvent.click(screen.getByRole('menuitem', { name: 'Rename' }));
 
-    expect(screen.getByRole('button', { name: 'Save' })).toBeDisabled();
+    const save = screen.getByRole('button', { name: 'Save' });
+    expect(save).toBeDisabled();
 
-    fireEvent.change(screen.getByLabelText('Rename chat'), { target: { value: '   ' } });
-    fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+    fireEvent.change(screen.getByLabelText('Chat title'), { target: { value: '   ' } });
+    expect(save).toBeDisabled();
 
     expect(props.onRenameChat).not.toHaveBeenCalled();
   });

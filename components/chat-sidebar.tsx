@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { LogOut, MessageSquare, MoreVertical, Plus, Settings, Trash2 } from 'lucide-react';
+import { LogOut, MessageSquare, MoreVertical, Pencil, Plus, Settings, Trash2 } from 'lucide-react';
 
 import { BrandLockup } from '@/components/brand-lockup';
 import { ThemeMenuItem } from '@/components/theme-toggle';
@@ -42,8 +42,8 @@ export interface ChatSidebarUser {
  * - desktop: persistent aside on /chat
  * - mobile: inside the history Sheet
  * The owner (chat-client) supplies state and mutations; this component only
- * manages its own options modal (rename/delete), delete confirmation modal,
- * and account actions.
+ * manages its own per-chat options dropdown (rename/delete), the rename
+ * modal, delete confirmation modal, and account actions.
  */
 export function ChatSidebar({
   user,
@@ -67,10 +67,10 @@ export function ChatSidebar({
   onNavigate?: () => void;
 }>) {
   const router = useRouter();
-  const [optionsChatId, setOptionsChatId] = useState<string | null>(null);
+  const [renameChatId, setRenameChatId] = useState<string | null>(null);
   const [renameDraft, setRenameDraft] = useState('');
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
-  const optionsChat = chats.find((chat) => chat.id === optionsChatId) ?? null;
+  const renameChat = chats.find((chat) => chat.id === renameChatId) ?? null;
   const pendingDeleteChat = chats.find((chat) => chat.id === pendingDeleteId) ?? null;
 
   const handleSelect = (chatId: string) => {
@@ -78,22 +78,16 @@ export function ChatSidebar({
     onNavigate?.();
   };
 
-  const openOptions = (chat: ChatSummary) => {
-    setOptionsChatId(chat.id);
+  const openRename = (chat: ChatSummary) => {
+    setRenameChatId(chat.id);
     setRenameDraft(chat.title);
   };
 
   const handleSaveRename = () => {
     const nextTitle = renameDraft.trim();
-    if (!optionsChat || !nextTitle || nextTitle === optionsChat.title) return;
-    onRenameChat(optionsChat.id, nextTitle);
-    setOptionsChatId(null);
-  };
-
-  const handleRequestDelete = () => {
-    if (!optionsChat) return;
-    setPendingDeleteId(optionsChat.id);
-    setOptionsChatId(null);
+    if (!renameChat || !nextTitle || nextTitle === renameChat.title) return;
+    onRenameChat(renameChat.id, nextTitle);
+    setRenameChatId(null);
   };
 
   const handleLogout = async () => {
@@ -165,14 +159,30 @@ export function ChatSidebar({
                   </span>
                 </button>
 
-                <button
-                  type="button"
-                  aria-label={`Chat options for ${chat.title}`}
-                  onClick={() => openOptions(chat)}
-                  className="absolute right-1.5 rounded-full p-1.5 text-on-surface-variant opacity-60 transition-colors hover:text-foreground focus-visible:text-foreground group-hover:opacity-100"
-                >
-                  <MoreVertical aria-hidden="true" className="h-4 w-4" />
-                </button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button
+                      type="button"
+                      aria-label={`Chat options for ${chat.title}`}
+                      className="absolute right-1.5 rounded-full p-1.5 text-on-surface-variant opacity-60 transition-colors hover:text-foreground focus-visible:text-foreground group-hover:opacity-100 data-[state=open]:opacity-100"
+                    >
+                      <MoreVertical aria-hidden="true" className="h-4 w-4" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent side="bottom" align="end" className="w-44">
+                    <DropdownMenuItem className="cursor-pointer" onSelect={() => openRename(chat)}>
+                      <Pencil className="mr-2 h-4 w-4" />
+                      Rename
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      className="cursor-pointer text-destructive focus:text-destructive"
+                      onSelect={() => setPendingDeleteId(chat.id)}
+                    >
+                      <Trash2 className="mr-2 h-4 w-4" />
+                      Delete chat
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             ))
           )}
@@ -253,21 +263,21 @@ export function ChatSidebar({
       </div>
 
       <Dialog
-        open={optionsChat !== null}
+        open={renameChat !== null}
         onOpenChange={(open) => {
-          if (!open) setOptionsChatId(null);
+          if (!open) setRenameChatId(null);
         }}
       >
         <DialogContent>
           <DialogHeader className="px-6 pt-6">
-            <DialogTitle>Chat options</DialogTitle>
+            <DialogTitle>Rename chat</DialogTitle>
             <DialogDescription className="truncate">
-              {optionsChat?.title ?? ''}
+              {renameChat?.title ?? ''}
             </DialogDescription>
           </DialogHeader>
           <div className="px-6 pt-4">
             <Field>
-              <FieldLabel htmlFor="chat-rename">Rename chat</FieldLabel>
+              <FieldLabel htmlFor="chat-rename">Chat title</FieldLabel>
               <Input
                 id="chat-rename"
                 value={renameDraft}
@@ -278,25 +288,15 @@ export function ChatSidebar({
             </Field>
           </div>
           <DialogFooter className="px-6 pb-6">
-            <Button
-              type="button"
-              variant="destructive"
-              className="justify-start gap-2 sm:mr-auto"
-              disabled={!optionsChat}
-              onClick={handleRequestDelete}
-            >
-              <Trash2 aria-hidden="true" className="h-4 w-4" />
-              Delete chat
-            </Button>
             <DialogClose asChild>
               <Button variant="outline">Cancel</Button>
             </DialogClose>
             <Button
               type="button"
               disabled={
-                !optionsChat ||
+                !renameChat ||
                 renameDraft.trim().length === 0 ||
-                renameDraft.trim() === optionsChat.title
+                renameDraft.trim() === renameChat.title
               }
               onClick={handleSaveRename}
             >
