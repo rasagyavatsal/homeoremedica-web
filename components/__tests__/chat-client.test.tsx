@@ -171,19 +171,16 @@ describe('ChatClient', () => {
     );
   });
 
-  it('reveals cited passages from the sources toggle', async () => {
+  it('keeps backend sources out of the visible thread', async () => {
     mockSendChatMessage.mockResolvedValue(makeResponse());
     render(<ChatClient />);
 
     typeAndSend('How is Nux vomica described?');
     await waitFor(() => expect(screen.getByText(ANSWER_BODY)).toBeInTheDocument());
 
+    expect(screen.queryByRole('button', { name: /source/i })).not.toBeInTheDocument();
+    expect(screen.queryByText(/Nux Vomica · Mind/)).not.toBeInTheDocument();
     expect(screen.queryByText(/Irritable\./)).not.toBeInTheDocument();
-    fireEvent.click(screen.getByRole('button', { name: /1 source/i }));
-
-    expect(screen.getByText(/Nux Vomica · Mind/)).toBeInTheDocument();
-    expect(screen.getByText('kent lectures')).toBeInTheDocument();
-    expect(screen.getByText(/Irritable\./)).toBeInTheDocument();
   });
 
   it('collapses a long message behind a Show more toggle', async () => {

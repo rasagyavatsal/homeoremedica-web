@@ -2,16 +2,15 @@
 
 import type { FormEvent, KeyboardEvent, RefObject } from 'react';
 import { useState } from 'react';
-import { ArrowUp, BookOpen, ChevronDown, Loader2 } from 'lucide-react';
+import { ArrowUp, Loader2 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Callout } from '@/components/ui/callout';
 import { MotionGroup, MotionItem, MotionSection } from '@/components/ui/motion';
 import { CHAT_SAFETY_NOTICE } from '@/lib/chat-answer';
 import { motionClassNames } from '@/lib/motion/system';
-import { getBookName } from '@/lib/seo/book-data';
 import type { ChatSource } from '@/lib/types/chat';
-import { cn, formatRemedyDisplayName } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 
 export interface ChatMessage {
   id: string;
@@ -25,55 +24,9 @@ export function ChatEmptyState() {
     <MotionSection className="flex min-h-0 flex-1 flex-col items-center justify-center px-4 text-center sm:px-6">
       <h1 className="display-sm">Ask the materia medica</h1>
       <p className="balanced-copy mt-5 max-w-md text-base leading-relaxed text-on-surface-variant md:text-lg">
-        Answers cite passages from Clarke, Boericke, Kent, and Allen.
+        Answers draw only from Clarke, Boericke, Kent, and Allen.
       </p>
     </MotionSection>
-  );
-}
-
-function ChatSources({ sources }: Readonly<{ sources: ChatSource[] }>) {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <div>
-      <Button
-        type="button"
-        variant="ghost"
-        size="sm"
-        className="-ml-2 gap-2"
-        onClick={() => setOpen((current) => !current)}
-        aria-expanded={open}
-      >
-        <BookOpen className="h-4 w-4" />
-        <span>
-          {sources.length} {sources.length === 1 ? 'source' : 'sources'}
-        </span>
-        <ChevronDown aria-hidden="true" className={cn('h-4 w-4 transition-transform', open && 'rotate-180')} />
-      </Button>
-
-      {open ? (
-        <ol className="mt-2 overflow-hidden rounded-2xl border border-border bg-card">
-          {sources.map((source, index) => (
-            <li key={source.id} className="border-b border-border p-4 last:border-b-0 md:p-5">
-              <div className="flex items-baseline gap-3">
-                <span aria-hidden="true" className="index-label shrink-0 text-primary">
-                  [{index + 1}]
-                </span>
-                <div className="min-w-0">
-                  <p className="text-sm font-medium text-foreground">
-                    {formatRemedyDisplayName(source.remedyName)} · {source.sectionTitle}
-                  </p>
-                  <p className="index-label mt-1">{getBookName(source.bookId)}</p>
-                </div>
-              </div>
-              <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-on-surface-variant">
-                {source.text}
-              </p>
-            </li>
-          ))}
-        </ol>
-      ) : null}
-    </div>
   );
 }
 
@@ -147,7 +100,6 @@ function ChatMessageView({ message }: Readonly<{ message: ChatMessage }>) {
           </p>
         ))}
       </div>
-      {message.sources && message.sources.length > 0 ? <ChatSources sources={message.sources} /> : null}
     </article>
   );
 }
