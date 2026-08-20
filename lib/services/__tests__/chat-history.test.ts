@@ -32,6 +32,7 @@ import {
   deleteChat,
   formatChatDate,
   loadChat,
+  renameChat,
   subscribeToChats,
   titleFromMessage,
 } from '@/lib/services/chat-history';
@@ -188,6 +189,21 @@ describe('loadChat', () => {
     firestoreMocks.getDoc.mockResolvedValue({ exists: () => false });
 
     expect(await loadChat('missing')).toBeNull();
+  });
+});
+
+describe('renameChat', () => {
+  it('updates the chat title', async () => {
+    firestoreMocks.doc.mockReturnValue({ __docRef: 'chats/chat-1' });
+    firestoreMocks.updateDoc.mockResolvedValue(undefined);
+
+    await renameChat('chat-1', 'Renamed title');
+
+    expect(firestoreMocks.doc).toHaveBeenCalledWith({ __mockDb: true }, 'chats', 'chat-1');
+    expect(firestoreMocks.updateDoc).toHaveBeenCalledWith(
+      { __docRef: 'chats/chat-1' },
+      { title: 'Renamed title' },
+    );
   });
 });
 

@@ -26,6 +26,7 @@ import {
   createChat,
   deleteChat,
   loadChat,
+  renameChat,
   subscribeToChats,
 } from '@/lib/services/chat-history';
 import type { ChatMessageRecord, ChatSummary } from '@/lib/types/chat-history';
@@ -176,6 +177,16 @@ export default function ChatClient() {
     }
   };
 
+  const handleRenameChat = async (chatId: string, title: string) => {
+    setHistoryError(null);
+    try {
+      await renameChat(chatId, title);
+    } catch (cause) {
+      console.error('Failed to rename chat:', cause);
+      setHistoryError('That chat could not be renamed. Please try again.');
+    }
+  };
+
   return (
     <div className="flex h-dvh flex-col overflow-hidden bg-background text-foreground">
       <div className="flex min-h-0 w-full flex-1 items-stretch">
@@ -191,11 +202,12 @@ export default function ChatClient() {
             onNewChat={startNewChat}
             onSelectChat={(chatId) => void resumeChat(chatId)}
             onDeleteChat={(chatId) => void handleDeleteChat(chatId)}
+            onRenameChat={(chatId, title) => void handleRenameChat(chatId, title)}
           />
         </aside>
 
         <main className="flex min-h-0 min-w-0 flex-1 flex-col overflow-y-auto">
-          <div className="flex shrink-0 items-center gap-2 px-4 pt-3 sm:px-6">
+          <div className="flex shrink-0 items-center gap-2 px-6 pt-3">
             <Button
               variant="ghost"
               size="sm"
@@ -231,7 +243,7 @@ export default function ChatClient() {
       </div>
 
       <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
-        <SheetContent>
+        <SheetContent variant="sheetSide">
           <SheetTitle className="sr-only">Chat history</SheetTitle>
           <ChatSidebar
             user={user}
@@ -241,6 +253,7 @@ export default function ChatClient() {
             onNewChat={startNewChat}
             onSelectChat={(chatId) => void resumeChat(chatId)}
             onDeleteChat={(chatId) => void handleDeleteChat(chatId)}
+            onRenameChat={(chatId, title) => void handleRenameChat(chatId, title)}
             onNavigate={() => setIsSidebarOpen(false)}
           />
         </SheetContent>

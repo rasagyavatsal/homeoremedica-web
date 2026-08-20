@@ -34,6 +34,7 @@ export const motionClassNames = {
   overlayBackdrop: 'motion-overlay-backdrop',
   overlaySurface: 'motion-overlay-surface',
   overlaySheet: 'motion-overlay-sheet',
+  overlaySheetSide: 'motion-overlay-sheet-side',
   overlayPopover: 'motion-overlay-popover',
 } as const;
 

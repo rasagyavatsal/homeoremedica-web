@@ -132,6 +132,11 @@ export async function loadChat(chatId: string): Promise<ChatRecord | null> {
   };
 }
 
+/** Renames a chat with an already-trimmed, validated title. */
+export async function renameChat(chatId: string, title: string): Promise<void> {
+  await updateDoc(doc(db, CHATS_COLLECTION, chatId), { title });
+}
+
 /** Permanently deletes a chat. */
 export async function deleteChat(chatId: string): Promise<void> {
   await deleteDoc(doc(db, CHATS_COLLECTION, chatId));

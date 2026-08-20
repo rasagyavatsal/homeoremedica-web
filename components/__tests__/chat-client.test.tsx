@@ -31,6 +31,7 @@ const chatHistory = vi.hoisted(() => {
     appendExchange: vi.fn(),
     loadChat: vi.fn(),
     deleteChat: vi.fn(),
+    renameChat: vi.fn(),
     emitChats: (chats: { id: string; title: string }[]) => onNext?.(chats),
   };
 });
@@ -41,6 +42,7 @@ vi.mock('@/lib/services/chat-history', () => ({
   appendExchange: chatHistory.appendExchange,
   loadChat: chatHistory.loadChat,
   deleteChat: chatHistory.deleteChat,
+  renameChat: chatHistory.renameChat,
 }));
 
 vi.mock('@/components/chat-sidebar', () => ({
@@ -50,12 +52,14 @@ vi.mock('@/components/chat-sidebar', () => ({
     onNewChat,
     onSelectChat,
     onDeleteChat,
+    onRenameChat,
   }: {
     chats: { id: string; title: string }[];
     activeChatId: string | null;
     onNewChat: () => void;
     onSelectChat: (chatId: string) => void;
     onDeleteChat: (chatId: string) => void;
+    onRenameChat: (chatId: string, title: string) => void;
   }) => (
     <div data-testid="chat-sidebar">
       <button onClick={onNewChat}>sidebar-new-chat</button>
@@ -63,6 +67,9 @@ vi.mock('@/components/chat-sidebar', () => ({
         <div key={chat.id}>
           <button onClick={() => onSelectChat(chat.id)}>resume {chat.title}</button>
           <button onClick={() => onDeleteChat(chat.id)}>delete {chat.title}</button>
+          <button onClick={() => onRenameChat(chat.id, `${chat.title} renamed`)}>
+            rename {chat.title}
+          </button>
         </div>
       ))}
       <span data-testid="active-chat-id">{activeChatId ?? 'none'}</span>
@@ -340,5 +347,33 @@ describe('ChatClient', () => {
     await waitFor(() => expect(chatHistory.deleteChat).toHaveBeenCalledWith('chat-2'));
     expect(screen.getByText(ANSWER_BODY)).toBeInTheDocument();
     expect(screen.getByTestId('active-chat-id')).toHaveTextContent('chat-1');
+  });
+
+  it('renames a chat from the sidebar', async () => {
+    mockUseAuth.mockReturnValue(SIGNED_IN_AUTH);
+    chatHistory.renameChat.mockResolvedValue(undefined);
+    render(<ChatClient />);
+
+    act(() => chatHistory.emitChats([{ id: 'chat-1', title: 'How is Nux' }]));
+    fireEvent.click(screen.getByRole('button', { name: 'rename How is Nux' }));
+
+    await waitFor(() =>
+      expect(chatHistory.renameChat).toHaveBeenCalledWith('chat-1', 'How is Nux renamed'),
+    );
+  });
+
+  it('shows a history error when a chat cannot be renamed', async () => {
+    mockUseAuth.mockReturnValue(SIGNED_IN_AUTH);
+    chatHistory.renameChat.mockRejectedValue(new Error('permission-denied'));
+    render(<ChatClient />);
+
+    act(() => chatHistory.emitChats([{ id: 'chat-1', title: 'How is Nux' }]));
+    fireEvent.click(screen.getByRole('button', { name: 'rename How is Nux' }));
+
+    await waitFor(() =>
+      expect(
+        screen.getByText('That chat could not be renamed. Please try again.'),
+      ).toBeInTheDocument(),
+    );
   });
 });

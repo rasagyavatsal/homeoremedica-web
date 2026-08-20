@@ -95,7 +95,7 @@ function ChatMessageView({ message }: Readonly<{ message: ChatMessage }>) {
       <div className="flex justify-end">
         <p
           className={cn(
-            'w-fit max-w-dialog whitespace-pre-wrap break-words border border-border bg-card px-4 py-3 text-sm leading-relaxed text-foreground',
+            'w-fit max-w-chat-bubble whitespace-pre-wrap break-words border border-border bg-card px-4 py-3 text-sm leading-relaxed text-foreground',
             messageBubbleRadius(message.content),
           )}
         >
@@ -129,7 +129,7 @@ export function ChatThread({
   threadEndRef: RefObject<HTMLDivElement | null>;
 }>) {
   return (
-    <section aria-label="Conversation" className="mx-auto w-full max-w-3xl px-4 py-2 sm:px-6 lg:py-6">
+    <section aria-label="Conversation" className="mx-auto w-full max-w-2xl px-6 py-2 lg:py-6">
       <MotionGroup className="space-y-6">
         {messages.map((message) => (
           <MotionItem key={message.id}>
@@ -152,7 +152,7 @@ export function ChatThread({
 
 export function ChatError({ error }: Readonly<{ error: string }>) {
   return (
-    <div className="mx-auto w-full max-w-3xl px-4 pb-3 sm:px-6">
+    <div className="mx-auto w-full max-w-2xl px-6 pb-3">
       <Callout variant="destructive" className="text-sm">
         {error}
       </Callout>
@@ -187,7 +187,7 @@ export function ChatComposer({
 
   return (
     <div className="sticky bottom-3 z-40 mt-auto">
-      <div className="mx-auto w-full max-w-3xl px-4 sm:px-6">
+      <div className="mx-auto w-full max-w-2xl px-6">
         <form
           onSubmit={handleSubmit}
           className={cn(

@@ -118,6 +118,7 @@
     --size-touch: 2.75rem;
     --size-dialog-gutter: 1rem;
     --layout-reading: 42rem;
+    --layout-chat-bubble: 75%;
     --layout-content: 72rem;
     --layout-wide: 82rem;
     --layout-dialog: 32rem;
@@ -265,6 +266,16 @@
   @keyframes quiet-sheet-out {
     from { opacity: 1; transform: translateY(0); }
     to { opacity: 0; transform: translateY(var(--motion-distance-page)); }
+  }
+
+  @keyframes quiet-sheet-side-in {
+    from { opacity: 0; transform: translateX(-100%); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  @keyframes quiet-sheet-side-out {
+    from { opacity: 1; transform: translateX(0); }
+    to { opacity: 0; transform: translateX(-100%); }
   }
 
   * {
@@ -422,6 +433,12 @@
   .motion-overlay-sheet[data-state="closed"] {
     animation: quiet-sheet-out var(--motion-duration-item) var(--motion-ease-standard);
   }
+  .motion-overlay-sheet-side[data-state="open"] {
+    animation: quiet-sheet-side-in var(--motion-duration-overlay) var(--motion-ease-standard);
+  }
+  .motion-overlay-sheet-side[data-state="closed"] {
+    animation: quiet-sheet-side-out var(--motion-duration-item) var(--motion-ease-standard);
+  }
 
   .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
   .safe-top { padding-top: env(safe-area-inset-top); }
@@ -447,6 +464,10 @@
 
   .overlay-sheet-position {
     height: calc(100dvh - var(--space-4));
+  }
+
+  .overlay-sheet-side-position {
+    height: 100dvh;
   }
 
   .overlay-responsive-position {

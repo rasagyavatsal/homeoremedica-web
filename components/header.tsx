@@ -6,7 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { ArrowUpRight, LogOut, Menu, Settings, Smartphone, X } from 'lucide-react';
 
 import { BrandLockup } from '@/components/brand-lockup';
-import { ThemeToggle } from '@/components/theme-toggle';
+import { ThemeMenuItem, ThemeToggle } from '@/components/theme-toggle';
 import { Button } from '@/components/ui/button';
 import { NavLink } from '@/components/ui/interactive';
 import { MotionSection } from '@/components/ui/motion';
@@ -94,15 +94,17 @@ export function Header() {
                       <p className="text-sm font-medium text-foreground">{user.displayName || 'Account'}</p>
                       <p className="truncate text-xs text-on-surface-variant">{user.email}</p>
                     </div>
+                    <ThemeMenuItem />
                     {usesGoogleProvider ? null : (
                       <>
+                        <DropdownMenuSeparator />
                         <DropdownMenuItem className="mt-1 cursor-pointer" onClick={() => router.push('/settings')}>
                           <Settings className="mr-2 h-4 w-4" />
                           Settings
                         </DropdownMenuItem>
-                        <DropdownMenuSeparator />
                       </>
                     )}
+                    <DropdownMenuSeparator />
                     <DropdownMenuItem className="cursor-pointer text-destructive focus:text-destructive" onClick={handleLogout}>
                       <LogOut className="mr-2 h-4 w-4" />
                       Log out
