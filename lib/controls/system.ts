@@ -17,8 +17,8 @@ export const controlVariants = cva(
         "inline-link": "min-h-touch px-1.5",
         pill: "min-h-touch px-3 py-2 text-sm",
       },
-      // Controls are short enough that generous curves would collide on an
-      // edge, so every shape resolves to the pill radius (--radius-full).
+      // Controls are short enough that two corner curves would collide on
+      // an edge, so every shape resolves to the pill radius (--radius-full).
       shape: {
         default: "rounded-full",
         sm: "rounded-full",

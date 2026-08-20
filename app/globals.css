@@ -134,14 +134,15 @@
     --aspect-preview-mobile: 9 / 16;
 
     /* Shape, depth, and stroke tokens.
-       Radii stay generous so every surface reads highly curved; short
-       elements collapse to the pill radius (--radius-full) instead of
-       letting two curves collide on the same edge. */
-    --radius: 1.5rem;
-    --radius-sm: 0.875rem;
-    --radius-lg: 1.75rem;
-    --radius-xl: 2rem;
-    --radius-2xl: 2.5rem;
+       Radii stay restrained so surfaces read calm rather than bubbly, and
+       climb a uniform 0.25rem ladder from sm through 2xl. Short elements
+       collapse to the pill radius (--radius-full) instead of letting two
+       curves collide on the same edge. */
+    --radius: 0.75rem;
+    --radius-sm: 0.5rem;
+    --radius-lg: 1rem;
+    --radius-xl: 1.25rem;
+    --radius-2xl: 1.5rem;
     --radius-full: 9999px;
     --stroke-hairline: 1px;
     --stroke-strong: 2px;

@@ -36,7 +36,7 @@ const MESSAGE_COLLAPSE_LENGTH = 320;
 /**
  * Short messages read as pills; once a message wraps to several lines the
  * pill end-caps would clip into the first and last lines, so larger messages
- * collapse to the same heavily curved radius as the home page surfaces.
+ * collapse to the same 2xl surface radius as the home page cards.
  */
 function messageBubbleRadius(content: string) {
   const isLong = content.length > BUBBLE_PILL_MAX_LENGTH || content.includes('\n');
