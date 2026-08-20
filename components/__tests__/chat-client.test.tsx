@@ -186,6 +186,27 @@ describe('ChatClient', () => {
     expect(screen.getByText(/Irritable\./)).toBeInTheDocument();
   });
 
+  it('collapses a long message behind a Show more toggle', async () => {
+    mockSendChatMessage.mockResolvedValue(makeResponse());
+    render(<ChatClient />);
+
+    const longMessage = `Nux vomica ${'irritable '.repeat(60)}`.trim();
+    typeAndSend(longMessage);
+    await waitFor(() => expect(screen.getByText(ANSWER_BODY)).toBeInTheDocument());
+
+    expect(screen.queryByText(longMessage)).not.toBeInTheDocument();
+    const showMore = screen.getByRole('button', { name: 'Show more' });
+    expect(showMore).toHaveAttribute('aria-expanded', 'false');
+
+    fireEvent.click(showMore);
+    expect(screen.getByText(longMessage)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Show less' })).toHaveAttribute('aria-expanded', 'true');
+
+    fireEvent.click(screen.getByRole('button', { name: 'Show less' }));
+    expect(screen.queryByText(longMessage)).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Show more' })).toBeInTheDocument();
+  });
+
   it('restores the draft and shows an error when the request fails', async () => {
     mockSendChatMessage.mockRejectedValue({
       code: 'UPSTREAM_UNAVAILABLE',

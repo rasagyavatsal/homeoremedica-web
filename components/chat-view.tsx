@@ -78,6 +78,7 @@ function ChatSources({ sources }: Readonly<{ sources: ChatSource[] }>) {
 }
 
 const BUBBLE_PILL_MAX_LENGTH = 140;
+const MESSAGE_COLLAPSE_LENGTH = 320;
 
 /**
  * Short messages read as pills; once a message wraps to several lines the
@@ -89,20 +90,52 @@ function messageBubbleRadius(content: string) {
   return isLong ? 'rounded-2xl' : 'rounded-full';
 }
 
-function ChatMessageView({ message }: Readonly<{ message: ChatMessage }>) {
-  if (message.role === 'user') {
-    return (
-      <div className="flex justify-end">
+/**
+ * Cuts a long message at a word boundary for the collapsed preview, or
+ * returns null when the message is short enough to render in full.
+ */
+function truncateMessage(content: string) {
+  if (content.length <= MESSAGE_COLLAPSE_LENGTH) return null;
+
+  const boundary = content.lastIndexOf(' ', MESSAGE_COLLAPSE_LENGTH);
+  const end = boundary > MESSAGE_COLLAPSE_LENGTH / 2 ? boundary : MESSAGE_COLLAPSE_LENGTH;
+  return `${content.slice(0, end)}…`;
+}
+
+function UserMessageView({ content }: Readonly<{ content: string }>) {
+  const [expanded, setExpanded] = useState(false);
+  const collapsedText = truncateMessage(content);
+  const isCollapsible = collapsedText !== null;
+
+  return (
+    <div className="flex justify-end">
+      <div className="flex min-w-0 flex-col items-end">
         <p
           className={cn(
             'w-fit max-w-chat-bubble whitespace-pre-wrap break-words border border-border bg-card px-4 py-3 text-sm leading-relaxed text-foreground',
-            messageBubbleRadius(message.content),
+            messageBubbleRadius(content),
           )}
         >
-          {message.content}
+          {isCollapsible && !expanded ? collapsedText : content}
         </p>
+        {isCollapsible ? (
+          <button
+            type="button"
+            onClick={() => setExpanded((current) => !current)}
+            aria-expanded={expanded}
+            className="mt-1.5 text-xs font-medium text-primary transition-opacity hover:opacity-80 focus-visible:outline-none"
+          >
+            {expanded ? 'Show less' : 'Show more'}
+          </button>
+        ) : null}
       </div>
-    );
+    </div>
+  );
+}
+
+function ChatMessageView({ message }: Readonly<{ message: ChatMessage }>) {
+  if (message.role === 'user') {
+    return <UserMessageView content={message.content} />;
   }
 
   return (
