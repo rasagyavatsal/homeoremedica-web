@@ -268,14 +268,14 @@ export function ChatSidebar({
           if (!open) setRenameChatId(null);
         }}
       >
-        <DialogContent>
-          <DialogHeader className="px-6 pt-6">
+        <DialogContent className="flex max-h-viewport-dialog flex-col">
+          <DialogHeader className="shrink-0 px-6 pt-6">
             <DialogTitle>Rename chat</DialogTitle>
             <DialogDescription className="truncate">
               {renameChat?.title ?? ''}
             </DialogDescription>
           </DialogHeader>
-          <div className="px-6 pt-4">
+          <div className="min-h-0 flex-1 overflow-y-auto px-6 pt-4">
             <Field>
               <FieldLabel htmlFor="chat-rename">Chat title</FieldLabel>
               <Input
@@ -287,7 +287,7 @@ export function ChatSidebar({
               <FieldHint>Up to {CHAT_TITLE_MAX_LENGTH} characters</FieldHint>
             </Field>
           </div>
-          <DialogFooter className="px-6 pb-6">
+          <DialogFooter className="shrink-0 px-6 pb-6">
             <DialogClose asChild>
               <Button variant="outline">Cancel</Button>
             </DialogClose>
