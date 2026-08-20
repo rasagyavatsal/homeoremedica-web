@@ -239,7 +239,18 @@ export function ChatComposer({
               placeholder="Ask about a remedy or symptom…"
               onChange={(event) => onDraftChange(event.target.value)}
               onKeyDown={handleKeyDown}
-              className="flex-1 resize-none overflow-y-auto border-0 bg-transparent py-2.5 text-base leading-relaxed text-foreground placeholder:text-muted-foreground focus-visible:outline-none"
+              className={cn(
+                'flex-1 resize-none overflow-y-auto border-0 bg-transparent py-2.5 text-base leading-relaxed text-foreground placeholder:text-muted-foreground focus-visible:outline-none',
+                // Thin scrollbar flush with the right edge of the bar; overflow-y-auto
+                // keeps it hidden until the capped height actually overflows.
+                'scrollbar-thin',
+                '[scrollbar-color:hsl(var(--foreground)/var(--scrollbar-alpha))_transparent]',
+                '[&::-webkit-scrollbar]:w-1',
+                '[&::-webkit-scrollbar-track]:bg-transparent',
+                '[&::-webkit-scrollbar-thumb]:rounded-full',
+                '[&::-webkit-scrollbar-thumb]:bg-[hsl(var(--foreground)/var(--scrollbar-alpha))]',
+                '[&::-webkit-scrollbar-thumb:hover]:bg-[hsl(var(--foreground)/var(--scrollbar-hover-alpha))]',
+              )}
             />
             <Button
               type="submit"

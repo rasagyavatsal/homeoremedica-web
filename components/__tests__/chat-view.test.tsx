@@ -57,7 +57,11 @@ describe('ChatComposer', () => {
     rerenderWithDraft('Nux vomica '.repeat(50));
 
     expect(textarea.style.height).toBe(`${COMPOSER_MAX_HEIGHT_PX}px`);
+    // Only renders when it overflows, and hugs the right edge as a thin line.
     expect(textarea.className).toContain('overflow-y-auto');
+    expect(textarea.className).toContain('scrollbar-thin');
+    expect(textarea.className).toContain('[&::-webkit-scrollbar-track]:bg-transparent');
+    expect(textarea.className).toContain('[&::-webkit-scrollbar]:w-1');
   });
 
   it('shrinks back as the draft is cleared', () => {
