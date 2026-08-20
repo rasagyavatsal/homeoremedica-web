@@ -1,5 +1,30 @@
 # Changelog
 
+## [6.1.0](https://github.com/rasagyavatsal/homeoremedica-web/compare/homeoremedica-web-v6.0.0...homeoremedica-web-v6.1.0) (2026-08-20)
+
+
+### Features
+
+* add Firestore-backed chat history sidebar ([add9f64](https://github.com/rasagyavatsal/homeoremedica-web/commit/add9f644c96a014ce67c559dd557ba6a6911b6a2))
+* add Firestore-backed chat history sidebar ([1994499](https://github.com/rasagyavatsal/homeoremedica-web/commit/19944999545eab9b03627d252237e7f15c16586d))
+* adopt highly curved, pill-first radius system ([f3cdd00](https://github.com/rasagyavatsal/homeoremedica-web/commit/f3cdd007469209e5a5aea1c03a04706dbf6e800f))
+* adopt highly curved, pill-first radius system ([e886672](https://github.com/rasagyavatsal/homeoremedica-web/commit/e886672a529995f4108656863a2a81f3ff7dcccd))
+* **chat:** clean citations, bold starred text, and keep Show more in-bubble ([8cee626](https://github.com/rasagyavatsal/homeoremedica-web/commit/8cee62646c9a3875b393e1327644244f75e5db7f))
+* **chat:** collapse long messages, fix rename dialog, and tidy the thread ([9a972ba](https://github.com/rasagyavatsal/homeoremedica-web/commit/9a972bab6dc31bd6b957da183e142450ccc4321e))
+* **chat:** collapse long user messages behind a Show more toggle ([007813d](https://github.com/rasagyavatsal/homeoremedica-web/commit/007813df1614bf01868d0aa4333f10218b014fa8))
+* mobile chat layout, side-drawer history, and per-chat options ([ecfdfef](https://github.com/rasagyavatsal/homeoremedica-web/commit/ecfdfef24b65c2f205a160a1acb1579ad415aa02))
+* move chat page chrome into full-bleed sidebar layout ([36ed12f](https://github.com/rasagyavatsal/homeoremedica-web/commit/36ed12f9f33cf893995b23220a4232bebc78206e))
+* move chat page chrome into full-bleed sidebar layout ([1269e96](https://github.com/rasagyavatsal/homeoremedica-web/commit/1269e96ce077f903d818b1ef87524fe1e3ccb751))
+* polish chat mobile layout, sidebar sheet, and chat options ([2f08333](https://github.com/rasagyavatsal/homeoremedica-web/commit/2f08333b61b38aee5dafe69213dbe77d4eb3af82))
+
+
+### Bug Fixes
+
+* **chat:** bold single-star emphasis and strip orphan asterisks from answers ([ce5ba22](https://github.com/rasagyavatsal/homeoremedica-web/commit/ce5ba220c4d41f53e52b01098b60da227e580b58))
+* **chat:** keep rename dialog on-screen at short viewport heights ([2426d9b](https://github.com/rasagyavatsal/homeoremedica-web/commit/2426d9b634b93ae0086144f3e3a81d0b3af3deb5))
+* polish chat composer, bubbles, and history sidebar ([39fe627](https://github.com/rasagyavatsal/homeoremedica-web/commit/39fe627b0ecc9b5f045f586d118f45f794268c9d))
+* polish chat composer, bubbles, and history sidebar ([cad3fea](https://github.com/rasagyavatsal/homeoremedica-web/commit/cad3fea8a8b6fea72fc6163a9a28d1177504a1bd))
+
 ## [6.0.0](https://github.com/rasagyavatsal/homeoremedica-web/compare/homeoremedica-web-v5.4.0...homeoremedica-web-v6.0.0) (2026-08-18)
 
 
