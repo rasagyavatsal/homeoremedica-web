@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { History, Plus } from 'lucide-react';
+import { History } from 'lucide-react';
 
 import {
   ChatComposer,
@@ -104,9 +104,6 @@ export default function ChatClient() {
     setDraft('');
     setError(null);
     setIsSending(true);
-    if (textareaRef.current) {
-      textareaRef.current.style.height = 'auto';
-    }
 
     try {
       const response = await apiClient.sendChatMessage({ message: text, history });
@@ -182,10 +179,10 @@ export default function ChatClient() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-background text-foreground">
+    <div className="flex h-dvh flex-col overflow-hidden bg-background text-foreground">
       <Header />
 
-      <div className="mx-auto flex w-full max-w-6xl flex-1 items-stretch">
+      <div className="mx-auto flex min-h-0 w-full max-w-6xl flex-1 items-stretch">
         <aside
           aria-label="Chat history sidebar"
           className="hidden w-72 shrink-0 flex-col border-r border-border lg:flex"
@@ -201,25 +198,17 @@ export default function ChatClient() {
           />
         </aside>
 
-        <main className="flex min-w-0 flex-1 flex-col">
-          <div className="mx-auto flex w-full max-w-3xl items-center justify-between gap-2 px-4 pt-3 sm:px-6 lg:pt-4">
+        <main className="flex min-h-0 min-w-0 flex-1 flex-col overflow-y-auto">
+          <div className="mx-auto flex w-full max-w-3xl px-4 pt-3 sm:px-6 lg:hidden">
             <Button
               variant="ghost"
               size="sm"
-              className="gap-2 lg:hidden"
+              className="gap-2"
               onClick={() => setIsSidebarOpen(true)}
             >
               <History aria-hidden="true" className="h-4 w-4" />
               History
             </Button>
-            {hasMessages ? (
-              <Button variant="ghost" size="sm" className="gap-2" onClick={startNewChat}>
-                <Plus aria-hidden="true" className="h-4 w-4" />
-                New chat
-              </Button>
-            ) : (
-              <span aria-hidden="true" />
-            )}
           </div>
 
           {hasMessages ? (

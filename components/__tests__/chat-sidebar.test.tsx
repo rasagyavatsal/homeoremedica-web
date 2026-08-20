@@ -86,10 +86,16 @@ describe('ChatSidebar', () => {
     expect(props.onNavigate).toHaveBeenCalled();
   });
 
-  it('deletes a chat after inline confirmation', () => {
+  it('deletes a chat after confirming in the modal', () => {
     const props = renderSidebar();
 
     fireEvent.click(screen.getByRole('button', { name: 'Delete chat Arsenicum anxiety' }));
+
+    expect(screen.getByRole('dialog', { name: 'Delete chat?' })).toBeInTheDocument();
+    expect(
+      screen.getByText(/"Arsenicum anxiety" will be permanently deleted\. This cannot be undone\./),
+    ).toBeInTheDocument();
+
     fireEvent.click(screen.getByRole('button', { name: 'Delete' }));
 
     expect(props.onDeleteChat).toHaveBeenCalledWith('chat-2');
