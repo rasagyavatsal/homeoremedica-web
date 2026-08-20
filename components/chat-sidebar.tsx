@@ -138,13 +138,13 @@ export function ChatSidebar({
             </div>
           ) : (
             chats.map((chat) => (
-              <div key={chat.id} className="group relative flex items-center rounded-full">
+              <div key={chat.id} className="group relative flex items-center rounded-md">
                 <button
                   type="button"
                   onClick={() => handleSelect(chat.id)}
                   aria-current={chat.id === activeChatId ? 'true' : undefined}
                   className={cn(
-                    'flex min-h-touch min-w-0 flex-1 items-center gap-2.5 rounded-full px-3 py-2 pr-10 text-left text-sm transition-colors',
+                    'flex min-h-touch min-w-0 flex-1 items-center gap-2.5 rounded-md px-3 py-2 pr-10 text-left text-sm transition-colors',
                     chat.id === activeChatId
                       ? 'bg-accent font-medium text-accent-foreground'
                       : 'text-on-surface-variant hover:bg-surface-container-low hover:text-foreground',
@@ -164,7 +164,7 @@ export function ChatSidebar({
                     <button
                       type="button"
                       aria-label={`Chat options for ${chat.title}`}
-                      className="absolute right-1.5 rounded-full p-1.5 text-on-surface-variant opacity-60 transition-colors hover:text-foreground focus-visible:text-foreground group-hover:opacity-100 data-[state=open]:opacity-100"
+                      className="absolute right-1.5 rounded-md p-1.5 text-on-surface-variant opacity-60 transition-colors hover:text-foreground focus-visible:text-foreground group-hover:opacity-100 data-[state=open]:opacity-100"
                     >
                       <MoreVertical aria-hidden="true" className="h-4 w-4" />
                     </button>
@@ -202,7 +202,7 @@ export function ChatSidebar({
               >
                 <span
                   aria-hidden="true"
-                  className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-accent text-sm font-medium text-accent-foreground"
+                  className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-accent text-sm font-medium text-accent-foreground"
                 >
                   {user.displayName?.[0]?.toUpperCase() || user.email?.[0]?.toUpperCase() || 'U'}
                 </span>
