@@ -79,6 +79,7 @@ const config: Config = {
         '6xl': 'var(--layout-content)', breadcrumb: 'var(--layout-breadcrumb)',
         'preview-desktop': 'var(--layout-preview-desktop)',
         'preview-mobile': 'var(--layout-preview-mobile)',
+        'chat-bubble': 'var(--layout-chat-bubble)',
       },
       aspectRatio: {
         'preview-desktop': 'var(--aspect-preview-desktop)',

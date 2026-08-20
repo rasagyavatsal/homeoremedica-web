@@ -8,6 +8,7 @@ import { useTheme } from '@/lib/contexts/theme-context'
 import { MOTION_DURATIONS, MOTION_EASING } from '@/lib/motion/system'
 import { cn } from '@/lib/utils'
 import { buttonVariants } from '@/components/ui/button'
+import { DropdownMenuItem } from '@/components/ui/dropdown-menu'
 
 export function ThemeToggle({ className }: Readonly<{ className?: string }>) {
   const { resolvedTheme, toggleTheme } = useTheme()
@@ -51,5 +52,28 @@ export function ThemeToggle({ className }: Readonly<{ className?: string }>) {
         {actionLabel}
       </span>
     </button>
+  )
+}
+
+/**
+ * Menu-row variant of the theme toggle for account dropdowns. Keeps the menu
+ * open after switching so the visible theme change reads as feedback.
+ */
+export function ThemeMenuItem() {
+  const { resolvedTheme, toggleTheme } = useTheme()
+  const actionLabel = resolvedTheme === 'dark' ? 'Use light mode' : 'Use dark mode'
+  const Icon = resolvedTheme === 'dark' ? Sun : Moon
+
+  return (
+    <DropdownMenuItem
+      className="cursor-pointer"
+      onSelect={(event) => {
+        event.preventDefault();
+        toggleTheme();
+      }}
+    >
+      <Icon className="mr-2 h-4 w-4" />
+      {actionLabel}
+    </DropdownMenuItem>
   )
 }
