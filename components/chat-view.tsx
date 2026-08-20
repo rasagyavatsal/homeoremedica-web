@@ -2,16 +2,15 @@
 
 import type { FormEvent, KeyboardEvent, RefObject } from 'react';
 import { useState } from 'react';
-import { ArrowUp, BookOpen, ChevronDown, Loader2 } from 'lucide-react';
+import { ArrowUp, ChevronDown, ChevronUp, Loader2 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Callout } from '@/components/ui/callout';
 import { MotionGroup, MotionItem, MotionSection } from '@/components/ui/motion';
-import { CHAT_SAFETY_NOTICE } from '@/lib/chat-answer';
+import { cleanAnswerCitations } from '@/lib/chat-answer';
 import { motionClassNames } from '@/lib/motion/system';
-import { getBookName } from '@/lib/seo/book-data';
 import type { ChatSource } from '@/lib/types/chat';
-import { cn, formatRemedyDisplayName } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 
 export interface ChatMessage {
   id: string;
@@ -25,59 +24,14 @@ export function ChatEmptyState() {
     <MotionSection className="flex min-h-0 flex-1 flex-col items-center justify-center px-4 text-center sm:px-6">
       <h1 className="display-sm">Ask the materia medica</h1>
       <p className="balanced-copy mt-5 max-w-md text-base leading-relaxed text-on-surface-variant md:text-lg">
-        Answers cite passages from Clarke, Boericke, Kent, and Allen.
+        Answers draw only from Clarke, Boericke, Kent, and Allen.
       </p>
     </MotionSection>
   );
 }
 
-function ChatSources({ sources }: Readonly<{ sources: ChatSource[] }>) {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <div>
-      <Button
-        type="button"
-        variant="ghost"
-        size="sm"
-        className="-ml-2 gap-2"
-        onClick={() => setOpen((current) => !current)}
-        aria-expanded={open}
-      >
-        <BookOpen className="h-4 w-4" />
-        <span>
-          {sources.length} {sources.length === 1 ? 'source' : 'sources'}
-        </span>
-        <ChevronDown aria-hidden="true" className={cn('h-4 w-4 transition-transform', open && 'rotate-180')} />
-      </Button>
-
-      {open ? (
-        <ol className="mt-2 overflow-hidden rounded-2xl border border-border bg-card">
-          {sources.map((source, index) => (
-            <li key={source.id} className="border-b border-border p-4 last:border-b-0 md:p-5">
-              <div className="flex items-baseline gap-3">
-                <span aria-hidden="true" className="index-label shrink-0 text-primary">
-                  [{index + 1}]
-                </span>
-                <div className="min-w-0">
-                  <p className="text-sm font-medium text-foreground">
-                    {formatRemedyDisplayName(source.remedyName)} · {source.sectionTitle}
-                  </p>
-                  <p className="index-label mt-1">{getBookName(source.bookId)}</p>
-                </div>
-              </div>
-              <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-on-surface-variant">
-                {source.text}
-              </p>
-            </li>
-          ))}
-        </ol>
-      ) : null}
-    </div>
-  );
-}
-
 const BUBBLE_PILL_MAX_LENGTH = 140;
+const MESSAGE_COLLAPSE_LENGTH = 320;
 
 /**
  * Short messages read as pills; once a message wraps to several lines the
@@ -89,20 +43,103 @@ function messageBubbleRadius(content: string) {
   return isLong ? 'rounded-2xl' : 'rounded-full';
 }
 
-function ChatMessageView({ message }: Readonly<{ message: ChatMessage }>) {
-  if (message.role === 'user') {
-    return (
-      <div className="flex justify-end">
-        <p
+/**
+ * Cuts a long message at a word boundary for the collapsed preview, or
+ * returns null when the message is short enough to render in full.
+ */
+function truncateMessage(content: string) {
+  if (content.length <= MESSAGE_COLLAPSE_LENGTH) return null;
+
+  const boundary = content.lastIndexOf(' ', MESSAGE_COLLAPSE_LENGTH);
+  const end = boundary > MESSAGE_COLLAPSE_LENGTH / 2 ? boundary : MESSAGE_COLLAPSE_LENGTH;
+  return `${content.slice(0, end)}…`;
+}
+
+function UserMessageView({ content }: Readonly<{ content: string }>) {
+  const [expanded, setExpanded] = useState(false);
+  const collapsedText = truncateMessage(content);
+  const isCollapsible = collapsedText !== null;
+
+  return (
+    <div className="flex justify-end">
+      <div className="flex min-w-0 flex-col items-end">
+        <div
           className={cn(
-            'w-fit max-w-chat-bubble whitespace-pre-wrap break-words border border-border bg-card px-4 py-3 text-sm leading-relaxed text-foreground',
-            messageBubbleRadius(message.content),
+            'w-fit max-w-chat-bubble border border-border bg-card px-4 py-3 text-sm leading-relaxed text-foreground',
+            messageBubbleRadius(content),
           )}
         >
-          {message.content}
-        </p>
+          <p className="whitespace-pre-wrap break-words">
+            {isCollapsible && !expanded ? collapsedText : content}
+          </p>
+          {isCollapsible ? (
+            <button
+              type="button"
+              onClick={() => setExpanded((current) => !current)}
+              aria-expanded={expanded}
+              className="mt-2 flex items-center gap-1 text-xs font-medium text-primary transition-opacity hover:opacity-80 focus-visible:outline-none"
+            >
+              {expanded ? 'Show less' : 'Show more'}
+              {expanded ? (
+                <ChevronUp aria-hidden="true" className="h-3.5 w-3.5" />
+              ) : (
+                <ChevronDown aria-hidden="true" className="h-3.5 w-3.5" />
+              )}
+            </button>
+          ) : null}
+        </div>
       </div>
-    );
+    </div>
+  );
+}
+
+type EmphasisRun = { type: 'text' | 'strong'; value: string };
+
+const EMPHASIS_PATTERN = /(\*\*[^*]+\*\*)|\*([^*\n]+)\*/g;
+
+/**
+ * Splits an answer paragraph into text and strong runs. Balanced **bold**
+ * and *starred* runs become strong; any orphan asterisks left in plain text
+ * are dropped so a stray star never renders.
+ */
+function parseEmphasisRuns(text: string): EmphasisRun[] {
+  const runs: EmphasisRun[] = [];
+  let cursor = 0;
+
+  for (const match of text.matchAll(EMPHASIS_PATTERN)) {
+    const index = match.index ?? 0;
+    if (index > cursor) runs.push({ type: 'text', value: text.slice(cursor, index) });
+    const value = match[1] !== undefined ? match[1].slice(2, -2) : (match[2] ?? '');
+    runs.push({ type: 'strong', value });
+    cursor = index + match[0].length;
+  }
+  if (cursor < text.length) runs.push({ type: 'text', value: text.slice(cursor) });
+
+  return runs
+    .map((run) => (run.type === 'text' ? { ...run, value: run.value.replace(/\*/g, '') } : run))
+    .filter((run) => run.value !== '');
+}
+
+/** Renders starred and double-starred spans in assistant answers as bold text. */
+function BoldText({ text }: Readonly<{ text: string }>) {
+  return (
+    <>
+      {parseEmphasisRuns(text).map((run, index) =>
+        run.type === 'strong' ? (
+          <strong key={index} className="font-semibold">
+            {run.value}
+          </strong>
+        ) : (
+          run.value
+        ),
+      )}
+    </>
+  );
+}
+
+function ChatMessageView({ message }: Readonly<{ message: ChatMessage }>) {
+  if (message.role === 'user') {
+    return <UserMessageView content={message.content} />;
   }
 
   return (
@@ -110,11 +147,10 @@ function ChatMessageView({ message }: Readonly<{ message: ChatMessage }>) {
       <div className="space-y-3">
         {message.content.split(/\n{2,}/).map((paragraph, index) => (
           <p key={index} className="text-base leading-relaxed text-foreground">
-            {paragraph}
+            <BoldText text={cleanAnswerCitations(paragraph)} />
           </p>
         ))}
       </div>
-      {message.sources && message.sources.length > 0 ? <ChatSources sources={message.sources} /> : null}
     </article>
   );
 }
@@ -225,9 +261,6 @@ export function ChatComposer({
             </Button>
           </div>
         </form>
-        <p className="mt-2 text-center text-xs leading-relaxed text-on-surface-variant">
-          {CHAT_SAFETY_NOTICE}
-        </p>
       </div>
     </div>
   );

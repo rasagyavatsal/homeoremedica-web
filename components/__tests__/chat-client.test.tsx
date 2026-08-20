@@ -77,6 +77,7 @@ import ChatClient from '@/components/chat-client';
 import { CHAT_SAFETY_NOTICE } from '@/lib/chat-answer';
 
 const ANSWER_BODY = 'Nux vomica is irritable and chilly [1].';
+const ANSWER_DISPLAY = 'Nux vomica is irritable and chilly.';
 const SIGNED_IN_AUTH = {
   user: { uid: 'user-1', email: 'test@example.com', displayName: 'Test User' },
   loading: false,
@@ -115,13 +116,13 @@ describe('ChatClient', () => {
     mockUseAuth.mockReturnValue({ user: null, loading: false, token: null });
   });
 
-  it('opens on an empty state with the persistent safety notice', () => {
+  it('opens on an empty state with no safety notice below the bar', () => {
     render(<ChatClient />);
 
     expect(
       screen.getByRole('heading', { name: 'Ask the materia medica' }),
     ).toBeInTheDocument();
-    expect(screen.getAllByText(CHAT_SAFETY_NOTICE)).toHaveLength(1);
+    expect(screen.queryByText(CHAT_SAFETY_NOTICE)).not.toBeInTheDocument();
     // The chat column no longer carries its own New chat control; the
     // mobile hamburger toggle remains so the sidebar sheet stays reachable.
     expect(screen.queryByRole('button', { name: 'New chat' })).not.toBeInTheDocument();
@@ -141,15 +142,15 @@ describe('ChatClient', () => {
 
     typeAndSend('How is Nux vomica described?');
 
-    await waitFor(() => expect(screen.getByText(ANSWER_BODY)).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText(ANSWER_DISPLAY)).toBeInTheDocument());
 
     expect(mockSendChatMessage).toHaveBeenCalledWith({
       message: 'How is Nux vomica described?',
       history: [],
     });
     expect(screen.getByText('How is Nux vomica described?')).toBeInTheDocument();
-    // The composer notice stays the only visible copy of the safety text.
-    expect(screen.getAllByText(CHAT_SAFETY_NOTICE)).toHaveLength(1);
+    // The safety notice lives only inside the backend answer and never renders.
+    expect(screen.queryByText(CHAT_SAFETY_NOTICE)).not.toBeInTheDocument();
   });
 
   it('sends prior turns as history on the next question', async () => {
@@ -157,7 +158,7 @@ describe('ChatClient', () => {
     render(<ChatClient />);
 
     typeAndSend('First question');
-    await waitFor(() => expect(screen.getByText(ANSWER_BODY)).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText(ANSWER_DISPLAY)).toBeInTheDocument());
 
     typeAndSend('Tell me more');
     await waitFor(() =>
@@ -171,19 +172,59 @@ describe('ChatClient', () => {
     );
   });
 
-  it('reveals cited passages from the sources toggle', async () => {
+  it('keeps backend sources out of the visible thread', async () => {
     mockSendChatMessage.mockResolvedValue(makeResponse());
     render(<ChatClient />);
 
     typeAndSend('How is Nux vomica described?');
-    await waitFor(() => expect(screen.getByText(ANSWER_BODY)).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText(ANSWER_DISPLAY)).toBeInTheDocument());
 
+    expect(screen.queryByRole('button', { name: /source/i })).not.toBeInTheDocument();
+    expect(screen.queryByText(/Nux Vomica · Mind/)).not.toBeInTheDocument();
     expect(screen.queryByText(/Irritable\./)).not.toBeInTheDocument();
-    fireEvent.click(screen.getByRole('button', { name: /1 source/i }));
+  });
 
-    expect(screen.getByText(/Nux Vomica · Mind/)).toBeInTheDocument();
-    expect(screen.getByText('kent lectures')).toBeInTheDocument();
-    expect(screen.getByText(/Irritable\./)).toBeInTheDocument();
+  it('bolds starred phrases and strips citation numbers from answers', async () => {
+    mockSendChatMessage.mockResolvedValue(
+      makeResponse({
+        answer: `${CHAT_SAFETY_NOTICE}\n\n**Nux vomica** is chilly [1]. *Damp cold* aggravates, with a stray * at the end.`,
+      }),
+    );
+    render(<ChatClient />);
+
+    typeAndSend('How is Nux vomica described?');
+    await waitFor(() => expect(screen.getByText('Nux vomica')).toBeInTheDocument());
+
+    expect(screen.getByText('Nux vomica').tagName).toBe('STRONG');
+    expect(screen.getByText('Damp cold').tagName).toBe('STRONG');
+    expect(screen.getByText(/is chilly\./)).toBeInTheDocument();
+    expect(screen.queryByText(/\[1\]/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/\*/)).not.toBeInTheDocument();
+  });
+
+  it('collapses a long message behind a Show more toggle', async () => {
+    mockSendChatMessage.mockResolvedValue(makeResponse());
+    render(<ChatClient />);
+
+    const longMessage = `Nux vomica ${'irritable '.repeat(60)}`.trim();
+    typeAndSend(longMessage);
+    await waitFor(() => expect(screen.getByText(ANSWER_DISPLAY)).toBeInTheDocument());
+
+    expect(screen.queryByText(longMessage)).not.toBeInTheDocument();
+    const showMore = screen.getByRole('button', { name: 'Show more' });
+    expect(showMore).toHaveAttribute('aria-expanded', 'false');
+    // The toggle and its arrow sit inside the message bubble, not under it.
+    const bubble = showMore.closest('[class*="bg-card"]');
+    expect(bubble).toHaveTextContent(/Nux vomica irritable/);
+    expect(showMore.querySelector('svg')).not.toBeNull();
+
+    fireEvent.click(showMore);
+    expect(screen.getByText(longMessage)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Show less' })).toHaveAttribute('aria-expanded', 'true');
+
+    fireEvent.click(screen.getByRole('button', { name: 'Show less' }));
+    expect(screen.queryByText(longMessage)).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Show more' })).toBeInTheDocument();
   });
 
   it('restores the draft and shows an error when the request fails', async () => {
@@ -211,11 +252,11 @@ describe('ChatClient', () => {
     render(<ChatClient />);
 
     typeAndSend('How is Nux vomica described?');
-    await waitFor(() => expect(screen.getByText(ANSWER_BODY)).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText(ANSWER_DISPLAY)).toBeInTheDocument());
 
     fireEvent.click(screen.getByRole('button', { name: 'sidebar-new-chat' }));
 
-    expect(screen.queryByText(ANSWER_BODY)).not.toBeInTheDocument();
+    expect(screen.queryByText(ANSWER_DISPLAY)).not.toBeInTheDocument();
     expect(
       screen.getByRole('heading', { name: 'Ask the materia medica' }),
     ).toBeInTheDocument();
@@ -226,7 +267,7 @@ describe('ChatClient', () => {
     render(<ChatClient />);
 
     typeAndSend('How is Nux vomica described?');
-    await waitFor(() => expect(screen.getByText(ANSWER_BODY)).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText(ANSWER_DISPLAY)).toBeInTheDocument());
 
     expect(chatHistory.subscribeToChats).not.toHaveBeenCalled();
     expect(chatHistory.createChat).not.toHaveBeenCalled();
@@ -242,7 +283,7 @@ describe('ChatClient', () => {
     expect(chatHistory.subscribeToChats).toHaveBeenCalledWith('user-1', expect.any(Function), expect.any(Function));
 
     typeAndSend('How is Nux vomica described?');
-    await waitFor(() => expect(screen.getByText(ANSWER_BODY)).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText(ANSWER_DISPLAY)).toBeInTheDocument());
 
     expect(chatHistory.createChat).toHaveBeenCalledWith('user-1', [
       expect.objectContaining({ role: 'user', content: 'How is Nux vomica described?' }),
@@ -258,7 +299,7 @@ describe('ChatClient', () => {
     render(<ChatClient />);
 
     typeAndSend('First question');
-    await waitFor(() => expect(screen.getByText(ANSWER_BODY)).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText(ANSWER_DISPLAY)).toBeInTheDocument());
 
     typeAndSend('Tell me more');
     await waitFor(() =>
@@ -312,13 +353,13 @@ describe('ChatClient', () => {
     render(<ChatClient />);
 
     typeAndSend('How is Nux vomica described?');
-    await waitFor(() => expect(screen.getByText(ANSWER_BODY)).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText(ANSWER_DISPLAY)).toBeInTheDocument());
 
     act(() => chatHistory.emitChats([{ id: 'chat-1', title: 'How is Nux' }]));
     fireEvent.click(screen.getByRole('button', { name: 'delete How is Nux' }));
 
     await waitFor(() => expect(chatHistory.deleteChat).toHaveBeenCalledWith('chat-1'));
-    expect(screen.queryByText(ANSWER_BODY)).not.toBeInTheDocument();
+    expect(screen.queryByText(ANSWER_DISPLAY)).not.toBeInTheDocument();
     expect(screen.getByTestId('active-chat-id')).toHaveTextContent('none');
   });
 
@@ -330,7 +371,7 @@ describe('ChatClient', () => {
     render(<ChatClient />);
 
     typeAndSend('First question');
-    await waitFor(() => expect(screen.getByText(ANSWER_BODY)).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText(ANSWER_DISPLAY)).toBeInTheDocument());
 
     act(() =>
       chatHistory.emitChats([
@@ -341,7 +382,7 @@ describe('ChatClient', () => {
     fireEvent.click(screen.getByRole('button', { name: 'delete Older chat' }));
 
     await waitFor(() => expect(chatHistory.deleteChat).toHaveBeenCalledWith('chat-2'));
-    expect(screen.getByText(ANSWER_BODY)).toBeInTheDocument();
+    expect(screen.getByText(ANSWER_DISPLAY)).toBeInTheDocument();
     expect(screen.getByTestId('active-chat-id')).toHaveTextContent('chat-1');
   });
 
