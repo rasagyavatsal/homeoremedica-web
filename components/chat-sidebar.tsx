@@ -1,9 +1,11 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { MessageSquare, Plus, Trash2 } from 'lucide-react';
+import { LogOut, MessageSquare, Plus, Settings, Trash2 } from 'lucide-react';
 
+import { BrandLockup } from '@/components/brand-lockup';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -14,6 +16,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { isGoogleUser, signOutUser } from '@/lib/auth/firebase-auth';
 import { formatChatDate } from '@/lib/services/chat-history';
 import type { ChatSummary } from '@/lib/types/chat-history';
 import { cn } from '@/lib/utils';
@@ -29,7 +39,7 @@ export interface ChatSidebarUser {
  * - desktop: persistent aside on /chat
  * - mobile: inside the history Sheet
  * The owner (chat-client) supplies state and mutations; this component only
- * manages its own delete confirmation modal.
+ * manages its own delete confirmation modal and account actions.
  */
 export function ChatSidebar({
   user,
@@ -50,6 +60,7 @@ export function ChatSidebar({
   onDeleteChat: (chatId: string) => void;
   onNavigate?: () => void;
 }>) {
+  const router = useRouter();
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
   const pendingDeleteChat = chats.find((chat) => chat.id === pendingDeleteId) ?? null;
 
@@ -58,8 +69,30 @@ export function ChatSidebar({
     onNavigate?.();
   };
 
+  const handleLogout = async () => {
+    try {
+      await signOutUser();
+      router.push('/');
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
+
+  const usesGoogleProvider = user ? isGoogleUser() : false;
+
   return (
     <div className="flex min-h-0 flex-1 flex-col">
+      <div className="flex shrink-0 items-center border-b border-border px-3 py-2.5">
+        <Link
+          href="/"
+          aria-label="HomeoRemedica home"
+          className="inline-flex min-h-touch items-center"
+          onClick={onNavigate}
+        >
+          <BrandLockup />
+        </Link>
+      </div>
+
       <div className="shrink-0 border-b border-border p-3">
         <Button className="w-full justify-start gap-2" onClick={onNewChat}>
           <Plus aria-hidden="true" className="h-4 w-4" />
@@ -118,18 +151,77 @@ export function ChatSidebar({
           )}
         </nav>
       ) : (
-        <div className="m-3 rounded-xl border border-border bg-surface-container-low p-4">
-          <p className="text-sm font-medium text-foreground">Sign in to save your chats</p>
-          <p className="mt-1 text-xs leading-relaxed text-on-surface-variant">
-            Your chat history is saved to your account and available on every device.
-          </p>
-          <Button asChild size="sm" className="mt-3 w-full">
-            <Link href="/auth/login" onClick={onNavigate}>
-              Sign in
-            </Link>
-          </Button>
-        </div>
+        <div className="min-h-0 flex-1" aria-hidden="true" />
       )}
+
+      <div className="shrink-0 border-t border-border p-2">
+        {user ? (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                type="button"
+                aria-label="Account menu"
+                className="flex w-full items-center gap-3 rounded-xl p-2 text-left transition-colors hover:bg-surface-container-low"
+              >
+                <span
+                  aria-hidden="true"
+                  className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-accent text-sm font-medium text-accent-foreground"
+                >
+                  {user.displayName?.[0]?.toUpperCase() || user.email?.[0]?.toUpperCase() || 'U'}
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate text-sm font-medium text-foreground">
+                    {user.displayName || 'Account'}
+                  </span>
+                  <span className="block truncate text-xs text-on-surface-variant">
+                    {user.email}
+                  </span>
+                </span>
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent side="top" align="start" className="w-72 p-2">
+              <div className="border-b border-border px-3 pb-3 pt-2">
+                <p className="text-sm font-medium text-foreground">{user.displayName || 'Account'}</p>
+                <p className="truncate text-xs text-on-surface-variant">{user.email}</p>
+              </div>
+              {usesGoogleProvider ? null : (
+                <>
+                  <DropdownMenuItem
+                    className="mt-1 cursor-pointer"
+                    onClick={() => {
+                      router.push('/settings');
+                      onNavigate?.();
+                    }}
+                  >
+                    <Settings className="mr-2 h-4 w-4" />
+                    Settings
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                </>
+              )}
+              <DropdownMenuItem
+                className="cursor-pointer text-destructive focus:text-destructive"
+                onClick={() => void handleLogout()}
+              >
+                <LogOut className="mr-2 h-4 w-4" />
+                Log out
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ) : (
+          <div className="m-1 rounded-xl border border-border bg-surface-container-low p-4">
+            <p className="text-sm font-medium text-foreground">Sign in to save your chats</p>
+            <p className="mt-1 text-xs leading-relaxed text-on-surface-variant">
+              Your chat history is saved to your account and available on every device.
+            </p>
+            <Button asChild size="sm" className="mt-3 w-full">
+              <Link href="/auth/login" onClick={onNavigate}>
+                Sign in
+              </Link>
+            </Button>
+          </div>
+        )}
+      </div>
 
       <Dialog
         open={pendingDeleteChat !== null}
