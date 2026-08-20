@@ -114,7 +114,7 @@ export function ChatSidebar({
         </Link>
       </div>
 
-      <div className="shrink-0 border-b border-border p-3">
+      <div className="shrink-0 p-3">
         <Button className="w-full justify-start gap-2" onClick={onNewChat}>
           <Plus aria-hidden="true" className="h-4 w-4" />
           New chat
@@ -129,6 +129,9 @@ export function ChatSidebar({
             isResuming && 'pointer-events-none opacity-60',
           )}
         >
+          <p className="px-3 pb-1 pt-2 text-xs font-medium uppercase tracking-wide text-on-surface-variant">
+            Recents
+          </p>
           {chats.length === 0 ? (
             <div className="px-3 py-8 text-center text-sm leading-relaxed text-on-surface-variant">
               <p>No chats yet.</p>
@@ -237,7 +240,6 @@ export function ChatSidebar({
                   </DropdownMenuItem>
                 </>
               )}
-              <DropdownMenuSeparator />
               <DropdownMenuItem
                 className="cursor-pointer text-destructive focus:text-destructive"
                 onClick={() => void handleLogout()}

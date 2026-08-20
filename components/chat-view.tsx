@@ -1,7 +1,7 @@
 'use client';
 
 import type { FormEvent, KeyboardEvent, RefObject } from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ArrowUp, ChevronDown, ChevronUp, Loader2 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -31,6 +31,9 @@ export function ChatEmptyState() {
 }
 
 const MESSAGE_COLLAPSE_LENGTH = 320;
+
+/** Max composer height in px; beyond this the textarea scrolls instead of growing. */
+const COMPOSER_MAX_HEIGHT_PX = 200;
 
 /**
  * Cuts a long message at a word boundary for the collapsed preview, or
@@ -204,6 +207,14 @@ export function ChatComposer({
     event.preventDefault();
     onSubmit();
   };
+
+  // Grow with the draft, then scroll once the composer reaches its cap.
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    if (!textarea || textarea.scrollHeight === 0) return;
+    textarea.style.height = 'auto';
+    textarea.style.height = `${Math.min(textarea.scrollHeight, COMPOSER_MAX_HEIGHT_PX)}px`;
+  }, [draft, textareaRef]);
 
   return (
     <div className="sticky bottom-3 z-40 mt-auto">
