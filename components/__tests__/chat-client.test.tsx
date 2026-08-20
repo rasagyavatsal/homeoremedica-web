@@ -186,7 +186,9 @@ describe('ChatClient', () => {
 
   it('bolds starred phrases and strips citation numbers from answers', async () => {
     mockSendChatMessage.mockResolvedValue(
-      makeResponse({ answer: `${CHAT_SAFETY_NOTICE}\n\n**Nux vomica** is chilly [1].` }),
+      makeResponse({
+        answer: `${CHAT_SAFETY_NOTICE}\n\n**Nux vomica** is chilly [1]. *Damp cold* aggravates, with a stray * at the end.`,
+      }),
     );
     render(<ChatClient />);
 
@@ -194,8 +196,10 @@ describe('ChatClient', () => {
     await waitFor(() => expect(screen.getByText('Nux vomica')).toBeInTheDocument());
 
     expect(screen.getByText('Nux vomica').tagName).toBe('STRONG');
+    expect(screen.getByText('Damp cold').tagName).toBe('STRONG');
     expect(screen.getByText(/is chilly\./)).toBeInTheDocument();
     expect(screen.queryByText(/\[1\]/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/\*/)).not.toBeInTheDocument();
   });
 
   it('collapses a long message behind a Show more toggle', async () => {

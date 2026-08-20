@@ -93,20 +93,44 @@ function UserMessageView({ content }: Readonly<{ content: string }>) {
   );
 }
 
-const BOLD_RUN_PATTERN = /(\*\*[^*]+\*\*)/g;
+type EmphasisRun = { type: 'text' | 'strong'; value: string };
 
-/** Renders **starred** spans in assistant answers as strong text. */
+const EMPHASIS_PATTERN = /(\*\*[^*]+\*\*)|\*([^*\n]+)\*/g;
+
+/**
+ * Splits an answer paragraph into text and strong runs. Balanced **bold**
+ * and *starred* runs become strong; any orphan asterisks left in plain text
+ * are dropped so a stray star never renders.
+ */
+function parseEmphasisRuns(text: string): EmphasisRun[] {
+  const runs: EmphasisRun[] = [];
+  let cursor = 0;
+
+  for (const match of text.matchAll(EMPHASIS_PATTERN)) {
+    const index = match.index ?? 0;
+    if (index > cursor) runs.push({ type: 'text', value: text.slice(cursor, index) });
+    const value = match[1] !== undefined ? match[1].slice(2, -2) : (match[2] ?? '');
+    runs.push({ type: 'strong', value });
+    cursor = index + match[0].length;
+  }
+  if (cursor < text.length) runs.push({ type: 'text', value: text.slice(cursor) });
+
+  return runs
+    .map((run) => (run.type === 'text' ? { ...run, value: run.value.replace(/\*/g, '') } : run))
+    .filter((run) => run.value !== '');
+}
+
+/** Renders starred and double-starred spans in assistant answers as bold text. */
 function BoldText({ text }: Readonly<{ text: string }>) {
-  const parts = text.split(BOLD_RUN_PATTERN).filter((part) => part !== '');
   return (
     <>
-      {parts.map((part, index) =>
-        part.startsWith('**') && part.endsWith('**') && part.length > 4 ? (
+      {parseEmphasisRuns(text).map((run, index) =>
+        run.type === 'strong' ? (
           <strong key={index} className="font-semibold">
-            {part.slice(2, -2)}
+            {run.value}
           </strong>
         ) : (
-          part
+          run.value
         ),
       )}
     </>
