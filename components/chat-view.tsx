@@ -208,12 +208,14 @@ export function ChatComposer({
     onSubmit();
   };
 
-  // Grow with the draft, then scroll once the composer reaches its cap.
+  // Grow with the draft; scrolling is enabled only once the capped height overflows.
   useEffect(() => {
     const textarea = textareaRef.current;
     if (!textarea || textarea.scrollHeight === 0) return;
     textarea.style.height = 'auto';
+    const overflowing = textarea.scrollHeight > COMPOSER_MAX_HEIGHT_PX;
     textarea.style.height = `${Math.min(textarea.scrollHeight, COMPOSER_MAX_HEIGHT_PX)}px`;
+    textarea.style.overflowY = overflowing ? 'auto' : 'hidden';
   }, [draft, textareaRef]);
 
   return (
@@ -240,9 +242,9 @@ export function ChatComposer({
               onChange={(event) => onDraftChange(event.target.value)}
               onKeyDown={handleKeyDown}
               className={cn(
-                'flex-1 resize-none overflow-y-auto border-0 bg-transparent py-2.5 text-base leading-relaxed text-foreground placeholder:text-muted-foreground focus-visible:outline-none',
-                // Thin scrollbar flush with the right edge of the bar; overflow-y-auto
-                // keeps it hidden until the capped height actually overflows.
+                'flex-1 resize-none overflow-y-hidden border-0 bg-transparent py-2.5 text-base leading-relaxed text-foreground placeholder:text-muted-foreground focus-visible:outline-none',
+                // Scrollbars are dormant until the resize effect flips overflow-y to
+                // auto (and the cap is actually exceeded); no scrolling when it fits.
                 'scrollbar-thin',
                 '[scrollbar-color:hsl(var(--foreground)/var(--scrollbar-alpha))_transparent]',
                 '[&::-webkit-scrollbar]:w-1',

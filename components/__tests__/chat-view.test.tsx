@@ -41,37 +41,42 @@ function renderComposer(draft: string) {
 }
 
 describe('ChatComposer', () => {
-  it('grows with the draft', () => {
+  it('grows with the draft and keeps scrolling disabled', () => {
     const { textarea, rerenderWithDraft } = renderComposer('');
     setScrollHeight(textarea, 60);
 
     rerenderWithDraft('Nux vomica');
 
     expect(textarea.style.height).toBe('60px');
+    expect(textarea.style.overflowY).toBe('hidden');
   });
 
-  it('caps growth at the max height and scrolls beyond it', () => {
+  it('caps growth at the max height and only enables scrolling then', () => {
     const { textarea, rerenderWithDraft } = renderComposer('');
     setScrollHeight(textarea, 500);
 
     rerenderWithDraft('Nux vomica '.repeat(50));
 
     expect(textarea.style.height).toBe(`${COMPOSER_MAX_HEIGHT_PX}px`);
-    // Only renders when it overflows, and hugs the right edge as a thin line.
-    expect(textarea.className).toContain('overflow-y-auto');
+    expect(textarea.style.overflowY).toBe('auto');
+    // Dormant by default, then styled as a thin line on the right outline when active.
+    expect(textarea.className).toContain('overflow-y-hidden');
     expect(textarea.className).toContain('scrollbar-thin');
     expect(textarea.className).toContain('[&::-webkit-scrollbar-track]:bg-transparent');
     expect(textarea.className).toContain('[&::-webkit-scrollbar]:w-1');
   });
 
-  it('shrinks back as the draft is cleared', () => {
+  it('shrinks back and disables scrolling again as the draft is cleared', () => {
     const { textarea, rerenderWithDraft } = renderComposer('');
-    setScrollHeight(textarea, 120);
-    rerenderWithDraft('Nux vomica');
+    setScrollHeight(textarea, 500);
+    rerenderWithDraft('Nux vomica '.repeat(50));
+
+    expect(textarea.style.overflowY).toBe('auto');
 
     setScrollHeight(textarea, 46);
     rerenderWithDraft('');
 
     expect(textarea.style.height).toBe('46px');
+    expect(textarea.style.overflowY).toBe('hidden');
   });
 });
