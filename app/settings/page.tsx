@@ -154,7 +154,7 @@ export default function SettingsPage() {
               <Card className={motionClassNames.surface}>
               <CardHeader className="border-b border-border">
                 <div className="flex items-start gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent text-accent-foreground">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-accent text-accent-foreground">
                     <Key className="h-5 w-5" />
                   </div>
                   <div className="space-y-1">
@@ -182,7 +182,7 @@ export default function SettingsPage() {
                       <button
                         type="button"
                         onClick={() => setShowPasswords((prev) => ({ ...prev, current: !prev.current }))}
-                        className={`absolute right-1 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full text-on-surface-variant transition-colors hover:text-foreground ${motionClassNames.press}`}
+                        className={`absolute right-1 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-md text-on-surface-variant transition-colors hover:text-foreground ${motionClassNames.press}`}
                         aria-label={showPasswords.current ? 'Hide current password' : 'Show current password'}
                       >
                         {showPasswords.current ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -206,7 +206,7 @@ export default function SettingsPage() {
                       <button
                         type="button"
                         onClick={() => setShowPasswords((prev) => ({ ...prev, new: !prev.new }))}
-                        className={`absolute right-1 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full text-on-surface-variant transition-colors hover:text-foreground ${motionClassNames.press}`}
+                        className={`absolute right-1 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-md text-on-surface-variant transition-colors hover:text-foreground ${motionClassNames.press}`}
                         aria-label={showPasswords.new ? 'Hide new password' : 'Show new password'}
                       >
                         {showPasswords.new ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -250,7 +250,7 @@ export default function SettingsPage() {
                       <button
                         type="button"
                         onClick={() => setShowPasswords((prev) => ({ ...prev, confirm: !prev.confirm }))}
-                        className={`absolute right-1 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full text-on-surface-variant transition-colors hover:text-foreground ${motionClassNames.press}`}
+                        className={`absolute right-1 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-md text-on-surface-variant transition-colors hover:text-foreground ${motionClassNames.press}`}
                         aria-label={showPasswords.confirm ? 'Hide confirm password' : 'Show confirm password'}
                       >
                         {showPasswords.confirm ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}

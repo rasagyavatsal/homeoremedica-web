@@ -17,12 +17,12 @@ export const controlVariants = cva(
         "inline-link": "min-h-touch px-1.5",
         pill: "min-h-touch px-3 py-2 text-sm",
       },
-      // Controls are short enough that two corner curves would collide on
-      // an edge, so every shape resolves to the pill radius (--radius-full).
+      // Pill controls are gone sitewide: every shape resolves to the crisp
+      // md radius, and the variants stay for API compatibility.
       shape: {
-        default: "rounded-full",
-        sm: "rounded-full",
-        full: "rounded-full",
+        default: "rounded-md",
+        sm: "rounded-md",
+        full: "rounded-md",
       },
       ring: {
         default: "",
@@ -37,6 +37,7 @@ export const controlVariants = cva(
   }
 )
 
+// The thumb stays round: it is a knob, not a surface.
 export const controlThumbVariants = cva(
   "pointer-events-none block bg-surface-bright ring-0 transition-transform",
   {

@@ -30,18 +30,7 @@ export function ChatEmptyState() {
   );
 }
 
-const BUBBLE_PILL_MAX_LENGTH = 140;
 const MESSAGE_COLLAPSE_LENGTH = 320;
-
-/**
- * Short messages read as pills; once a message wraps to several lines the
- * pill end-caps would clip into the first and last lines, so larger messages
- * collapse to the same 2xl surface radius as the home page cards.
- */
-function messageBubbleRadius(content: string) {
-  const isLong = content.length > BUBBLE_PILL_MAX_LENGTH || content.includes('\n');
-  return isLong ? 'rounded-2xl' : 'rounded-full';
-}
 
 /**
  * Cuts a long message at a word boundary for the collapsed preview, or
@@ -63,12 +52,7 @@ function UserMessageView({ content }: Readonly<{ content: string }>) {
   return (
     <div className="flex justify-end">
       <div className="flex min-w-0 flex-col items-end">
-        <div
-          className={cn(
-            'w-fit max-w-chat-bubble border border-border bg-card px-4 py-3 text-sm leading-relaxed text-foreground',
-            messageBubbleRadius(content),
-          )}
-        >
+        <div className="w-fit max-w-chat-bubble rounded-2xl border border-border bg-card px-4 py-3 text-sm leading-relaxed text-foreground">
           <p className="whitespace-pre-wrap break-words">
             {isCollapsible && !expanded ? collapsedText : content}
           </p>
@@ -227,7 +211,7 @@ export function ChatComposer({
         <form
           onSubmit={handleSubmit}
           className={cn(
-            'rounded-full border border-border bg-background/90 shadow-soft backdrop-blur-lg focus-within:border-primary',
+            'rounded-xl border border-border bg-background/90 shadow-soft backdrop-blur-lg focus-within:border-primary',
             motionClassNames.surface,
           )}
         >

@@ -79,7 +79,7 @@ export function Header() {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="header" className="hidden gap-3 px-2 sm:inline-flex" aria-label="Account menu">
-                      <span className="grid h-8 w-8 place-items-center rounded-full bg-accent text-sm font-medium text-accent-foreground">
+                      <span className="grid h-8 w-8 place-items-center rounded-lg bg-accent text-sm font-medium text-accent-foreground">
                         {user.displayName?.[0]?.toUpperCase() || user.email?.[0]?.toUpperCase() || 'U'}
                       </span>
                       <span className="max-w-32 truncate text-sm font-medium text-foreground">

@@ -42,7 +42,7 @@ export default function ResetPasswordPage() {
     return (
       <AuthPageShell showBrand={false}>
         <CardContent className="space-y-6 p-6 text-center">
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-accent text-accent-foreground">
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-accent text-accent-foreground">
             <CheckCircle className="h-6 w-6" />
           </div>
           <div className="space-y-2">
@@ -82,7 +82,7 @@ export default function ResetPasswordPage() {
   return (
     <AuthPageShell showBrand={false}>
       <CardHeader className="space-y-1 text-center">
-        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-accent text-accent-foreground">
+        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-accent text-accent-foreground">
           <Mail className="h-6 w-6" />
         </div>
         <CardTitle className="text-2xl">Reset your password</CardTitle>
