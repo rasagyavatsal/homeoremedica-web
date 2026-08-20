@@ -4,8 +4,20 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ThemeProvider } from '@/lib/contexts/theme-context';
 import { Header } from '../header';
 
+const mockUseAuth = vi.hoisted(() => vi.fn());
+
+vi.mock('@/lib/contexts/auth-context', () => ({
+  useAuth: () => mockUseAuth(),
+}));
+
+vi.mock('@/lib/auth/firebase-auth', () => ({
+  isGoogleUser: vi.fn(() => false),
+  signOutUser: vi.fn(),
+}));
+
 describe('Header', () => {
   beforeEach(() => {
+    mockUseAuth.mockReturnValue({ user: null, loading: false, token: null });
     localStorage.clear();
     document.documentElement.className = '';
     document.documentElement.style.colorScheme = '';
@@ -19,14 +31,33 @@ describe('Header', () => {
     }));
   });
 
-  it('renders the theme toggle in the top bar', () => {
+  it('does not render a theme toggle in the top bar', () => {
     render(
       <ThemeProvider>
         <Header />
       </ThemeProvider>,
     );
 
-    expect(screen.getByRole('button', { name: /switch to dark mode/i })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /switch to dark mode/i })).not.toBeInTheDocument();
+  });
+
+  it('offers the theme toggle in the account menu instead of the top bar', () => {
+    mockUseAuth.mockReturnValue({
+      user: { uid: 'user-1', email: 'test@example.com', displayName: 'Test User' },
+      loading: false,
+      token: null,
+    });
+    render(
+      <ThemeProvider>
+        <Header />
+      </ThemeProvider>,
+    );
+
+    expect(screen.queryByRole('button', { name: /switch to dark mode/i })).not.toBeInTheDocument();
+
+    fireEvent.pointerDown(screen.getByRole('button', { name: 'Account menu' }));
+
+    expect(screen.getByRole('menuitem', { name: /use dark mode/i })).toBeInTheDocument();
   });
 
   it('renders a brand-only lockup without finder subtitle', () => {
@@ -85,10 +116,6 @@ describe('Header', () => {
 
     const chatLinks = screen.getAllByRole('link', { name: /chat/i });
     expect(chatLinks[0].className).toContain('min-h-touch');
-
-    const themeToggle = screen.getByRole('button', { name: /switch to/i });
-    expect(themeToggle.className).toContain('h-control-sm');
-    expect(themeToggle.className).toContain('w-control-sm');
 
     const androidApp = screen.getAllByRole('link', { name: /android app/i });
     expect(androidApp[0].className).toContain('min-h-touch');

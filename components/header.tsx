@@ -6,7 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { ArrowUpRight, LogOut, Menu, Settings, Smartphone, X } from 'lucide-react';
 
 import { BrandLockup } from '@/components/brand-lockup';
-import { ThemeMenuItem, ThemeToggle } from '@/components/theme-toggle';
+import { ThemeMenuItem } from '@/components/theme-toggle';
 import { Button } from '@/components/ui/button';
 import { NavLink } from '@/components/ui/interactive';
 import { MotionSection } from '@/components/ui/motion';
@@ -75,8 +75,6 @@ export function Header() {
             </nav>
 
             <div className="flex items-center gap-2">
-              <ThemeToggle />
-
               {user ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
