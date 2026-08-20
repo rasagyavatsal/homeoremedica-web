@@ -2,11 +2,12 @@
 
 import type { FormEvent, KeyboardEvent, RefObject } from 'react';
 import { useState } from 'react';
-import { ArrowUp, Loader2 } from 'lucide-react';
+import { ArrowUp, ChevronDown, ChevronUp, Loader2 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Callout } from '@/components/ui/callout';
 import { MotionGroup, MotionItem, MotionSection } from '@/components/ui/motion';
+import { cleanAnswerCitations } from '@/lib/chat-answer';
 import { motionClassNames } from '@/lib/motion/system';
 import type { ChatSource } from '@/lib/types/chat';
 import { cn } from '@/lib/utils';
@@ -62,26 +63,53 @@ function UserMessageView({ content }: Readonly<{ content: string }>) {
   return (
     <div className="flex justify-end">
       <div className="flex min-w-0 flex-col items-end">
-        <p
+        <div
           className={cn(
-            'w-fit max-w-chat-bubble whitespace-pre-wrap break-words border border-border bg-card px-4 py-3 text-sm leading-relaxed text-foreground',
+            'w-fit max-w-chat-bubble border border-border bg-card px-4 py-3 text-sm leading-relaxed text-foreground',
             messageBubbleRadius(content),
           )}
         >
-          {isCollapsible && !expanded ? collapsedText : content}
-        </p>
-        {isCollapsible ? (
-          <button
-            type="button"
-            onClick={() => setExpanded((current) => !current)}
-            aria-expanded={expanded}
-            className="mt-1.5 text-xs font-medium text-primary transition-opacity hover:opacity-80 focus-visible:outline-none"
-          >
-            {expanded ? 'Show less' : 'Show more'}
-          </button>
-        ) : null}
+          <p className="whitespace-pre-wrap break-words">
+            {isCollapsible && !expanded ? collapsedText : content}
+          </p>
+          {isCollapsible ? (
+            <button
+              type="button"
+              onClick={() => setExpanded((current) => !current)}
+              aria-expanded={expanded}
+              className="mt-2 flex items-center gap-1 text-xs font-medium text-primary transition-opacity hover:opacity-80 focus-visible:outline-none"
+            >
+              {expanded ? 'Show less' : 'Show more'}
+              {expanded ? (
+                <ChevronUp aria-hidden="true" className="h-3.5 w-3.5" />
+              ) : (
+                <ChevronDown aria-hidden="true" className="h-3.5 w-3.5" />
+              )}
+            </button>
+          ) : null}
+        </div>
       </div>
     </div>
+  );
+}
+
+const BOLD_RUN_PATTERN = /(\*\*[^*]+\*\*)/g;
+
+/** Renders **starred** spans in assistant answers as strong text. */
+function BoldText({ text }: Readonly<{ text: string }>) {
+  const parts = text.split(BOLD_RUN_PATTERN).filter((part) => part !== '');
+  return (
+    <>
+      {parts.map((part, index) =>
+        part.startsWith('**') && part.endsWith('**') && part.length > 4 ? (
+          <strong key={index} className="font-semibold">
+            {part.slice(2, -2)}
+          </strong>
+        ) : (
+          part
+        ),
+      )}
+    </>
   );
 }
 
@@ -95,7 +123,7 @@ function ChatMessageView({ message }: Readonly<{ message: ChatMessage }>) {
       <div className="space-y-3">
         {message.content.split(/\n{2,}/).map((paragraph, index) => (
           <p key={index} className="text-base leading-relaxed text-foreground">
-            {paragraph}
+            <BoldText text={cleanAnswerCitations(paragraph)} />
           </p>
         ))}
       </div>

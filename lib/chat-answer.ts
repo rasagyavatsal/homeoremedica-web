@@ -13,3 +13,14 @@ export function chatAnswerBody(answer: string): string {
 
   return answer.slice(CHAT_SAFETY_NOTICE.length).trim();
 }
+
+/**
+ * Citation labels like "[1]" or "[2, 3]" name backend sources that the UI
+ * no longer reveals, so they read as noise to users. Strip them (plus the
+ * space before them) without touching bracketed text in the answer itself.
+ */
+const CITATION_LABEL_PATTERN = / *\[\d+(?: *, *\d+)*\]/g;
+
+export function cleanAnswerCitations(text: string): string {
+  return text.replace(CITATION_LABEL_PATTERN, '');
+}
