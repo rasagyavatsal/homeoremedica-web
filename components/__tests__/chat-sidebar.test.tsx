@@ -73,6 +73,7 @@ describe('ChatSidebar', () => {
     renderSidebar();
 
     expect(screen.getByRole('navigation', { name: 'Chat history' })).toBeInTheDocument();
+    expect(screen.getByText('Recents')).toBeInTheDocument();
     expect(screen.getByText('Nux vomica in fevers')).toBeInTheDocument();
     expect(screen.getByText('Arsenicum anxiety')).toBeInTheDocument();
     expect(screen.getAllByText('Mar 4')).toHaveLength(2);
@@ -173,6 +174,7 @@ describe('ChatSidebar', () => {
   it('shows an empty state when there are no chats', () => {
     renderSidebar({ chats: [] });
 
+    expect(screen.getByText('Recents')).toBeInTheDocument();
     expect(screen.getByText('No chats yet.')).toBeInTheDocument();
   });
 

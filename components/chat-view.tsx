@@ -1,7 +1,7 @@
 'use client';
 
 import type { FormEvent, KeyboardEvent, RefObject } from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ArrowUp, ChevronDown, ChevronUp, Loader2 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -31,6 +31,9 @@ export function ChatEmptyState() {
 }
 
 const MESSAGE_COLLAPSE_LENGTH = 320;
+
+/** Max composer height in px; beyond this the textarea scrolls instead of growing. */
+const COMPOSER_MAX_HEIGHT_PX = 200;
 
 /**
  * Cuts a long message at a word boundary for the collapsed preview, or
@@ -205,6 +208,16 @@ export function ChatComposer({
     onSubmit();
   };
 
+  // Grow with the draft; scrolling is enabled only once the capped height overflows.
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    if (!textarea || textarea.scrollHeight === 0) return;
+    textarea.style.height = 'auto';
+    const overflowing = textarea.scrollHeight > COMPOSER_MAX_HEIGHT_PX;
+    textarea.style.height = `${Math.min(textarea.scrollHeight, COMPOSER_MAX_HEIGHT_PX)}px`;
+    textarea.style.overflowY = overflowing ? 'auto' : 'hidden';
+  }, [draft, textareaRef]);
+
   return (
     <div className="sticky bottom-3 z-40 mt-auto">
       <div className="mx-auto w-full max-w-2xl px-6">
@@ -228,7 +241,18 @@ export function ChatComposer({
               placeholder="Ask about a remedy or symptom…"
               onChange={(event) => onDraftChange(event.target.value)}
               onKeyDown={handleKeyDown}
-              className="flex-1 resize-none overflow-y-auto border-0 bg-transparent py-2.5 text-base leading-relaxed text-foreground placeholder:text-muted-foreground focus-visible:outline-none"
+              className={cn(
+                'flex-1 resize-none overflow-y-hidden border-0 bg-transparent py-2.5 text-base leading-relaxed text-foreground placeholder:text-muted-foreground focus-visible:outline-none',
+                // Scrollbars are dormant until the resize effect flips overflow-y to
+                // auto (and the cap is actually exceeded); no scrolling when it fits.
+                'scrollbar-thin',
+                '[scrollbar-color:hsl(var(--foreground)/var(--scrollbar-alpha))_transparent]',
+                '[&::-webkit-scrollbar]:w-1',
+                '[&::-webkit-scrollbar-track]:bg-transparent',
+                '[&::-webkit-scrollbar-thumb]:rounded-full',
+                '[&::-webkit-scrollbar-thumb]:bg-[hsl(var(--foreground)/var(--scrollbar-alpha))]',
+                '[&::-webkit-scrollbar-thumb:hover]:bg-[hsl(var(--foreground)/var(--scrollbar-hover-alpha))]',
+              )}
             />
             <Button
               type="submit"
