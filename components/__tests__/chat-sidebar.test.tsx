@@ -1,9 +1,14 @@
 import React from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('@/lib/services/chat-history', () => ({
   formatChatDate: () => 'Mar 4',
+}));
+
+vi.mock('@/lib/auth/firebase-auth', () => ({
+  isGoogleUser: vi.fn(() => false),
+  signOutUser: vi.fn(),
 }));
 
 vi.mock('next/link', () => ({
@@ -12,6 +17,12 @@ vi.mock('next/link', () => ({
   ),
 }));
 
+vi.mock('next/image', () => ({
+  default: (props: React.ImgHTMLAttributes<HTMLImageElement>) => React.createElement('img', props),
+}));
+
+import * as navigation from 'next/navigation';
+import { isGoogleUser, signOutUser } from '@/lib/auth/firebase-auth';
 import { ChatSidebar } from '@/components/chat-sidebar';
 
 const CHATS = [
@@ -39,6 +50,7 @@ function renderSidebar(
 describe('ChatSidebar', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.mocked(isGoogleUser).mockReturnValue(false);
   });
 
   it('lists every chat with its title and formatted date', () => {
@@ -121,5 +133,60 @@ describe('ChatSidebar', () => {
 
     expect(screen.getByText('Sign in to save your chats')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Sign in' })).toHaveAttribute('href', '/auth/login');
+  });
+
+  it('shows the brand lockup at the top of the sidebar', () => {
+    renderSidebar();
+
+    expect(screen.getByRole('link', { name: 'HomeoRemedica home' })).toHaveAttribute('href', '/');
+    expect(screen.getByText('HomeoRemedica')).toBeInTheDocument();
+    const images = screen.getByText('HomeoRemedica').parentElement?.querySelectorAll('img');
+    expect(images?.[0]).toHaveAttribute('src', '/logo/logo-light-transparent.png');
+  });
+
+  it('shows the signed-in account at the bottom of the sidebar', () => {
+    renderSidebar({ user: { uid: 'user-1', email: 'test@example.com', displayName: 'Test User' } });
+
+    const account = screen.getByRole('button', { name: 'Account menu' });
+    expect(account).toBeInTheDocument();
+    expect(account).toHaveTextContent('Test User');
+    expect(account).toHaveTextContent('test@example.com');
+  });
+
+  it('offers settings and log out from the account menu', async () => {
+    const push = vi.fn();
+    vi.spyOn(navigation, 'useRouter').mockReturnValue({
+      push,
+      replace: vi.fn(),
+      prefetch: vi.fn(),
+      back: vi.fn(),
+      forward: vi.fn(),
+      refresh: vi.fn(),
+    } as unknown as ReturnType<typeof navigation.useRouter>);
+    renderSidebar({ user: { uid: 'user-1', email: 'test@example.com', displayName: 'Test User' } });
+
+    fireEvent.pointerDown(screen.getByRole('button', { name: 'Account menu' }), { button: 0, ctrlKey: false });
+
+    const settings = screen.getByRole('menuitem', { name: 'Settings' });
+    expect(settings).toBeInTheDocument();
+
+    fireEvent.click(settings);
+    expect(push).toHaveBeenCalledWith('/settings');
+
+    fireEvent.pointerDown(screen.getByRole('button', { name: 'Account menu' }), { button: 0, ctrlKey: false });
+    fireEvent.click(screen.getByRole('menuitem', { name: 'Log out' }));
+
+    await waitFor(() => expect(signOutUser).toHaveBeenCalled());
+    expect(push).toHaveBeenCalledWith('/');
+  });
+
+  it('hides settings for Google-only accounts', () => {
+    vi.mocked(isGoogleUser).mockReturnValue(true);
+    renderSidebar({ user: { uid: 'user-1', email: 'test@example.com', displayName: 'Test User' } });
+
+    fireEvent.pointerDown(screen.getByRole('button', { name: 'Account menu' }), { button: 0, ctrlKey: false });
+
+    expect(screen.queryByRole('menuitem', { name: 'Settings' })).not.toBeInTheDocument();
+    expect(screen.getByRole('menuitem', { name: 'Log out' })).toBeInTheDocument();
   });
 });

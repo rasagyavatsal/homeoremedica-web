@@ -11,13 +11,11 @@ import {
   type ChatMessage,
 } from '@/components/chat-view';
 import { ChatSidebar } from '@/components/chat-sidebar';
-import { Header } from '@/components/header';
+import { ThemeToggle } from '@/components/theme-toggle';
 import { Button } from '@/components/ui/button';
 import {
   Sheet,
   SheetContent,
-  SheetDescription,
-  SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet';
 import { apiClient } from '@/lib/api/client';
@@ -180,9 +178,7 @@ export default function ChatClient() {
 
   return (
     <div className="flex h-dvh flex-col overflow-hidden bg-background text-foreground">
-      <Header />
-
-      <div className="mx-auto flex min-h-0 w-full max-w-6xl flex-1 items-stretch">
+      <div className="flex min-h-0 w-full flex-1 items-stretch">
         <aside
           aria-label="Chat history sidebar"
           className="hidden w-72 shrink-0 flex-col border-r border-border lg:flex"
@@ -199,16 +195,17 @@ export default function ChatClient() {
         </aside>
 
         <main className="flex min-h-0 min-w-0 flex-1 flex-col overflow-y-auto">
-          <div className="mx-auto flex w-full max-w-3xl px-4 pt-3 sm:px-6 lg:hidden">
+          <div className="flex shrink-0 items-center gap-2 px-4 pt-3 sm:px-6">
             <Button
               variant="ghost"
               size="sm"
-              className="gap-2"
+              className="gap-2 lg:hidden"
               onClick={() => setIsSidebarOpen(true)}
             >
               <History aria-hidden="true" className="h-4 w-4" />
               History
             </Button>
+            <ThemeToggle className="ml-auto" />
           </div>
 
           {hasMessages ? (
@@ -235,10 +232,7 @@ export default function ChatClient() {
 
       <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
         <SheetContent>
-          <SheetHeader>
-            <SheetTitle>Chat history</SheetTitle>
-            <SheetDescription>Pick up where you left off.</SheetDescription>
-          </SheetHeader>
+          <SheetTitle className="sr-only">Chat history</SheetTitle>
           <ChatSidebar
             user={user}
             chats={chats}
