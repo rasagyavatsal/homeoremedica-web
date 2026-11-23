@@ -7,6 +7,13 @@
 * **corpus:** rename the source dataset to `dataset/corpus.json` and consolidate each release into
   one `corpus.sqlite` database with book-filtered retrieval.
 
+## [11.1.0](https://github.com/rasagyavatsal/homeoremedica-web/compare/v11.0.0...v11.1.0) (2026-11-23)
+
+
+### Features
+
+* ask off-topic questions without searching the books ([b1de5ab](https://github.com/rasagyavatsal/homeoremedica-web/commit/b1de5ab5e441cfe9ee574e3daf1e14e35550c7c2))
+
 ## [11.0.0](https://github.com/rasagyavatsal/homeoremedica-web/compare/v10.7.0...v11.0.0) (2026-11-20)
 
 
