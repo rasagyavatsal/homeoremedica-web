@@ -57,6 +57,8 @@ export interface ChatQuestion {
   symptoms?: readonly string[] | undefined
   /** The case's diseases as the user confirmed them. */
   diseases?: readonly string[] | undefined
+  /** Set when `/api/kind` found the question off-topic, so the books are not searched for it. */
+  offTopic?: boolean | undefined
 }
 
 function beforeAsking<T>(path: string, question: ChatQuestion, signal?: AbortSignal): Promise<T> {
@@ -68,7 +70,7 @@ function beforeAsking<T>(path: string, question: ChatQuestion, signal?: AbortSig
   })
 }
 
-/** Whether a question describes a patient, whose symptoms are then read, or asks about anything else. */
+/** Whether a question describes a patient, whose symptoms are then read, asks about anything else, or is off-topic. */
 export async function readKind(question: ChatQuestion, signal?: AbortSignal): Promise<QuestionKind> {
   return (await beforeAsking<KindResponse>('/api/kind', question, signal)).kind
 }
