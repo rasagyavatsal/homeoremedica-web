@@ -7,6 +7,17 @@
 * **corpus:** rename the source dataset to `dataset/corpus.json` and consolidate each release into
   one `corpus.sqlite` database with book-filtered retrieval.
 
+## [11.0.0](https://github.com/rasagyavatsal/homeoremedica-web/compare/v10.7.0...v11.0.0) (2026-11-20)
+
+
+### ⚠ BREAKING CHANGES
+
+* the server, its tests and its Docker image are gone; run the API from homeoremedica-server.
+
+### Code Refactoring
+
+* remove the server ([731f18c](https://github.com/rasagyavatsal/homeoremedica-web/commit/731f18c726f1eb34ed76dd1f9e2ef2d7f3491430))
+
 ## [10.7.0](https://github.com/rasagyavatsal/homeoremedica-app/compare/v10.6.0...v10.7.0) (2026-11-18)
 
 
