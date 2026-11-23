@@ -112,8 +112,10 @@ export function useChat(onSettled?: (conversation: Conversation) => void): ChatC
         // Left unset, the question is answered by the symptoms and diseases the server reads.
         let symptoms: string[] | undefined
         let diseases: string[] | undefined
+        let offTopic = false
         try {
-          if ((await readKind(asked, controller.signal)) === 'case') {
+          const kind = await readKind(asked, controller.signal)
+          if (kind === 'case') {
             if (request.current !== controller) return
             updateAnswer(id, (answer) => ({ ...answer, reading: 'case' }))
             // Without the diseases the symptoms are still reviewed, and the server reads the diseases itself.
@@ -123,6 +125,7 @@ export function useChat(onSettled?: (conversation: Conversation) => void): ChatC
             ])
           } else {
             symptoms = []
+            offTopic = kind === 'off-topic'
           }
         } catch {
           // Without the symptoms to check, the question is still answered.
@@ -135,7 +138,7 @@ export function useChat(onSettled?: (conversation: Conversation) => void): ChatC
           return
         }
         updateAnswer(id, ({ reading: _read, ...answer }) => answer)
-        await answer(id, { ...asked, symptoms, diseases }, controller)
+        await answer(id, { ...asked, symptoms, diseases, ...(offTopic && { offTopic }) }, controller)
       })()
     },
     [answer, commit, updateAnswer],

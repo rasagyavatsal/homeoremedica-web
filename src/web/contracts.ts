@@ -53,6 +53,8 @@ export const ChatRequestSchema = z
       symptoms: confirmed('symptom', 'symptoms', { max: MAX_SYMPTOMS, maxChars: MAX_SYMPTOM_CHARS }),
       /** The case's diseases as the user confirmed them, ranked by in place of the model's own. */
       diseases: confirmed('disease', 'diseases', { max: MAX_DISEASES, maxChars: MAX_DISEASE_CHARS }),
+      /** Set when `/api/kind` found the question off-topic: it is answered without searching the books. */
+      offTopic: z.boolean({ error: 'offTopic must be a boolean' }).optional(),
     },
     { error: (issue) => (issue.code === 'unrecognized_keys' ? 'unexpected request field' : undefined) },
   )
@@ -174,8 +176,11 @@ export interface BookCatalog {
   books: readonly BookSummary[]
 }
 
-/** Whether a question describes a patient, whose symptoms are read, or asks about anything else. */
-export type QuestionKind = 'case' | 'question'
+/**
+ * Whether a question describes a patient, whose symptoms are read, asks about anything else the
+ * books could answer, or has nothing to do with homoeopathy, medicine or a patient.
+ */
+export type QuestionKind = 'case' | 'question' | 'off-topic'
 
 /** `POST /api/kind`: decided before a question is answered, so only a case is read for symptoms. */
 export interface KindResponse {

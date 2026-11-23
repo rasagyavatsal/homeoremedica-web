@@ -96,6 +96,20 @@ describe('reviewing symptoms', () => {
     expect(asked).toEqual([{ message: 'What is Sulphur?', history: [], symptoms: [] }])
   })
 
+  it('asks an off-topic question without reading symptoms, so the books are not searched for it', async () => {
+    const asked = serve({
+      kind: () => json({ kind: 'off-topic' }),
+      read: () => Promise.reject(new Error('not a case')),
+      chat: [() => answerStream('No passages in the corpus matched this question.', [])],
+    })
+    render(<App />)
+
+    await ask('What is the capital of France?')
+
+    await screen.findByText(/No passages in the corpus matched/)
+    expect(asked).toEqual([{ message: 'What is the capital of France?', history: [], symptoms: [], offTopic: true }])
+  })
+
   it('asks a failed case again by the symptoms the user confirmed', async () => {
     const asked = serve({
       symptoms,
