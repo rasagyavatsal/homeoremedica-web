@@ -53,8 +53,6 @@ export interface ChatQuestion {
   message: string
   history: readonly ChatTurn[]
   summary?: string | undefined
-  /** Empty when `/api/kind` found the question describes no patient, so the repertories are not searched for it. */
-  symptoms?: readonly string[] | undefined
   /** Set when `/api/kind` found the question off-topic, so the books are not searched for it. */
   offTopic?: boolean | undefined
 }

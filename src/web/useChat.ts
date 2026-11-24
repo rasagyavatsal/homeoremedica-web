@@ -107,7 +107,7 @@ export function useChat(onSettled?: (conversation: Conversation) => void): ChatC
 
       void (async () => {
         const asked = { message: question, history: start.history, summary: start.summary }
-        // Unsorted, the question is answered as a case is.
+        // Unsorted, the question is searched for.
         let kind: QuestionKind | undefined
         try {
           kind = await readKind(asked, controller.signal)
@@ -116,10 +116,8 @@ export function useChat(onSettled?: (conversation: Conversation) => void): ChatC
         }
         if (request.current !== controller) return
         updateAnswer(id, ({ reading: _read, ...answer }) => answer)
-        // A question that describes no patient has no symptoms to search the repertories by, and an
-        // off-topic one is not searched for at all.
-        const unread = kind && kind !== 'case' ? { symptoms: [], ...(kind === 'off-topic' && { offTopic: true }) } : {}
-        await answer(id, { ...asked, ...unread }, controller)
+        // An off-topic question is not searched for at all.
+        await answer(id, { ...asked, ...(kind === 'off-topic' && { offTopic: true }) }, controller)
       })()
     },
     [answer, commit, updateAnswer],

@@ -43,7 +43,7 @@ beforeEach(() => {
 })
 
 describe('sorting questions', () => {
-  it('answers a case at once, leaving its symptoms and diseases for the server to read', async () => {
+  it('answers a case at once', async () => {
     const asked = serve({ kind: () => json({ kind: 'case' }), chat: [() => answerStream('Pulsatilla covers both [1].', [citation(1)])] })
     render(<App />)
 
@@ -53,14 +53,14 @@ describe('sorting questions', () => {
     expect(asked).toEqual([{ message: 'A weepy, thirstless woman.', history: [] }])
   })
 
-  it('answers a question that describes no patient without symptoms to search the repertories by', async () => {
+  it('answers a question that describes no patient', async () => {
     const asked = serve({ kind: () => json({ kind: 'question' }), chat: [() => answerStream('Sulphur is a polychrest [1].', [citation(1)])] })
     render(<App />)
 
     await ask('What is Sulphur?')
 
     await screen.findByText(/Sulphur is a polychrest/)
-    expect(asked).toEqual([{ message: 'What is Sulphur?', history: [], symptoms: [] }])
+    expect(asked).toEqual([{ message: 'What is Sulphur?', history: [] }])
   })
 
   it('asks an off-topic question so the books are not searched for it', async () => {
@@ -70,7 +70,7 @@ describe('sorting questions', () => {
     await ask('What is the capital of France?')
 
     await screen.findByText(/No passages in the corpus matched/)
-    expect(asked).toEqual([{ message: 'What is the capital of France?', history: [], symptoms: [], offTopic: true }])
+    expect(asked).toEqual([{ message: 'What is the capital of France?', history: [], offTopic: true }])
   })
 
   it('says it is reading the question until it is sorted', async () => {

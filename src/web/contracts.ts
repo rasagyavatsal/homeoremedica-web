@@ -7,7 +7,7 @@ export const MAX_RETRIEVAL_QUERY_CHARS = 8_000
 export const MAX_CITATION_TEXT_CHARS = 8_000
 export const MAX_GENERATION_PROMPT_CHARS = 64_000
 export const MAX_GENERATED_ANSWER_CHARS = 12_000
-/** How many symptoms a case is searched by, at most. */
+/** How many symptoms a case is searched by, at most, as the decision model splits them. */
 export const MAX_SYMPTOMS = 100
 export const MAX_SYMPTOM_CHARS = 200
 /** How many diseases a case's remedies are ranked by, at most, as the chat model reads them. */
@@ -23,21 +23,6 @@ function text(field: string) {
     .transform((value) => value.trim())
 }
 
-/** What the user confirmed of a case: a list of `one`s, each trimmed and within `maxChars`. */
-function confirmed(one: string, many: string, { max, maxChars }: { max: number; maxChars: number }) {
-  return z
-    .array(
-      z
-        .string({ error: `a ${one} must be a string` })
-        .trim()
-        .min(1, { error: `a ${one} must not be blank` })
-        .max(maxChars, { error: `a ${one} must not exceed ${maxChars} characters` }),
-      { error: `${many} must be a list` },
-    )
-    .max(max, { error: `${many} must not exceed ${max}` })
-    .optional()
-}
-
 export const ChatTurnSchema = z.strictObject({
   role: z.enum(['user', 'assistant'], { error: 'role must be "user" or "assistant"' }),
   content: text('content'),
@@ -49,8 +34,6 @@ export const ChatRequestSchema = z
       message: text('message'),
       history: historySchema().default([]),
       summary: text('summary').optional(),
-      /** The case's symptoms as the user confirmed them, searched in place of the model's own. */
-      symptoms: confirmed('symptom', 'symptoms', { max: MAX_SYMPTOMS, maxChars: MAX_SYMPTOM_CHARS }),
       /** Set when `/api/kind` found the question off-topic: it is answered without searching the books. */
       offTopic: z.boolean({ error: 'offTopic must be a boolean' }).optional(),
     },
