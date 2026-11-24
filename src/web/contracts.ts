@@ -10,7 +10,7 @@ export const MAX_GENERATED_ANSWER_CHARS = 12_000
 /** How many symptoms a case is searched by, at most. */
 export const MAX_SYMPTOMS = 100
 export const MAX_SYMPTOM_CHARS = 200
-/** How many diseases a case's remedies are ranked by, at most. */
+/** How many diseases a case's remedies are ranked by, at most, as the chat model reads them. */
 export const MAX_DISEASES = 15
 export const MAX_DISEASE_CHARS = 200
 
@@ -51,8 +51,6 @@ export const ChatRequestSchema = z
       summary: text('summary').optional(),
       /** The case's symptoms as the user confirmed them, searched in place of the model's own. */
       symptoms: confirmed('symptom', 'symptoms', { max: MAX_SYMPTOMS, maxChars: MAX_SYMPTOM_CHARS }),
-      /** The case's diseases as the user confirmed them, ranked by in place of the model's own. */
-      diseases: confirmed('disease', 'diseases', { max: MAX_DISEASES, maxChars: MAX_DISEASE_CHARS }),
       /** Set when `/api/kind` found the question off-topic: it is answered without searching the books. */
       offTopic: z.boolean({ error: 'offTopic must be a boolean' }).optional(),
     },
