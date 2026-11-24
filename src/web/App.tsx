@@ -322,7 +322,6 @@ function Workspace({ library, notify: setNotice, account }: WorkspaceProps) {
                 openSources={openSources ?? undefined}
                 onSources={showSources}
                 onRetry={chat.retry}
-                onConfirm={chat.confirm}
                 ratings={feedback.ratings}
                 onRate={ratingClient ? feedback.rate : undefined}
                 onNote={ratingClient ? feedback.note : undefined}

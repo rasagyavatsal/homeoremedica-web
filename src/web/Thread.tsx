@@ -5,7 +5,6 @@ import type { AnswerRatings } from './contracts.ts'
 import { type Message, listedSources } from './conversation.ts'
 import { AlertIcon, ChevronDownIcon, ChevronRightIcon, RetryIcon } from './icons.tsx'
 import { AnswerFeedback } from './AnswerFeedback.tsx'
-import { CaseReview } from './CaseReview.tsx'
 import type { NoteHandler, RateHandler } from './useFeedback.ts'
 
 /** What the sources panel shows: one of an answer's references, or the list of them as source 0. */
@@ -20,8 +19,6 @@ interface ThreadProps {
   openSources: OpenReference | undefined
   onSources: (messageId: number, source: number) => void
   onRetry: () => void
-  /** Answers the question whose case is under review by the symptoms and diseases given. */
-  onConfirm: (symptoms: string[], diseases?: string[]) => void
   /** Ratings by message id. */
   ratings?: ReadonlyMap<number, AnswerRatings>
   /** Rates an answer or one of its sources; answers cannot be rated without it. */
@@ -29,7 +26,7 @@ interface ThreadProps {
   onNote?: NoteHandler | undefined
 }
 
-export function Thread({ messages, openSources, onSources, onRetry, onConfirm, ratings, onRate, onNote }: ThreadProps) {
+export function Thread({ messages, openSources, onSources, onRetry, ratings, onRate, onNote }: ThreadProps) {
   return (
     <ol className="thread" aria-label="Conversation">
       {messages.map((message, index) =>
@@ -44,7 +41,6 @@ export function Thread({ messages, openSources, onSources, onRetry, onConfirm, r
               activeSource={openSources?.messageId === message.id ? openSources.source : undefined}
               onSources={onSources}
               onRetry={index === messages.length - 1 ? onRetry : undefined}
-              onConfirm={index === messages.length - 1 ? onConfirm : undefined}
               ratings={ratings?.get(message.id)}
               onRate={onRate}
               onNote={onNote}
@@ -114,22 +110,18 @@ function Question({ content }: { content: string }) {
   )
 }
 
-/** What a waiting answer says before the books are searched. */
-const READING = { question: 'Reading your question…', case: 'Reading the case for symptoms and diseases…' } as const
-
 interface ReplyProps {
   message: Message
   /** This answer's source open in the sources panel, if any; 0 while the list of its references is. */
   activeSource: number | undefined
   onSources: (messageId: number, source: number) => void
   onRetry: (() => void) | undefined
-  onConfirm: ((symptoms: string[], diseases?: string[]) => void) | undefined
   ratings: AnswerRatings | undefined
   onRate: RateHandler | undefined
   onNote: NoteHandler | undefined
 }
 
-const Reply = memo(function Reply({ message, activeSource, onSources, onRetry, onConfirm, ratings, onRate, onNote }: ReplyProps) {
+const Reply = memo(function Reply({ message, activeSource, onSources, onRetry, ratings, onRate, onNote }: ReplyProps) {
   const { id, content, sources, status, reading } = message
   const cite = useCallback((number: number) => onSources(id, number), [id, onSources])
 
@@ -147,14 +139,12 @@ const Reply = memo(function Reply({ message, activeSource, onSources, onRetry, o
     )
   }
 
-  if (status === 'review' && onConfirm) return <CaseReview symptoms={message.symptoms ?? []} diseases={message.diseases} onConfirm={onConfirm} />
-
   const waiting = status === 'streaming' && !content
   return (
     <>
       {waiting ? (
         <p className="reply-progress" role="status">
-          {sources ? 'Reading the passages…' : reading ? READING[reading] : 'Searching the books…'}
+          {sources ? 'Reading the passages…' : reading ? 'Reading your question…' : 'Searching the books…'}
         </p>
       ) : (
         <Answer content={content} sourceCount={sources?.length ?? 0} onCite={cite} />

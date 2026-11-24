@@ -13,7 +13,6 @@ function renderQuestion(content: string) {
       openSources={undefined}
       onSources={noop}
       onRetry={noop}
-      onConfirm={noop}
     />,
   )
 }

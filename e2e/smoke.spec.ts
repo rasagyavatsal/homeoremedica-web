@@ -2,10 +2,7 @@ import { ask, expect, openApp, replies, test } from './fixtures.ts'
 
 test('answers a question from the books, citing its sources', async ({ page }) => {
   await openApp(page)
-  // A case: the app shows the symptoms it read and answers once they are confirmed.
-  await ask(page, 'Irritable, chilly and oversensitive to noise, worse in the morning', { wait: false })
-  await page.getByRole('button', { name: 'Continue' }).click()
-  await expect(page.getByRole('button', { name: 'Stop answering' })).toBeHidden()
+  await ask(page, 'Irritable, chilly and oversensitive to noise, worse in the morning')
 
   const reply = replies(page).last()
   await expect(reply.getByRole('alert')).toBeHidden()

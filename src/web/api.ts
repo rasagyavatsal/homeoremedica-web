@@ -1,6 +1,6 @@
 /** Browser client for the HomeoRemedica API. */
 
-import type { ChatTurn, Citation, DiseasesResponse, KindResponse, QuestionKind, SymptomsResponse, WebChatResponse } from './contracts.ts'
+import type { ChatTurn, Citation, KindResponse, QuestionKind, WebChatResponse } from './contracts.ts'
 
 const FALLBACK_DETAIL = 'Something went wrong. Please try again.'
 const INTERRUPTED_DETAIL = 'The answer stopped before it finished. Please try again.'
@@ -53,10 +53,8 @@ export interface ChatQuestion {
   message: string
   history: readonly ChatTurn[]
   summary?: string | undefined
-  /** The case's symptoms as the user confirmed them. */
+  /** Empty when `/api/kind` found the question describes no patient, so the repertories are not searched for it. */
   symptoms?: readonly string[] | undefined
-  /** The case's diseases as the user confirmed them. */
-  diseases?: readonly string[] | undefined
   /** Set when `/api/kind` found the question off-topic, so the books are not searched for it. */
   offTopic?: boolean | undefined
 }
@@ -70,19 +68,9 @@ function beforeAsking<T>(path: string, question: ChatQuestion, signal?: AbortSig
   })
 }
 
-/** Whether a question describes a patient, whose symptoms are then read, asks about anything else, or is off-topic. */
+/** Whether a question describes a patient, asks about anything else, or is off-topic. */
 export async function readKind(question: ChatQuestion, signal?: AbortSignal): Promise<QuestionKind> {
   return (await beforeAsking<KindResponse>('/api/kind', question, signal)).kind
-}
-
-/** The symptoms of the case a question describes; none when it describes no patient. */
-export async function readSymptoms(question: ChatQuestion, signal?: AbortSignal): Promise<string[]> {
-  return (await beforeAsking<SymptomsResponse>('/api/symptoms', question, signal)).symptoms
-}
-
-/** The diseases the case a question describes names; none when it names none. */
-export async function readDiseases(question: ChatQuestion, signal?: AbortSignal): Promise<string[]> {
-  return (await beforeAsking<DiseasesResponse>('/api/diseases', question, signal)).diseases
 }
 
 export interface StreamHandlers {
