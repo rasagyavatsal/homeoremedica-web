@@ -193,16 +193,6 @@ export interface KindResponse {
   kind: QuestionKind
 }
 
-/** `POST /api/symptoms`: the symptoms of the case a question describes; none when it describes no patient. */
-export interface SymptomsResponse {
-  symptoms: string[]
-}
-
-/** `POST /api/diseases`: the diseases the case a question describes names; none when it names none. */
-export interface DiseasesResponse {
-  diseases: string[]
-}
-
 /** `POST /api/chat`: the answer plus the trimmed history and the summary to send with the next question. */
 export interface WebChatResponse extends Omit<ChatResponse, 'compacted'> {
   history: ChatTurn[]
@@ -367,10 +357,6 @@ export interface Retriever {
   retrieve(request: ChatRequest, options: { limit: number }): Promise<Retrieval>
   /** Whether a question describes a patient; a `question` has no symptoms to read. */
   kind(request: ChatRequest, options?: Cancellable): Promise<QuestionKind>
-  /** The symptoms a question's case would be searched by, for the user to check first. */
-  symptoms(request: ChatRequest, options?: Cancellable): Promise<string[]>
-  /** The diseases a question's case would be ranked by, for the user to check first. */
-  diseases(request: ChatRequest, options?: Cancellable): Promise<string[]>
 }
 
 export interface GenerateOptions {
