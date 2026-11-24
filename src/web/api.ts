@@ -1,6 +1,6 @@
 /** Browser client for the HomeoRemedica API. */
 
-import type { ChatTurn, Citation, KindResponse, QuestionKind, WebChatResponse } from './contracts.ts'
+import type { ChatTurn, Citation, WebChatResponse } from './contracts.ts'
 
 const FALLBACK_DETAIL = 'Something went wrong. Please try again.'
 const INTERRUPTED_DETAIL = 'The answer stopped before it finished. Please try again.'
@@ -53,22 +53,6 @@ export interface ChatQuestion {
   message: string
   history: readonly ChatTurn[]
   summary?: string | undefined
-  /** Set when `/api/kind` found the question off-topic, so the books are not searched for it. */
-  offTopic?: boolean | undefined
-}
-
-function beforeAsking<T>(path: string, question: ChatQuestion, signal?: AbortSignal): Promise<T> {
-  return getJson<T>(path, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(question),
-    signal: signal ?? null,
-  })
-}
-
-/** Whether a question describes a patient, asks about anything else, or is off-topic. */
-export async function readKind(question: ChatQuestion, signal?: AbortSignal): Promise<QuestionKind> {
-  return (await beforeAsking<KindResponse>('/api/kind', question, signal)).kind
 }
 
 export interface StreamHandlers {

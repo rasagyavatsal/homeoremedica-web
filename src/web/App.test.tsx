@@ -9,17 +9,13 @@ import { answerStream, citation, json, pending } from './test/fakes.ts'
 
 type Route = (init: RequestInit | undefined) => Response | Promise<Response>
 
-/**
- * Answer requests by path; `/api/chat` takes one handler per question, in order. Without `kind`
- * the server cannot sort questions.
- */
-function serve({ chat = [] as Route[], kind }: { chat?: Route[]; kind?: Route } = {}) {
+/** Answer requests by path; `/api/chat` takes one handler per question, in order. */
+function serve({ chat = [] as Route[] }: { chat?: Route[] } = {}) {
   const asked: unknown[] = []
   vi.spyOn(globalThis, 'fetch').mockImplementation(async (input, init) => {
     const path = String(input)
     if (path === '/api/books') return json({ books: [{ bookId: 'boericke_mm', title: 'Boericke, Materia Medica', author: null }] })
     if (path === '/api/config') return json({ auth: null })
-    if (path === '/api/kind' && kind) return kind(init)
     if (path === '/api/chat') {
       asked.push(JSON.parse(init?.body as string))
       const next = chat.shift()
@@ -40,62 +36,6 @@ beforeEach(() => {
   sessionStorage.clear()
   // Past the practitioner notice, which has its own tests.
   localStorage.setItem(NOTICE_KEY, 'seen')
-})
-
-describe('sorting questions', () => {
-  it('answers a case at once', async () => {
-    const asked = serve({ kind: () => json({ kind: 'case' }), chat: [() => answerStream('Pulsatilla covers both [1].', [citation(1)])] })
-    render(<App />)
-
-    await ask('A weepy, thirstless woman.')
-
-    await screen.findByText(/Pulsatilla covers both/)
-    expect(asked).toEqual([{ message: 'A weepy, thirstless woman.', history: [] }])
-  })
-
-  it('answers a question that describes no patient', async () => {
-    const asked = serve({ kind: () => json({ kind: 'question' }), chat: [() => answerStream('Sulphur is a polychrest [1].', [citation(1)])] })
-    render(<App />)
-
-    await ask('What is Sulphur?')
-
-    await screen.findByText(/Sulphur is a polychrest/)
-    expect(asked).toEqual([{ message: 'What is Sulphur?', history: [] }])
-  })
-
-  it('asks an off-topic question so the books are not searched for it', async () => {
-    const asked = serve({ kind: () => json({ kind: 'off-topic' }), chat: [() => answerStream('No passages in the corpus matched this question.', [])] })
-    render(<App />)
-
-    await ask('What is the capital of France?')
-
-    await screen.findByText(/No passages in the corpus matched/)
-    expect(asked).toEqual([{ message: 'What is the capital of France?', history: [], offTopic: true }])
-  })
-
-  it('says it is reading the question until it is sorted', async () => {
-    let sort!: (response: Response) => void
-    serve({ kind: () => new Promise((resolve) => (sort = resolve)), chat: [(init) => pending(init?.signal)] })
-    render(<App />)
-
-    await ask('A weepy, thirstless woman.')
-    expect(screen.getByRole('status')).toHaveTextContent('Reading your question…')
-    sort(json({ kind: 'case' }))
-
-    await waitFor(() => expect(screen.getByRole('status')).toHaveTextContent('Searching the books…'))
-  })
-
-  it('can be stopped while the question is sorted, leaving the next question free to be asked', async () => {
-    const asked = serve({ kind: () => new Promise(() => {}), chat: [] })
-    render(<App />)
-
-    await ask('A weepy, thirstless woman.')
-    await userEvent.click(screen.getByRole('button', { name: 'Stop answering' }))
-
-    expect(screen.getByText('Stopped.')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Send question' })).toBeInTheDocument()
-    expect(asked).toEqual([])
-  })
 })
 
 describe('asking', () => {

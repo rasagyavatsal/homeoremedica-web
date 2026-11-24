@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import { type ChatQuestion, errorMessage, readKind, streamChat } from './api.ts'
-import type { QuestionKind } from './contracts.ts'
+import { type ChatQuestion, errorMessage, streamChat } from './api.ts'
 import { type Conversation, type Message, newConversation, titleFrom } from './conversation.ts'
 
 export interface ChatControls {
@@ -101,24 +100,11 @@ export function useChat(onSettled?: (conversation: Conversation) => void): ChatC
         messages: [
           ...start.messages,
           { id: next, role: 'user', content: question },
-          { id: next + 1, role: 'assistant', content: '', status: 'streaming', reading: true },
+          { id: next + 1, role: 'assistant', content: '', status: 'streaming' },
         ],
       })
 
-      void (async () => {
-        const asked = { message: question, history: start.history, summary: start.summary }
-        // Unsorted, the question is searched for.
-        let kind: QuestionKind | undefined
-        try {
-          kind = await readKind(asked, controller.signal)
-        } catch {
-          // The question is still answered.
-        }
-        if (request.current !== controller) return
-        updateAnswer(id, ({ reading: _read, ...answer }) => answer)
-        // An off-topic question is not searched for at all.
-        await answer(id, { ...asked, ...(kind === 'off-topic' && { offTopic: true }) }, controller)
-      })()
+      void answer(id, { message: question, history: start.history, summary: start.summary }, controller)
     },
     [answer, commit, updateAnswer],
   )

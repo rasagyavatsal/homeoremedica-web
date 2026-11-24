@@ -122,7 +122,7 @@ interface ReplyProps {
 }
 
 const Reply = memo(function Reply({ message, activeSource, onSources, onRetry, ratings, onRate, onNote }: ReplyProps) {
-  const { id, content, sources, status, reading } = message
+  const { id, content, sources, status } = message
   const cite = useCallback((number: number) => onSources(id, number), [id, onSources])
 
   if (status === 'error') {
@@ -144,7 +144,7 @@ const Reply = memo(function Reply({ message, activeSource, onSources, onRetry, r
     <>
       {waiting ? (
         <p className="reply-progress" role="status">
-          {sources ? 'Reading the passages…' : reading ? 'Reading your question…' : 'Searching the books…'}
+          {sources ? 'Reading the passages…' : 'Searching the books…'}
         </p>
       ) : (
         <Answer content={content} sourceCount={sources?.length ?? 0} onCite={cite} />

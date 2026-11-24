@@ -34,8 +34,6 @@ export const ChatRequestSchema = z
       message: text('message'),
       history: historySchema().default([]),
       summary: text('summary').optional(),
-      /** Set when `/api/kind` found the question off-topic: it is answered without searching the books. */
-      offTopic: z.boolean({ error: 'offTopic must be a boolean' }).optional(),
     },
     { error: (issue) => (issue.code === 'unrecognized_keys' ? 'unexpected request field' : undefined) },
   )
@@ -164,15 +162,11 @@ export interface BookCatalog {
 }
 
 /**
- * Whether a question describes a patient, whose symptoms are read, asks about anything else the
- * books could answer, or has nothing to do with homoeopathy, medicine or a patient.
+ * Whether a question describes a patient, whose symptoms are searched in the repertories, asks
+ * about anything else the books could answer, or has nothing to do with homoeopathy, medicine or a
+ * patient, and so is not searched for at all.
  */
 export type QuestionKind = 'case' | 'question' | 'off-topic'
-
-/** `POST /api/kind`: decided before a question is answered, so only a case is read for symptoms. */
-export interface KindResponse {
-  kind: QuestionKind
-}
 
 /** `POST /api/chat`: the answer plus the trimmed history and the summary to send with the next question. */
 export interface WebChatResponse extends Omit<ChatResponse, 'compacted'> {
@@ -334,10 +328,11 @@ export function answerRatings({ rating, sources, reasons, comment }: SavedRating
 }
 
 export interface Retriever {
-  /** `limit` is how many passages each book gives; the rubrics come on top of them. */
+  /**
+   * `limit` is how many passages each book gives; the rubrics come on top of them. An off-topic
+   * question gets nothing.
+   */
   retrieve(request: ChatRequest, options: { limit: number }): Promise<Retrieval>
-  /** Whether a question describes a patient; a `question` has no symptoms to read. */
-  kind(request: ChatRequest, options?: Cancellable): Promise<QuestionKind>
 }
 
 export interface GenerateOptions {

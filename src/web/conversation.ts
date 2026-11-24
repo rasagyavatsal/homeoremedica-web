@@ -10,8 +10,6 @@ export interface Message {
   sources?: Citation[]
   /** Unset once an answer is complete. */
   status?: 'streaming' | 'stopped' | 'error'
-  /** Whether a streaming answer waits on its question being sorted, before the books are searched. */
-  reading?: boolean
   error?: string
 }
 
