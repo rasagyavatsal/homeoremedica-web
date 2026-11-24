@@ -3,7 +3,7 @@ import { type FormEvent, type ReactNode, useId, useRef, useState } from 'react'
 import { CloseIcon, PlusIcon } from './icons.tsx'
 
 // The server's limits on a case's symptoms and diseases.
-const MAX_SYMPTOMS = 15
+const MAX_SYMPTOMS = 100
 const MAX_SYMPTOM_CHARS = 200
 const MAX_DISEASES = 15
 const MAX_DISEASE_CHARS = 200
