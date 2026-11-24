@@ -123,12 +123,18 @@ export interface RankedRemedy {
   matched: readonly { text: string; source?: number }[]
 }
 
+/** One repertory's leading remedies for a case, best first. */
+export interface RepertoryRanking {
+  bookTitle: string
+  remedies: readonly RankedRemedy[]
+}
+
 /** What an answer is generated from. */
 export interface Retrieval {
-  /** The books' passages, then the repertory rubrics that `repertory` points to. */
+  /** The books' passages, book by book, then the repertory rubrics that `repertories` point to. */
   sources: readonly RetrievedSource[]
-  /** The repertories' leading remedies, best first; empty when they rank none for the question. */
-  repertory: readonly RankedRemedy[]
+  /** Each repertory's leading remedies; a repertory that ranks none for the question is left out. */
+  repertories: readonly RepertoryRanking[]
   /** Clarke's leading remedies, best first; empty when he ranks none for the question. */
   clinical: readonly RankedRemedy[]
 }
@@ -226,7 +232,7 @@ export interface ClientConfig {
 
 export const MAX_SAVED_MESSAGES = 400
 export const MAX_CHAT_TITLE_CHARS = 200
-export const MAX_SAVED_SOURCES = 20
+export const MAX_SAVED_SOURCES = 30
 const MAX_SOURCE_FIELD_CHARS = 500
 
 function field() {
@@ -357,7 +363,7 @@ export function answerRatings({ rating, sources, reasons, comment }: SavedRating
 }
 
 export interface Retriever {
-  /** `limit` bounds the books' passages; the rubrics come on top of it. */
+  /** `limit` is how many passages each book gives; the rubrics come on top of them. */
   retrieve(request: ChatRequest, options: { limit: number }): Promise<Retrieval>
   /** Whether a question describes a patient; a `question` has no symptoms to read. */
   kind(request: ChatRequest, options?: Cancellable): Promise<QuestionKind>
