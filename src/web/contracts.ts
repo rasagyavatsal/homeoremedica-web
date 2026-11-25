@@ -10,9 +10,6 @@ export const MAX_GENERATED_ANSWER_CHARS = 12_000
 /** How many symptoms a case is searched by, at most, as the decision model splits them. */
 export const MAX_SYMPTOMS = 100
 export const MAX_SYMPTOM_CHARS = 200
-/** How many diseases a case's remedies are ranked by, at most, as the chat model reads them. */
-export const MAX_DISEASES = 15
-export const MAX_DISEASE_CHARS = 200
 
 function text(field: string) {
   return z
@@ -92,11 +89,11 @@ export interface RetrievedSource {
   score: number
 }
 
-/** A remedy that the repertories or Clarke's Clinical sections rank among the first for a case. */
+/** A remedy that a repertory ranks among the first for a case. */
 export interface RankedRemedy {
   remedyName: string
   /**
-   * The case's symptoms the remedy covers, or the diseases Clarke lists it for. `source` is the
+   * The case's symptoms the remedy covers. `source` is the
    * place, from 1, of the rubric among the retrieved sources that lists the remedy for a symptom.
    */
   matched: readonly { text: string; source?: number }[]
@@ -114,8 +111,6 @@ export interface Retrieval {
   sources: readonly RetrievedSource[]
   /** Each repertory's leading remedies; a repertory that ranks none for the question is left out. */
   repertories: readonly RepertoryRanking[]
-  /** Clarke's leading remedies, best first; empty when he ranks none for the question. */
-  clinical: readonly RankedRemedy[]
 }
 
 export interface Citation {
