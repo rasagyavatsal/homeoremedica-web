@@ -193,6 +193,8 @@ export interface AuthConfig {
 /** `GET /api/config`: `auth` is null when this server has no accounts. */
 export interface ClientConfig {
   auth: AuthConfig | null
+  /** Android builds with a lower versionCode must update before they are used; 0 when none must. */
+  minAndroidVersionCode: number
 }
 
 export const MAX_SAVED_MESSAGES = 400
