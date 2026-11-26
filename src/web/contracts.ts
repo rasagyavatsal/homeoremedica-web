@@ -31,12 +31,17 @@ export const ChatRequestSchema = z
       message: text('message'),
       history: historySchema().default([]),
       summary: text('summary').optional(),
+      // Sent by Android 3.8.0 and older for a chat saved with confirmed symptoms, and ignored.
+      // Remove them in the release after this one.
+      symptoms: z.unknown().optional(),
+      diseases: z.unknown().optional(),
     },
     { error: (issue) => (issue.code === 'unrecognized_keys' ? 'unexpected request field' : undefined) },
   )
   .refine((request) => contextChars(request.history, request.summary) <= MAX_HISTORY_CHARS, {
     error: `history must not exceed ${MAX_HISTORY_CHARS} characters`,
   })
+  .transform(({ symptoms: _symptoms, diseases: _diseases, ...request }) => request)
 
 function historySchema() {
   return z.array(ChatTurnSchema).max(MAX_HISTORY_TURNS, { error: `history must not exceed ${MAX_HISTORY_TURNS} turns` })
