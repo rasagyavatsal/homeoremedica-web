@@ -144,7 +144,8 @@ const Reply = memo(function Reply({ message, activeSource, onSources, onRetry, r
     <>
       {waiting ? (
         <p className="reply-progress" role="status">
-          {sources ? 'Reading the passages…' : 'Searching the books…'}
+          {/* The books have nothing on a message that gets no sources; it gets a short reply. */}
+          {!sources ? 'Searching the books…' : sources.length ? 'Reading the passages…' : 'Writing a reply…'}
         </p>
       ) : (
         <Answer content={content} sourceCount={sources?.length ?? 0} onCite={cite} />

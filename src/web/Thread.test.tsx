@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
+import type { Citation } from './contracts.ts'
 import { Thread } from './Thread.tsx'
 
 const noop = () => {}
@@ -40,5 +41,35 @@ describe('question', () => {
     renderQuestion('What is Pulsatilla like?')
     expect(screen.getByRole('heading', { name: 'What is Pulsatilla like?' })).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Expand question' })).not.toBeInTheDocument()
+  })
+})
+
+describe('reply in progress', () => {
+  const passage: Citation = {
+    id: 'v1/kent_lectures/chk_1',
+    bookId: 'kent_lectures',
+    bookTitle: "Kent's Lectures",
+    author: 'James Tyler Kent',
+    remedyName: 'PULSATILLA',
+    sectionTitle: 'MIND',
+    passageIndexes: [1],
+    text: 'Weeps.',
+  }
+
+  it.each([
+    [undefined, 'Searching the books…'],
+    [[passage], 'Reading the passages…'],
+    [[], 'Writing a reply…'],
+  ])('says what it is doing with sources %j', (sources, progress) => {
+    render(
+      <Thread
+        messages={[{ id: 1, role: 'assistant', content: '', status: 'streaming', ...(sources && { sources }) }]}
+        openSources={undefined}
+        onSources={noop}
+        onRetry={noop}
+      />,
+    )
+
+    expect(screen.getByRole('status')).toHaveTextContent(progress)
   })
 })
