@@ -7,7 +7,7 @@ export const MAX_RETRIEVAL_QUERY_CHARS = 8_000
 export const MAX_CITATION_TEXT_CHARS = 8_000
 export const MAX_GENERATION_PROMPT_CHARS = 64_000
 export const MAX_GENERATED_ANSWER_CHARS = 12_000
-/** How many symptoms a case is searched by, at most, as the decision model splits them. */
+/** How many symptoms a case is searched by, at most, as the rewrite model splits them. */
 export const MAX_SYMPTOMS = 100
 export const MAX_SYMPTOM_CHARS = 200
 
@@ -332,9 +332,9 @@ export function answerRatings({ rating, sources, reasons, comment }: SavedRating
 export interface Retriever {
   /**
    * `limit` is how many passages each book gives; the rubrics come on top of them. An off-topic
-   * question gets nothing.
+   * question gets nothing. `signal` stops every request it makes.
    */
-  retrieve(request: ChatRequest, options: { limit: number }): Promise<Retrieval>
+  retrieve(request: ChatRequest, options: { limit: number } & Cancellable): Promise<Retrieval>
 }
 
 export interface GenerateOptions {
