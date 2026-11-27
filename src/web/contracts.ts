@@ -7,12 +7,9 @@ export const MAX_RETRIEVAL_QUERY_CHARS = 8_000
 export const MAX_CITATION_TEXT_CHARS = 8_000
 export const MAX_GENERATION_PROMPT_CHARS = 64_000
 export const MAX_GENERATED_ANSWER_CHARS = 12_000
-/** How many symptoms a case is searched by, at most. */
-export const MAX_SYMPTOMS = 15
+/** How many symptoms a case is searched by, at most, as the rewrite model splits them. */
+export const MAX_SYMPTOMS = 100
 export const MAX_SYMPTOM_CHARS = 200
-/** How many diseases a case's remedies are ranked by, at most. */
-export const MAX_DISEASES = 15
-export const MAX_DISEASE_CHARS = 200
 
 function text(field: string) {
   return z
@@ -21,21 +18,6 @@ function text(field: string) {
     .max(MAX_TURN_CHARS, { error: `${field} must not exceed ${MAX_TURN_CHARS} characters` })
     .refine((value) => value.trim() !== '', { error: `${field} must not be blank` })
     .transform((value) => value.trim())
-}
-
-/** What the user confirmed of a case: a list of `one`s, each trimmed and within `maxChars`. */
-function confirmed(one: string, many: string, { max, maxChars }: { max: number; maxChars: number }) {
-  return z
-    .array(
-      z
-        .string({ error: `a ${one} must be a string` })
-        .trim()
-        .min(1, { error: `a ${one} must not be blank` })
-        .max(maxChars, { error: `a ${one} must not exceed ${maxChars} characters` }),
-      { error: `${many} must be a list` },
-    )
-    .max(max, { error: `${many} must not exceed ${max}` })
-    .optional()
 }
 
 export const ChatTurnSchema = z.strictObject({
@@ -49,18 +31,17 @@ export const ChatRequestSchema = z
       message: text('message'),
       history: historySchema().default([]),
       summary: text('summary').optional(),
-      /** The case's symptoms as the user confirmed them, searched in place of the model's own. */
-      symptoms: confirmed('symptom', 'symptoms', { max: MAX_SYMPTOMS, maxChars: MAX_SYMPTOM_CHARS }),
-      /** The case's diseases as the user confirmed them, ranked by in place of the model's own. */
-      diseases: confirmed('disease', 'diseases', { max: MAX_DISEASES, maxChars: MAX_DISEASE_CHARS }),
-      /** Set when `/api/kind` found the question off-topic: it is answered without searching the books. */
-      offTopic: z.boolean({ error: 'offTopic must be a boolean' }).optional(),
+      // Sent by Android 3.8.0 and older for a chat saved with confirmed symptoms, and ignored.
+      // Remove them in the release after this one.
+      symptoms: z.unknown().optional(),
+      diseases: z.unknown().optional(),
     },
     { error: (issue) => (issue.code === 'unrecognized_keys' ? 'unexpected request field' : undefined) },
   )
   .refine((request) => contextChars(request.history, request.summary) <= MAX_HISTORY_CHARS, {
     error: `history must not exceed ${MAX_HISTORY_CHARS} characters`,
   })
+  .transform(({ symptoms: _symptoms, diseases: _diseases, ...request }) => request)
 
 function historySchema() {
   return z.array(ChatTurnSchema).max(MAX_HISTORY_TURNS, { error: `history must not exceed ${MAX_HISTORY_TURNS} turns` })
@@ -113,24 +94,28 @@ export interface RetrievedSource {
   score: number
 }
 
-/** A remedy that the repertories or Clarke's Clinical sections rank among the first for a case. */
+/** A remedy that a repertory ranks among the first for a case. */
 export interface RankedRemedy {
   remedyName: string
   /**
-   * The case's symptoms the remedy covers, or the diseases Clarke lists it for. `source` is the
+   * The case's symptoms the remedy covers. `source` is the
    * place, from 1, of the rubric among the retrieved sources that lists the remedy for a symptom.
    */
   matched: readonly { text: string; source?: number }[]
 }
 
+/** One repertory's leading remedies for a case, best first. */
+export interface RepertoryRanking {
+  bookTitle: string
+  remedies: readonly RankedRemedy[]
+}
+
 /** What an answer is generated from. */
 export interface Retrieval {
-  /** The books' passages, then the repertory rubrics that `repertory` points to. */
+  /** The books' passages, book by book, then the repertory rubrics that `repertories` point to. */
   sources: readonly RetrievedSource[]
-  /** The repertories' leading remedies, best first; empty when they rank none for the question. */
-  repertory: readonly RankedRemedy[]
-  /** Clarke's leading remedies, best first; empty when he ranks none for the question. */
-  clinical: readonly RankedRemedy[]
+  /** Each repertory's leading remedies; a repertory that ranks none for the question is left out. */
+  repertories: readonly RepertoryRanking[]
 }
 
 export interface Citation {
@@ -177,25 +162,11 @@ export interface BookCatalog {
 }
 
 /**
- * Whether a question describes a patient, whose symptoms are read, asks about anything else the
- * books could answer, or has nothing to do with homoeopathy, medicine or a patient.
+ * Whether a question describes a patient, whose symptoms are searched in the repertories, asks
+ * about anything else the books could answer, or has nothing to do with homoeopathy, medicine or a
+ * patient, and so is not searched for at all.
  */
 export type QuestionKind = 'case' | 'question' | 'off-topic'
-
-/** `POST /api/kind`: decided before a question is answered, so only a case is read for symptoms. */
-export interface KindResponse {
-  kind: QuestionKind
-}
-
-/** `POST /api/symptoms`: the symptoms of the case a question describes; none when it describes no patient. */
-export interface SymptomsResponse {
-  symptoms: string[]
-}
-
-/** `POST /api/diseases`: the diseases the case a question describes names; none when it names none. */
-export interface DiseasesResponse {
-  diseases: string[]
-}
 
 /** `POST /api/chat`: the answer plus the trimmed history and the summary to send with the next question. */
 export interface WebChatResponse extends Omit<ChatResponse, 'compacted'> {
@@ -222,11 +193,13 @@ export interface AuthConfig {
 /** `GET /api/config`: `auth` is null when this server has no accounts. */
 export interface ClientConfig {
   auth: AuthConfig | null
+  /** Android builds with a lower versionCode must update before they are used; 0 when none must. */
+  minAndroidVersionCode: number
 }
 
 export const MAX_SAVED_MESSAGES = 400
 export const MAX_CHAT_TITLE_CHARS = 200
-export const MAX_SAVED_SOURCES = 20
+export const MAX_SAVED_SOURCES = 30
 const MAX_SOURCE_FIELD_CHARS = 500
 
 function field() {
@@ -357,14 +330,11 @@ export function answerRatings({ rating, sources, reasons, comment }: SavedRating
 }
 
 export interface Retriever {
-  /** `limit` bounds the books' passages; the rubrics come on top of it. */
-  retrieve(request: ChatRequest, options: { limit: number }): Promise<Retrieval>
-  /** Whether a question describes a patient; a `question` has no symptoms to read. */
-  kind(request: ChatRequest, options?: Cancellable): Promise<QuestionKind>
-  /** The symptoms a question's case would be searched by, for the user to check first. */
-  symptoms(request: ChatRequest, options?: Cancellable): Promise<string[]>
-  /** The diseases a question's case would be ranked by, for the user to check first. */
-  diseases(request: ChatRequest, options?: Cancellable): Promise<string[]>
+  /**
+   * `limit` is how many passages each book gives; the rubrics come on top of them. An off-topic
+   * question gets nothing. `signal` stops every request it makes.
+   */
+  retrieve(request: ChatRequest, options: { limit: number } & Cancellable): Promise<Retrieval>
 }
 
 export interface GenerateOptions {
