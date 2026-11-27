@@ -7,6 +7,23 @@
 * **corpus:** rename the source dataset to `dataset/corpus.json` and consolidate each release into
   one `corpus.sqlite` database with book-filtered retrieval.
 
+## [11.2.0](https://github.com/rasagyavatsal/homeoremedica-web/compare/v11.1.0...v11.2.0) (2026-11-27)
+
+
+### Features
+
+* allow up to 100 symptoms in case review ([85d68f1](https://github.com/rasagyavatsal/homeoremedica-web/commit/85d68f1cb12a9be8c26751e3b6553a69ac174043))
+* answer a case without reviewing its symptoms and diseases ([6179c16](https://github.com/rasagyavatsal/homeoremedica-web/commit/6179c1698a8ced19b45b1dd0292c3f1c3c219dfa))
+* ask questions without a symptoms list ([9db554c](https://github.com/rasagyavatsal/homeoremedica-web/commit/9db554c4780e043e6301de9f8cd99ed0c10cd82b))
+* ask questions without reviewing or sorting them first ([fcc206e](https://github.com/rasagyavatsal/homeoremedica-web/commit/fcc206e830609cabfbb46b0479532b84f13bb3fd))
+* ask questions without sorting them first ([8275d48](https://github.com/rasagyavatsal/homeoremedica-web/commit/8275d4883acc93a68322493d125799175a2776c3))
+* sync contracts for per-book answer sections ([c01f886](https://github.com/rasagyavatsal/homeoremedica-web/commit/c01f886fddfbb30a9768c2256fadeb3ee7b8c921))
+
+
+### Bug Fixes
+
+* say a reply is being written when there are no passages ([43f0af4](https://github.com/rasagyavatsal/homeoremedica-web/commit/43f0af476e257491e2aa90dc0d18b13380eb030c))
+
 ## [11.1.0](https://github.com/rasagyavatsal/homeoremedica-web/compare/v11.0.0...v11.1.0) (2026-11-23)
 
 
